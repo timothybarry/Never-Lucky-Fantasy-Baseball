@@ -1,0 +1,34 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "statcast-roto"
+version = "1.0.0"
+description = "A fantasy baseball rotisserie engine scored on Statcast / expected-stat categories instead of luck-polluted traditional stats."
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+authors = [{ name = "Tim Barry" }]
+keywords = ["baseball", "sabermetrics", "statcast", "fantasy", "rotisserie", "analytics"]
+
+dependencies = [
+    "pandas>=1.5",
+    "numpy>=1.23",
+    "matplotlib>=3.6",
+]
+
+[project.optional-dependencies]
+# Only needed for the live / raw-pull paths and ID crosswalk.
+live = ["pybaseball>=2.2"]
+dev = ["pytest>=7.0"]
+
+[project.scripts]
+statcast-roto = "statcast_roto.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"
