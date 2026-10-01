@@ -168,8 +168,21 @@ class PitchLevelCSVSource:
     # -- shared feature prep ------------------------------------------------
     def _prepare(self, raw: pd.DataFrame) -> pd.DataFrame:
         df = raw.copy()
+        if "game_type" in df.columns:
+            # Regular season only: the 2020 export also carries the four AL Wild Card games.
+            df = df[df["game_type"].eq("R")].copy()
         df["is_pa"] = df["events"].notna()
         df["is_bb"] = df["launch_speed"].notna() & df["launch_angle"].notna()
+        if "type" in df.columns:
+            # Balls in play only: fouls carry exit velocity too (2021 tracked ~44% more of them),
+            # which would drag EV90 down and pad the barrel%-allowed denominator.
+            df["is_bb"] &= df["type"].eq("X")
+        if {"game_pk", "inning_topbot", "at_bat_number", "pitch_number"} <= set(df.columns):
+            # The starter threw his team's first pitch of the game (one half-inning side per team).
+            first = (df.sort_values(["game_pk", "inning_topbot", "at_bat_number", "pitch_number"])
+                       .drop_duplicates(["game_pk", "inning_topbot"])[["game_pk", "pitcher"]])
+            starts = set(zip(first["game_pk"], first["pitcher"]))
+            df["is_starter"] = [(g, p) in starts for g, p in zip(df["game_pk"], df["pitcher"])]
         df["is_barrel"] = pd.to_numeric(df["launch_speed_angle"], errors="coerce").eq(6)
         df["is_oz"] = pd.to_numeric(df["zone"], errors="coerce") > 9
         df["is_swing"] = df["description"].isin(SWING_DESCRIPTIONS)
@@ -231,7 +244,7 @@ class PitchLevelCSVSource:
             barrels_allowed = int(grp["is_barrel"].sum())
             outs = int(grp["outs_made"].sum())
             ip = outs / 3.0
-            k = int((grp["events"] == "strikeout").sum())
+            k = int(grp["events"].isin(["strikeout", "strikeout_double_play", "strikeout_triple_play"]).sum())
             bb = int(grp["events"].isin(["walk", "intent_walk"]).sum())
             hbp = int((grp["events"] == "hit_by_pitch").sum())
             fb = int(grp["is_fb"].sum())
@@ -277,6 +290,8 @@ class PitchLevelCSVSource:
             return 0.0
         qs = 0
         for _, gm in grp.groupby("game_pk"):
+            if "is_starter" in gm.columns and not bool(gm["is_starter"].iloc[0]):
+                continue  # a long relief outing is not a quality start
             outs = int(gm["outs_made"].sum())
             runs = float(gm["runs_on_play"].sum())
             if outs >= 18 and runs <= 3:

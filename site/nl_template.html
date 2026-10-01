@@ -1,0 +1,1681 @@
+<title>Never Lucky</title>
+<meta name="description" content="Never Lucky: a Statcast-scored fantasy roto lab across five MLB seasons, 2017-2021.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@600;800;900&family=Chakra+Petch:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600;700&display=swap">
+<style>
+/* Never Lucky: one deliberate dark world (neon ballpark at night). Teal = signal/skill, pink = noise/luck,
+   volt = records and champions only. Single-theme by design, so every surface paints its own color. */
+:root{
+  color-scheme: dark;
+  --void:#06050c; --ground:#0a0815; --panel:#100d1f; --panel2:#161230; --raise:#1c1740;
+  --line:#272148; --line2:#3a3270;
+  --ink:#f1edff; --ink2:#c2bbe6; --muted:#8e87b8; --faint:#5f5989;
+  --teal:#19f0d2; --teal-d:#0e9e8c; --pink:#ff3d9e; --pink-d:#b3206c;
+  --violet:#9b7bff; --volt:#f4f269; --blue:#4d9bff; --mid:#5b5580;
+  /* stat-type code: teal = skill rate, volt = volume & power (and champions), blue = lower is better, pink = luck & cold */
+  --f-display:"Big Shoulders Display","Arial Narrow","Impact",sans-serif;
+  --f-ui:"Chakra Petch","Segoe UI",system-ui,sans-serif;
+  --f-mono:"JetBrains Mono",ui-monospace,"Cascadia Mono",Consolas,monospace;
+  --gutter:clamp(16px,3.2vw,44px);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:72px}
+body{margin:0;background:var(--ground);color:var(--ink);font:15px/1.55 var(--f-ui);-webkit-font-smoothing:antialiased;overflow-x:hidden}
+body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;
+  background:radial-gradient(900px 520px at 12% -8%,rgba(255,61,158,.16),transparent 60%),
+             radial-gradient(900px 600px at 95% 8%,rgba(25,240,210,.13),transparent 60%),
+             radial-gradient(700px 500px at 50% 110%,rgba(155,123,255,.10),transparent 60%)}
+.scan{position:fixed;inset:0;pointer-events:none;z-index:60;opacity:.35;
+  background:repeating-linear-gradient(0deg,rgba(255,255,255,.028) 0 1px,transparent 1px 4px)}
+.shell{position:relative;z-index:1;max-width:1440px;margin:0 auto;padding-inline:var(--gutter)}
+h1,h2,h3,h4{margin:0;text-wrap:balance}
+p{margin:0}
+a{color:var(--teal)}
+button,select,input{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--volt);outline-offset:2px}
+.num,.mono{font-family:var(--f-mono);font-variant-numeric:tabular-nums}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+
+/* ---------- top bar ---------- */
+.topbar{position:sticky;top:env(safe-area-inset-top,0px);z-index:40;background:rgba(8,6,18,.82);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+.topbar-in{display:flex;align-items:center;gap:18px;min-height:58px;flex-wrap:wrap;padding-block:6px}
+.brand{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--ink)}
+.brand svg{width:30px;height:30px;flex:none}
+.brand-word{font:900 22px/1 var(--f-display);letter-spacing:.06em}
+.brand-word b{color:var(--teal);font-weight:900}
+.nav{display:flex;gap:4px;flex-wrap:wrap;margin-left:auto}
+.nav a{color:var(--ink2);text-decoration:none;font-size:13px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;padding:7px 11px;border-radius:3px}
+.nav a:hover{color:var(--teal);background:rgba(25,240,210,.07)}
+.season-pick{display:flex;align-items:center;gap:8px;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+select,input[type=search],input[type=text]{background:var(--panel2);border:1px solid var(--line2);border-radius:4px;padding:7px 10px;font-size:14px;color:var(--ink)}
+select:hover,input:hover{border-color:var(--violet)}
+select:focus,input:focus{border-color:var(--teal);outline:none;box-shadow:0 0 0 3px rgba(25,240,210,.15)}
+
+/* ---------- ticker ---------- */
+.ticker{position:relative;z-index:1;overflow:hidden;border-bottom:1px solid var(--line);background:linear-gradient(90deg,rgba(255,61,158,.10),rgba(25,240,210,.08));white-space:nowrap}
+.ticker-track{display:inline-flex;gap:0;padding-block:9px;animation:tick 90s linear infinite}
+.ticker:hover .ticker-track{animation-play-state:paused}
+.tk{font:600 12.5px/1 var(--f-mono);letter-spacing:.06em;text-transform:uppercase;color:var(--ink2);padding-inline:22px;display:inline-flex;align-items:center;gap:10px}
+.tk b{color:var(--ink);font-weight:700}
+.tk i{font-style:normal;color:var(--teal)}
+.tk em{font-style:normal;color:var(--pink)}
+.tk::after{content:"";width:6px;height:6px;border-radius:50%;background:var(--violet);margin-left:22px;box-shadow:0 0 8px var(--violet)}
+@keyframes tick{to{transform:translateX(-50%)}}
+
+/* ---------- hero ---------- */
+.splash{position:relative}
+.hero{position:relative;display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);gap:clamp(20px,4vw,56px);align-items:end;padding-block:clamp(28px,5vw,64px) clamp(36px,5vw,72px)}
+.kicker{font:600 12px/1.4 var(--f-mono);letter-spacing:.2em;text-transform:uppercase;color:var(--teal);display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.kicker::before{content:"";width:34px;height:2px;background:linear-gradient(90deg,var(--pink),var(--teal))}
+.wordmark{font-family:var(--f-display);font-weight:900;font-size:clamp(76px,13.5vw,196px);line-height:.8;letter-spacing:.005em;text-transform:uppercase;margin:18px 0 22px;display:flex;flex-direction:column}
+.wordmark .w1{color:var(--ink);text-shadow:-4px 0 var(--pink),4px 0 var(--teal),0 0 60px rgba(255,61,158,.35);animation:glitch 7s steps(1) infinite}
+.wordmark .w2{color:transparent;-webkit-text-stroke:2.5px var(--teal);text-shadow:0 0 34px rgba(25,240,210,.55);padding-left:.14em}
+.wordmark .w2 .dot{color:var(--pink);-webkit-text-stroke:0;text-shadow:0 0 30px var(--pink)}
+@keyframes glitch{0%,91%,100%{transform:none;text-shadow:-4px 0 var(--pink),4px 0 var(--teal),0 0 60px rgba(255,61,158,.35)}
+  92%{transform:translateX(3px) skewX(-6deg);text-shadow:-9px 0 var(--pink),7px 0 var(--teal)}
+  93%{transform:translateX(-4px);clip-path:inset(12% 0 48% 0)}
+  94%{transform:translateX(2px);clip-path:inset(58% 0 6% 0);text-shadow:8px 0 var(--pink),-6px 0 var(--teal)}
+  95%{transform:none;clip-path:none}}
+.lede{max-width:34em;font-size:clamp(16px,1.5vw,19px);line-height:1.55;color:var(--ink2)}
+.lede strong{color:var(--ink);font-family:var(--f-mono);font-weight:700}
+.lede em{font-style:normal;color:var(--pink)}
+.hero-cta{display:flex;gap:10px;flex-wrap:wrap;margin-top:22px}
+.btn{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--teal);background:rgba(25,240,210,.08);color:var(--teal);padding:10px 16px;border-radius:3px;font-weight:700;font-size:13px;letter-spacing:.12em;text-transform:uppercase;text-decoration:none;cursor:pointer;transition:background .15s,box-shadow .15s,transform .15s}
+.btn:hover{background:rgba(25,240,210,.16);box-shadow:0 0 24px rgba(25,240,210,.25);transform:translateY(-1px)}
+.btn.pink{border-color:var(--pink);color:var(--pink);background:rgba(255,61,158,.08)}
+.btn.pink:hover{background:rgba(255,61,158,.16);box-shadow:0 0 24px rgba(255,61,158,.25)}
+.horizon{position:absolute;left:calc(var(--gutter)*-1);right:calc(var(--gutter)*-1);bottom:0;height:150px;overflow:hidden;pointer-events:none;z-index:-1;
+  -webkit-mask-image:linear-gradient(to top,#000 10%,transparent);mask-image:linear-gradient(to top,#000 10%,transparent)}
+.horizon::before{content:"";position:absolute;left:-50%;right:-50%;top:0;height:300%;transform-origin:50% 0;transform:perspective(260px) rotateX(62deg);
+  background-image:linear-gradient(rgba(25,240,210,.35) 1px,transparent 1px),linear-gradient(90deg,rgba(255,61,158,.30) 1px,transparent 1px);background-size:56px 56px;animation:floor 4s linear infinite}
+.horizon::after{content:"";position:absolute;left:0;right:0;top:0;height:2px;background:linear-gradient(90deg,transparent,var(--pink),var(--teal),transparent);box-shadow:0 0 24px var(--pink)}
+@keyframes floor{to{background-position:0 56px}}
+
+.odometer{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));border:1px solid var(--line2);background:linear-gradient(160deg,rgba(28,23,64,.72),rgba(12,10,26,.85));border-radius:4px;box-shadow:0 0 0 1px rgba(25,240,210,.05),0 30px 80px rgba(0,0,0,.45)}
+.odo{padding:16px 18px 14px;border-right:1px solid var(--line);border-bottom:1px solid var(--line);position:relative}
+.odo:nth-child(2n){border-right:0}
+.odo:nth-last-child(-n+2){border-bottom:0}
+.odo-l{font:600 11px/1.2 var(--f-mono);letter-spacing:.16em;text-transform:uppercase;color:var(--muted)}
+.odo-v{font:700 clamp(24px,2.6vw,36px)/1.1 var(--f-mono);font-variant-numeric:tabular-nums;color:var(--ink);margin-top:6px;letter-spacing:-.01em;text-shadow:0 0 18px rgba(25,240,210,.25)}
+.odo-c{font-size:12px;color:var(--faint);margin-top:2px}
+.odo.hot .odo-v{color:var(--teal)}
+.odo.pink .odo-v{color:var(--pink);text-shadow:0 0 18px rgba(255,61,158,.3)}
+.odo-head{grid-column:1/-1;display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px 18px;border-bottom:1px solid var(--line);font:600 11px/1 var(--f-mono);letter-spacing:.18em;text-transform:uppercase;color:var(--ink2)}
+.live{display:inline-flex;align-items:center;gap:7px;color:var(--teal)}
+.live::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--teal);box-shadow:0 0 10px var(--teal);animation:pulse 1.8s ease-in-out infinite}
+@keyframes pulse{50%{opacity:.35}}
+
+/* ---------- section heads ---------- */
+.sec-head{display:flex;justify-content:space-between;align-items:flex-end;gap:16px 28px;flex-wrap:wrap;margin-bottom:16px}
+.eyebrow{font:600 11.5px/1 var(--f-mono);letter-spacing:.2em;text-transform:uppercase;color:var(--pink);margin-bottom:8px}
+.h2{font:800 clamp(32px,4vw,52px)/.95 var(--f-display);text-transform:uppercase;letter-spacing:.01em}
+.h3{font:800 24px/1 var(--f-display);text-transform:uppercase;letter-spacing:.02em}
+.sub{color:var(--ink2);max-width:62ch;margin-top:8px}
+
+/* ---------- signal field ---------- */
+.field-block{padding-block:10px 36px}
+.controls{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.seg{display:inline-flex;border:1px solid var(--line2);border-radius:4px;overflow:hidden;background:var(--panel)}
+.seg button{background:transparent;border:0;padding:8px 13px;font-size:13px;font-weight:600;letter-spacing:.06em;color:var(--ink2);cursor:pointer;border-right:1px solid var(--line)}
+.seg button:last-child{border-right:0}
+.seg button:hover{color:var(--ink);background:rgba(155,123,255,.1)}
+.seg button[aria-pressed=true]{color:var(--void);background:var(--teal);box-shadow:0 0 18px rgba(25,240,210,.4)}
+.seg.years{flex-wrap:wrap;max-width:100%}
+.seg.years button{font-family:var(--f-mono);font-size:12.5px}
+@media (max-width:420px){.seg button{padding:7px 9px;font-size:12px}}
+.seg.years button[data-y="2020"]::after{content:"60g";font-size:9px;margin-left:4px;opacity:.7;vertical-align:super}
+.field-grid{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:18px}
+.field{position:relative;border:1px solid var(--line2);border-radius:4px;background:
+  radial-gradient(120% 90% at 30% 10%,rgba(25,240,210,.06),transparent 60%),
+  radial-gradient(90% 90% at 85% 95%,rgba(255,61,158,.07),transparent 60%),var(--panel);overflow:hidden;min-height:380px}
+.field canvas{display:block;width:100%;cursor:crosshair}
+.field svg.lines{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+.corner{position:absolute;font:600 10.5px/1 var(--f-mono);letter-spacing:.18em;text-transform:uppercase;color:var(--faint);pointer-events:none}
+.corner.tl{left:12px;top:10px}
+.corner.br{right:12px;bottom:10px}
+
+.bub{position:absolute;max-width:236px;padding:10px 12px 11px;border-radius:14px;background:rgba(14,11,32,.9);border:1px solid var(--bc,var(--teal));
+  box-shadow:0 0 0 1px rgba(0,0,0,.4),0 0 26px var(--bg-glow,rgba(25,240,210,.28)),inset 0 0 22px rgba(255,255,255,.03);
+  backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);cursor:pointer;animation:bob 6.5s ease-in-out infinite;animation-delay:var(--d,0s);transition:border-color .2s,box-shadow .2s;z-index:3}
+.bub:hover,.bub:focus-visible{animation-play-state:paused}
+html.paused *,html.paused *::before,html.paused *::after{animation-play-state:paused!important}
+.bub:hover,.bub.on{box-shadow:0 0 0 1px rgba(0,0,0,.4),0 0 40px var(--bg-glow),inset 0 0 22px rgba(255,255,255,.05);z-index:5}
+.bub.up{--bc:var(--teal);--bg-glow:rgba(25,240,210,.32)}
+.bub.down{--bc:var(--pink);--bg-glow:rgba(255,61,158,.32)}
+.bub.top{--bc:var(--volt);--bg-glow:rgba(244,242,105,.22)}
+.bub.fact{--bc:var(--violet);--bg-glow:rgba(155,123,255,.3);cursor:default}
+.bub-k{font:700 10px/1 var(--f-mono);letter-spacing:.18em;text-transform:uppercase;color:var(--bc);display:flex;align-items:center;gap:6px}
+.bub-k::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--bc);box-shadow:0 0 8px var(--bc)}
+.bub-n{font:800 19px/1.05 var(--f-display);text-transform:uppercase;letter-spacing:.02em;margin-top:6px;color:var(--ink)}
+.bub-b{font-size:12.5px;line-height:1.42;color:var(--ink2);margin-top:4px;min-height:1.4em}
+.bub-b b{color:var(--ink);font-family:var(--f-mono);font-weight:600;font-size:12px}
+.caret::after{content:"▍";color:var(--bc);animation:pulse .7s steps(1) infinite}
+@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
+.bubble-list{display:none}
+
+.tip{position:absolute;pointer-events:none;z-index:8;min-width:190px;max-width:260px;padding:10px 12px;border-radius:6px;background:rgba(8,6,20,.96);border:1px solid var(--line2);box-shadow:0 12px 40px rgba(0,0,0,.6);font-size:12.5px;opacity:0;transform:translateY(4px);transition:opacity .12s,transform .12s}
+.tip.show{opacity:1;transform:none}
+.tip h4{font:800 17px/1.1 var(--f-display);text-transform:uppercase;letter-spacing:.02em}
+.tip .meta{font:600 10.5px/1.3 var(--f-mono);letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-top:2px}
+.tip dl{display:grid;grid-template-columns:auto auto;gap:3px 14px;margin:8px 0 0}
+.tip dt{color:var(--muted)}
+.tip dd{margin:0;text-align:right;font-family:var(--f-mono);font-variant-numeric:tabular-nums;color:var(--ink)}
+.tip .hint{margin-top:7px;font-size:11px;color:var(--faint)}
+
+.field-side{display:flex;flex-direction:column;gap:14px}
+.side-card{border:1px solid var(--line);border-radius:4px;background:var(--panel);padding:14px 16px}
+.side-card h3{font:600 11px/1 var(--f-mono);letter-spacing:.18em;text-transform:uppercase;color:var(--muted);margin-bottom:10px}
+.legend-bar{height:10px;border-radius:5px;background:linear-gradient(90deg,var(--pink),var(--mid) 50%,var(--teal))}
+.legend-ticks{display:flex;justify-content:space-between;font:600 11px/1 var(--f-mono);color:var(--muted);margin-top:6px}
+.legend-names{display:flex;justify-content:space-between;gap:10px;margin-top:10px;font-size:12px;font-weight:600}
+.legend-names span:first-child{color:var(--pink)}
+.legend-names span:last-child{color:var(--teal);text-align:right}
+.readout{display:grid;grid-template-columns:1fr auto;gap:8px 12px;align-items:baseline}
+.readout dt{color:var(--ink2);font-size:13px}
+.readout dd{margin:0;font:700 18px/1 var(--f-mono);font-variant-numeric:tabular-nums;text-align:right}
+.split{height:8px;border-radius:4px;display:flex;overflow:hidden;gap:2px;margin-top:10px}
+.split i{display:block;height:100%}
+.explain{font-size:13px;color:var(--ink2);line-height:1.5}
+.explain p+p{margin-top:8px}
+.explain b{color:var(--ink)}
+.explain .t{color:var(--teal)} .explain .p{color:var(--pink)}
+
+/* ---------- season ribbon ---------- */
+.ribbon{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:0;border:1px solid var(--line2);border-radius:4px;background:var(--panel);margin-block:8px 44px;overflow:hidden}
+.season{position:relative;padding:16px 16px 18px;border-right:1px solid var(--line);cursor:pointer;transition:background .2s;text-align:left;background:transparent;border-top:0;border-bottom:0;border-left:0;color:var(--ink)}
+.season:last-child{border-right:0}
+.season:hover{background:rgba(155,123,255,.07)}
+.season[aria-pressed=true]{background:linear-gradient(180deg,rgba(25,240,210,.10),rgba(25,240,210,0) 70%)}
+.season[aria-pressed=true]::before{content:"";position:absolute;left:0;right:0;top:0;height:3px;background:var(--teal);box-shadow:0 0 16px var(--teal)}
+.yr{display:flex;align-items:baseline;justify-content:space-between;gap:8px}
+.yr-n{font:900 54px/.9 var(--f-display);letter-spacing:.01em}
+.yr-tag{font:600 10px/1.2 var(--f-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--pink);text-align:right}
+.vol{height:5px;border-radius:3px;background:var(--line);margin:10px 0 4px;overflow:hidden}
+.vol i{display:block;height:100%;background:linear-gradient(90deg,var(--pink),var(--violet),var(--teal))}
+.vol-l{font:500 11px/1.3 var(--f-mono);color:var(--muted)}
+.facts{list-style:none;margin:12px 0 0;padding:0;display:grid;gap:9px}
+.facts li{display:grid;gap:1px}
+.facts .fl{font:600 10px/1.2 var(--f-mono);letter-spacing:.15em;text-transform:uppercase;color:var(--faint)}
+.facts .fv{font-size:13.5px;font-weight:600;color:var(--ink);line-height:1.25}
+.facts .fv small{font-family:var(--f-mono);font-weight:500;color:var(--ink2);font-size:11.5px}
+.facts .champ .fv{color:var(--volt)}
+.crown{display:inline-block;width:14px;height:11px;margin-right:5px;vertical-align:-1px}
+
+/* ---------- panels ---------- */
+.panels{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
+.panel{border:1px solid var(--line);border-radius:4px;background:var(--panel);padding:18px 18px 16px;position:relative;min-width:0}
+.panel .eyebrow{color:var(--teal)}
+.panel h3{font:800 clamp(22px,2.2vw,28px)/1 var(--f-display);text-transform:uppercase;letter-spacing:.015em}
+.panel .sub{font-size:13.5px;margin-top:6px}
+.chart{margin-top:12px;position:relative}
+.chart svg{display:block;width:100%;height:auto;overflow:visible}
+.legend{display:flex;gap:14px;flex-wrap:wrap;margin-top:12px;font-size:12.5px;color:var(--ink2)}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.legend i{width:12px;height:12px;border-radius:3px;display:inline-block}
+.legend i.ln{height:3px;width:16px;border-radius:2px}
+.ax{font:500 11px var(--f-mono);fill:var(--muted)}
+.ax-strong{font:600 11.5px var(--f-mono);fill:var(--ink2)}
+.lbl{font:600 12px var(--f-mono);fill:var(--ink)}
+.lbl-s{font:500 11px var(--f-ui);fill:var(--ink2)}
+.hrb{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px;margin-top:12px}
+.hrb div{border:1px solid var(--line);border-radius:3px;padding:7px 8px 8px;background:var(--panel2)}
+.hrb .y{font:600 10.5px/1 var(--f-mono);color:var(--muted);letter-spacing:.08em}
+.hrb .v{font:700 17px/1.1 var(--f-mono);margin-top:4px}
+.hrb .b{height:4px;border-radius:2px;background:var(--line);margin-top:6px;overflow:hidden}
+.hrb .b i{display:block;height:100%;background:var(--pink)}
+.hrb-cap{font-size:12px;color:var(--muted);margin-top:8px}
+.bump-line{fill:none;stroke:var(--line2);stroke-width:2;transition:stroke .15s,stroke-width .15s,opacity .15s}
+.bump svg.dim .bump-line{opacity:.25}
+.bump svg.dim .bump-dot{opacity:.25}
+.bump-line.on{stroke:var(--teal);stroke-width:3.5;opacity:1!important;filter:drop-shadow(0 0 6px rgba(25,240,210,.6))}
+.bump-dot{fill:var(--panel);stroke:var(--line2);stroke-width:2;transition:opacity .15s}
+.bump-dot.champ{fill:var(--volt);stroke:var(--panel);stroke-width:2}
+.bump-dot.on{stroke:var(--teal);opacity:1!important}
+.bump-name{font:600 12px var(--f-ui);fill:var(--ink2);cursor:pointer}
+.bump-name.on{fill:var(--teal)}
+.pulse{display:grid;grid-template-columns:repeat(auto-fill,minmax(128px,1fr));gap:10px;margin-top:14px}
+.pt{border:1px solid var(--line);border-radius:3px;background:var(--panel2);padding:10px 11px 8px;min-width:0}
+.pt-l{font:600 10.5px/1.25 var(--f-mono);letter-spacing:.1em;text-transform:uppercase;color:var(--muted);min-height:2.5em}
+.pt-v{font:700 22px/1 var(--f-mono);font-variant-numeric:tabular-nums;margin-top:4px}
+.pt-d{font:600 11px/1 var(--f-mono);margin-top:4px;color:var(--muted)}
+.pt svg{display:block;width:100%;height:42px;margin-top:6px;overflow:visible}
+
+/* ---------- hall ---------- */
+.hall{margin-top:44px}
+.hall-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
+.hall-col{border:1px solid var(--line);border-radius:4px;background:var(--panel);overflow:hidden}
+.hall-col h3{font:600 11px/1 var(--f-mono);letter-spacing:.18em;text-transform:uppercase;color:var(--muted);padding:12px 16px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;gap:10px}
+.hall-row{display:grid;grid-template-columns:28px minmax(0,1fr) repeat(5,30px) 62px;gap:6px;align-items:center;padding:8px 16px;border-bottom:1px solid var(--line);cursor:pointer;background:transparent;border-left:0;border-right:0;border-top:0;width:100%;text-align:left;color:var(--ink)}
+.hall-row:last-child{border-bottom:0}
+.hall-row:hover{background:rgba(25,240,210,.05)}
+.hall-row .rk{font:700 13px var(--f-mono);color:var(--faint)}
+.hall-row .nm{font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.hall-row .cell{height:22px;border-radius:3px;display:flex;align-items:center;justify-content:center;font:600 10px var(--f-mono);color:var(--void)}
+.hall-row .cell.none{background:transparent;border:1px dashed var(--line2);color:var(--faint)}
+.hall-row .avg{font:700 14px var(--f-mono);text-align:right;color:var(--teal)}
+.hall-hdr{display:grid;grid-template-columns:28px minmax(0,1fr) repeat(5,30px) 62px;gap:6px;padding:8px 16px 4px;font:600 10px var(--f-mono);color:var(--faint);letter-spacing:.08em}
+.hall-hdr span{text-align:center}
+.hall-hdr span:last-child{text-align:right}
+
+/* ---------- thesis test ---------- */
+.thesis{margin-top:52px}
+.thesis-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
+.th-lead{font-size:clamp(16px,1.5vw,19px);line-height:1.55;color:var(--ink2);max-width:72ch;margin:0 0 16px}
+.th-lead b{color:var(--teal)}
+.th-card{border:1px solid var(--line);border-radius:4px;background:var(--panel);padding:18px 18px 14px;min-width:0}
+.th-top{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+.th-top h3{font:800 26px/1 var(--f-display);text-transform:uppercase;letter-spacing:.02em}
+.verdict{font:700 11px/1 var(--f-mono);letter-spacing:.14em;text-transform:uppercase;padding:7px 10px;border-radius:3px;border:1px solid}
+.verdict.yes{color:var(--teal);border-color:var(--teal);background:rgba(25,240,210,.08);box-shadow:0 0 16px rgba(25,240,210,.2)}
+.verdict.no{color:var(--pink);border-color:var(--pink);background:rgba(255,61,158,.08)}
+.verdict.mixed{color:var(--volt);border-color:var(--volt);background:rgba(244,242,105,.06)}
+.th-say{margin-top:10px;color:var(--ink2);font-size:14px;max-width:60ch}
+.th-say b{color:var(--ink)}
+.th-q{margin-top:16px}
+.th-q h4{font:600 10.5px/1.3 var(--f-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:8px}
+.rbar{display:grid;grid-template-columns:110px minmax(0,1fr) 52px;gap:10px;align-items:center;padding:3px 0;font-size:13px;color:var(--ink2)}
+.rbar .trk{height:12px;border-radius:0 6px 6px 0;background:var(--line);overflow:hidden}
+.rbar .trk i{display:block;height:100%;border-radius:0 6px 6px 0}
+.rbar .v{font:700 13px var(--f-mono);text-align:right;color:var(--ink)}
+.th-fine{font:500 11.5px/1.45 var(--f-mono);color:var(--muted);margin-top:6px}
+.th-chart{margin-top:8px;position:relative}
+.th-chart svg{display:block;width:100%;height:auto;overflow:visible}
+.th-pairs{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;margin-top:10px}
+.th-pairs div{border:1px solid var(--line);border-radius:3px;background:var(--panel2);padding:6px 8px;font:500 11px/1.4 var(--f-mono);color:var(--muted)}
+.th-pairs b{display:block;color:var(--ink);font-size:12px}
+.th-pairs .w{color:var(--teal)}
+.th-pairs .l{color:var(--ink2)}
+.th-res{font:700 10px/1 var(--f-mono);letter-spacing:.1em;text-transform:uppercase;padding:3px 6px;border-radius:3px;border:1px solid var(--line2);color:var(--ink2);margin-left:6px;vertical-align:1px}
+.th-res.w{color:var(--teal);border-color:var(--teal)}
+.th-res.l{color:var(--ink);border-color:var(--ink2)}
+@media (max-width:900px){.thesis-grid{grid-template-columns:1fr}}
+@media (max-width:520px){.th-pairs{grid-template-columns:repeat(2,minmax(0,1fr))}.rbar{grid-template-columns:86px minmax(0,1fr) 46px}}
+
+.enter{display:flex;flex-direction:column;align-items:center;gap:8px;margin:54px auto 0;padding-bottom:10px;text-decoration:none;color:var(--ink2);width:max-content;max-width:100%;font:600 12px/1 var(--f-mono);letter-spacing:.24em;text-transform:uppercase}
+.enter svg{width:26px;height:26px;animation:bob 2.4s ease-in-out infinite}
+.enter:hover{color:var(--teal)}
+
+/* ---------- app sections ---------- */
+.divider{position:relative;z-index:1;height:1px;margin-top:56px;background:linear-gradient(90deg,transparent,var(--pink),var(--teal),transparent);box-shadow:0 0 22px rgba(255,61,158,.5)}
+.app-sec{padding-block:56px 12px}
+.app-grid{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);gap:18px;align-items:start}
+.app-grid>*{min-width:0}
+.tbl-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:4px;background:var(--panel)}
+table{border-collapse:separate;border-spacing:0;width:100%;font-size:13px}
+th,td{padding:8px 10px;text-align:right;white-space:nowrap;border-bottom:1px solid var(--line)}
+th{font:600 10.5px/1.2 var(--f-mono);letter-spacing:.1em;text-transform:uppercase;color:var(--muted);background:var(--panel2);position:sticky;top:0;z-index:2}
+th.l,td.l{text-align:left}
+td{font-family:var(--f-mono);font-variant-numeric:tabular-nums;color:var(--ink)}
+td.name{font-family:var(--f-ui);font-weight:600}
+tbody tr{cursor:pointer;transition:background .12s}
+tbody tr:hover td{background-color:rgba(155,123,255,.09)}
+tr.sel td{background-color:rgba(25,240,210,.08)}
+.pts{position:relative}
+.tot{display:flex;align-items:center;gap:8px;justify-content:flex-end}
+.tot i{display:block;height:6px;border-radius:3px;background:linear-gradient(90deg,var(--violet),var(--teal))}
+.rank-badge{display:inline-flex;align-items:center;justify-content:center;min-width:24px;height:22px;border-radius:3px;font:700 12px var(--f-mono);background:var(--raise);color:var(--ink2)}
+.rank-badge.gold{background:var(--volt);color:var(--void);box-shadow:0 0 14px rgba(244,242,105,.45)}
+.note{font-size:12.5px;color:var(--muted);margin-top:10px}
+.roster h3{margin-bottom:4px}
+.roster .sub{margin-bottom:12px}
+.roster table{font-size:12.5px}
+.roster-empty{padding:28px;color:var(--muted);text-align:center;border:1px dashed var(--line2);border-radius:4px}
+
+.lb-controls{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:14px}
+.chips{display:flex;gap:6px;flex-wrap:wrap}
+.chip{border:1px solid var(--line2);background:var(--panel);color:var(--ink2);padding:6px 11px;border-radius:999px;font-size:12.5px;font-weight:600;cursor:pointer}
+.chip:hover{border-color:var(--violet);color:var(--ink)}
+.chip[aria-pressed=true]{border-color:var(--tc,var(--teal));color:var(--ink);background:rgba(255,255,255,.05);box-shadow:0 0 14px color-mix(in srgb,var(--tc,var(--teal)) 30%,transparent)}
+.chip[data-t]::before,.ty::before{content:"";display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--tc);margin-right:7px;vertical-align:1px;box-shadow:0 0 6px var(--tc)}
+[data-t=teal]{--tc:var(--teal)} [data-t=volt]{--tc:var(--volt)} [data-t=blue]{--tc:var(--blue)} [data-t=pink]{--tc:var(--pink)}
+th[data-t]{box-shadow:inset 0 2px 0 var(--tc)}
+.ckey{display:flex;gap:8px 18px;flex-wrap:wrap;font-size:12.5px;color:var(--ink2)}
+.ckey span{display:inline-flex;align-items:center}
+.ckey b{color:var(--ink);font-weight:600;margin-right:5px}
+.chip-group-l{font:600 10.5px/1 var(--f-mono);letter-spacing:.16em;text-transform:uppercase;color:var(--faint);margin-right:4px}
+.lb{display:grid;gap:6px}
+.lb-row{display:grid;grid-template-columns:30px minmax(120px,210px) minmax(0,1fr) 78px;gap:12px;align-items:center;padding:7px 12px;border:1px solid var(--line);border-radius:3px;background:var(--panel)}
+.lb-row .rk{font:700 13px var(--f-mono);color:var(--faint)}
+.lb-row:first-child .rk{color:var(--volt)}
+.lb-row .nm{font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.lb-row .bar{height:10px;border-radius:0 5px 5px 0;background:var(--line);overflow:hidden}
+.lb-row .bar i{display:block;height:100%;border-radius:0 5px 5px 0}
+.lb-row .v{font:700 14px var(--f-mono);text-align:right}
+.lb-meta{font:500 12px var(--f-mono);color:var(--muted);margin-top:10px}
+
+.pl-controls{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:12px}
+.pl-controls input[type=search]{min-width:min(260px,100%)}
+.check{display:inline-flex;align-items:center;gap:7px;font-size:13px;color:var(--ink2);cursor:pointer}
+.check input{accent-color:var(--teal);width:16px;height:16px}
+.count{font:600 12px var(--f-mono);color:var(--teal);margin-left:auto}
+.pl-wrap{max-height:640px;overflow:auto}
+.pl-wrap th{cursor:pointer;user-select:none}
+.pl-wrap th:hover{color:var(--ink)}
+.pl-wrap th[aria-sort=descending]::after{content:" ▼";color:var(--teal)}
+.pl-wrap th[aria-sort=ascending]::after{content:" ▲";color:var(--teal)}
+.pl-wrap td.name,.pl-wrap th.name{position:sticky;left:0;z-index:1;background-color:var(--panel);text-align:left;box-shadow:1px 0 0 var(--line)}
+.pl-wrap th.name{z-index:3;background:var(--panel2)}
+.pl-wrap tr.small td{opacity:.5}
+.pl-wrap tr.small td.name{opacity:1;color:var(--muted)}
+.tag{display:inline-block;font:600 10px/1 var(--f-mono);letter-spacing:.08em;text-transform:uppercase;padding:4px 6px;border-radius:3px;border:1px solid var(--line2);color:var(--ink2)}
+.tag.up{border-color:rgba(25,240,210,.5);color:var(--teal)}
+.tag.down{border-color:rgba(255,61,158,.5);color:var(--pink)}
+.tag.sm{border-style:dashed;color:var(--muted)}
+.pcell{box-shadow:inset 3px 0 0 var(--pc)}
+
+.method{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:18px}
+.method article.key{border-top-color:var(--volt)}
+.method .ckey{flex-direction:column;gap:9px}
+.method .ckey span{align-items:baseline;display:block;font-size:13.5px}
+.method article{border-top:2px solid var(--line2);padding-top:14px}
+.method article.warn{border-top-color:var(--pink)}
+.method article.ok{border-top-color:var(--teal)}
+.method h3{font:800 20px/1.05 var(--f-display);text-transform:uppercase;letter-spacing:.02em;margin-bottom:8px}
+.method p,.method li{font-size:13.5px;color:var(--ink2)}
+.method ul{margin:0;padding-left:18px;display:grid;gap:5px}
+.method b{color:var(--ink)}
+footer{position:relative;z-index:1;margin-top:60px;border-top:1px solid var(--line);padding-block:26px 40px}
+.foot{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;font-size:13px;color:var(--muted)}
+.foot .sig{font-family:var(--f-mono);color:var(--ink2)}
+
+/* ---------- profile drawer ---------- */
+.scrim{position:fixed;inset:0;background:rgba(3,2,8,.62);backdrop-filter:blur(3px);z-index:70}
+.drawer{position:fixed;top:0;right:0;bottom:0;width:min(560px,100%);z-index:71;background:linear-gradient(180deg,#120e28,#0b0918);border-left:1px solid var(--line2);box-shadow:-30px 0 80px rgba(0,0,0,.6);overflow-y:auto;padding:calc(env(safe-area-inset-top,0px) + 20px) 22px calc(env(safe-area-inset-bottom,0px) + 28px);animation:slidein .22s ease-out}
+@keyframes slidein{from{transform:translateX(30px);opacity:.3}}
+.dr-top{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
+.dr-name{font:900 clamp(34px,6vw,46px)/.9 var(--f-display);text-transform:uppercase;letter-spacing:.01em}
+.dr-meta{font:600 11.5px/1.4 var(--f-mono);letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-top:8px}
+.x{border:1px solid var(--line2);background:var(--panel);color:var(--ink);width:38px;height:38px;border-radius:4px;font-size:20px;line-height:1;cursor:pointer;flex:none}
+.x:hover{border-color:var(--pink);color:var(--pink)}
+.dr-tags{display:flex;gap:6px;flex-wrap:wrap;margin-top:12px}
+.dr-big{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0;margin-top:18px;border:1px solid var(--line2);border-radius:4px;overflow:hidden}
+.dr-big div{padding:12px 12px 10px;border-right:1px solid var(--line)}
+.dr-big div:last-child{border-right:0}
+.dr-big .l{font:600 10px/1.2 var(--f-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.dr-big .v{font:700 26px/1.1 var(--f-mono);margin-top:4px}
+.dr-big .c{font:500 11px/1.2 var(--f-mono);color:var(--faint);margin-top:2px}
+.dr-h{font:600 11px/1 var(--f-mono);letter-spacing:.18em;text-transform:uppercase;color:var(--muted);margin:24px 0 10px;display:flex;justify-content:space-between;gap:10px}
+.dr-h span:last-child{color:var(--faint);letter-spacing:.06em}
+.pbar{display:grid;grid-template-columns:120px minmax(0,1fr) 62px;gap:12px;align-items:center;padding:6px 0}
+.pbar .pl{font-size:13px;color:var(--ink2)}
+.pbar .pv{font:600 13px var(--f-mono);text-align:right}
+.ptrack{position:relative;height:12px;border-radius:6px;background:linear-gradient(90deg,rgba(255,61,158,.14),rgba(91,85,128,.18),rgba(25,240,210,.14))}
+.ptrack .fill{position:absolute;left:0;top:0;bottom:0;border-radius:6px}
+.ptrack .knob{position:absolute;top:50%;width:26px;height:26px;margin-left:-13px;margin-top:-13px;border-radius:50%;display:flex;align-items:center;justify-content:center;font:700 10.5px var(--f-mono);color:var(--void);border:2px solid #0b0918}
+.ptrack .ghost{position:absolute;top:50%;width:14px;height:14px;margin-left:-7px;margin-top:-7px;border-radius:50%;border:2px dashed var(--ink2);background:transparent;opacity:.75}
+.arc svg{display:block;width:100%;height:auto;overflow:visible}
+.arc-tbl{margin-top:10px}
+.arc-tbl table{font-size:12px}
+.arc-tbl td,.arc-tbl th{padding:6px 8px}
+.arc-tbl tr.cur td{color:var(--teal)}
+
+@media (max-width:1100px){
+  .hero{grid-template-columns:1fr}
+  .field-grid{grid-template-columns:1fr}
+  .field-side{display:grid;grid-template-columns:repeat(3,minmax(0,1fr))}
+  .ribbon{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .season{border-bottom:1px solid var(--line)}
+  .app-grid{grid-template-columns:minmax(0,1fr)}
+  .method{grid-template-columns:1fr 1fr}
+}
+@media (max-width:760px){
+  .panels,.hall-grid,.method{grid-template-columns:1fr}
+  .field-side{grid-template-columns:1fr}
+  .ribbon{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .pulse{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .nav{display:none}
+  .odometer{grid-template-columns:1fr 1fr}
+  .lb-row{grid-template-columns:24px minmax(0,1fr) 70px;gap:8px}
+  .lb-row .bar{grid-column:2/-1;grid-row:2}
+  .hall-row,.hall-hdr{grid-template-columns:22px minmax(0,1fr) repeat(5,22px) 48px;gap:4px;padding-inline:10px}
+  .pbar{grid-template-columns:96px minmax(0,1fr) 54px}
+}
+@media (max-width:640px){
+  #bubbles{display:none}
+  .bubble-list{display:grid;gap:10px;margin-top:12px}
+  .bubble-list .bub{position:relative;max-width:none;animation:none;left:auto;top:auto}
+  .yr-n{font-size:44px}
+}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation:none!important;transition:none!important}
+  html{scroll-behavior:auto}
+}
+</style>
+
+<div class="scan" aria-hidden="true"></div>
+
+<header class="topbar">
+  <div class="shell topbar-in">
+    <a class="brand" href="#splash" aria-label="Never Lucky, back to top">
+      <svg viewBox="0 0 32 32" aria-hidden="true"><defs><linearGradient id="bg1" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ff3d9e"/><stop offset="1" stop-color="#19f0d2"/></linearGradient></defs>
+        <path d="M16 2 30 16 16 30 2 16Z" fill="none" stroke="url(#bg1)" stroke-width="2"/>
+        <path d="M9.5 16.5c3-4.6 10-4.6 13 0M9.5 15.5c3 4.6 10 4.6 13 0" fill="none" stroke="#f1edff" stroke-width="1.4" stroke-dasharray="1.6 1.6"/>
+        <circle cx="16" cy="16" r="2.2" fill="#19f0d2"/></svg>
+      <span class="brand-word">NEVER<b>LUCKY</b></span>
+    </a>
+    <nav class="nav" aria-label="Sections">
+      <a href="#field">Signal Field</a><a href="#thesis">Thesis</a><a href="#standings">Standings</a><a href="#leaders">Leaderboards</a><a href="#players">Players</a><a href="#method">Method</a>
+    </nav>
+    <label class="season-pick" for="seasonSel">Season <select id="seasonSel"></select></label>
+  </div>
+</header>
+
+<main>
+<section id="splash" class="splash" aria-label="Five-season infographic">
+  <div class="ticker" aria-label="Five-season facts"><div class="ticker-track" id="ticker"></div></div>
+  <div class="shell">
+    <div class="hero">
+      <div class="hero-copy">
+        <p class="kicker">Statcast-scored fantasy roto <span>·</span> 2017–2021 <span>·</span> every regular-season pitch</p>
+        <h1 class="wordmark" aria-label="Never Lucky"><span class="w1">Never</span><span class="w2">Lucky<span class="dot">.</span></span></h1>
+        <p class="lede"><strong id="ledePitches">—</strong> pitches over five seasons. One question every fantasy manager lies to themselves about: <em>was it skill, or was it luck?</em> This league scores the skill and tracks the luck separately.</p>
+        <div class="hero-cta">
+          <a class="btn" href="#field">Read the signal field</a>
+          <a class="btn pink" href="#players">Scout a player</a>
+        </div>
+      </div>
+      <div class="odometer" id="odometer" aria-label="Five-season totals"></div>
+      <div class="horizon" aria-hidden="true"></div>
+    </div>
+
+    <div class="field-block" id="field">
+      <div class="sec-head">
+        <div>
+          <p class="eyebrow">01 · the thesis, plotted</p>
+          <h2 class="h2">The Signal Field</h2>
+          <p class="sub">Every dot is one qualified player-season from 2017 to 2021. Up means Statcast likes him. Right means the box score likes him. Dots above the diagonal have more skill than their stats show. Dots below it had more luck than skill.</p>
+        </div>
+        <div class="controls">
+          <div class="seg" id="sideSeg" role="group" aria-label="Player side">
+            <button type="button" data-side="hitting" aria-pressed="true">Hitters</button>
+            <button type="button" data-side="pitching" aria-pressed="false">Pitchers</button>
+          </div>
+          <div class="seg years" id="yearSeg" role="group" aria-label="Season filter"></div>
+        </div>
+      </div>
+      <div class="field-grid">
+        <div class="field" id="fieldBox">
+          <canvas id="fieldCanvas" role="img" aria-label="Scatter of Statcast value against box-score value for every qualified player-season, 2017 to 2021. Full numbers are in the Players table."></canvas>
+          <svg class="lines" id="fieldLines" aria-hidden="true"></svg>
+          <div id="bubbles"></div>
+          <span class="corner tl" id="cornerTL">Statcast value ↑</span>
+          <span class="corner br">box-score value →</span>
+          <div class="tip" id="fieldTip" role="status"></div>
+        </div>
+        <aside class="field-side">
+          <div class="side-card">
+            <h3>Skill gap color</h3>
+            <div class="legend-bar"></div>
+            <div class="legend-ticks"><span>−1.5</span><span>0</span><span>+1.5</span></div>
+            <div class="legend-names"><span>Stats &gt; skill<br><small>regression bait</small></span><span>Skill &gt; stats<br><small>market blind spot</small></span></div>
+          </div>
+          <div class="side-card">
+            <h3 id="readoutTitle">Readout · all seasons</h3>
+            <dl class="readout" id="readout"></dl>
+            <div class="split" id="readSplit"></div>
+          </div>
+          <div class="side-card explain">
+            <h3>How to read it</h3>
+            <p><b>Statcast value</b> is the equal-weight z-score across this league's categories (barrels, xwOBA, EV90, chase, R+RBI, SB; pitchers: K, xFIP, whiff, barrel% allowed, QS).</p>
+            <p><b>Box-score value</b> is the same math on official traditional stats (HR, R, RBI, SB, AVG; pitchers: W, K, SV, ERA, WHIP). The <span class="t">gap</span> between them is where the edge lives.</p>
+            <p>The pink end leans toward speed-and-average hitters and closers: the box score pays for steals, batting average and saves, and Statcast doesn't count saves as skill.</p>
+            <p>Click a dot or a callout to open that player's profile.</p>
+          </div>
+        </aside>
+      </div>
+      <div id="bubbleList" class="bubble-list"></div>
+    </div>
+
+    <div class="sec-head">
+      <div>
+        <p class="eyebrow">02 · five seasons, side by side</p>
+        <h2 class="h2">The Season Ribbon</h2>
+      </div>
+      <p class="sub">Click a season to focus the field and point the whole site at it. The bar under each year is its pitch volume; 2020 is the 60-game season.</p>
+    </div>
+    <div class="ribbon" id="ribbon" role="group" aria-label="Seasons"></div>
+
+    <div class="panels">
+      <article class="panel" id="pBall">
+        <p class="eyebrow">03 · the ball vs the bat</p>
+        <h3>Barrels climbed. Homers didn't follow.</h3>
+        <p class="sub">League barrels and home runs per game. A barrel is defined by exit velocity and launch angle, so the contact is the same every year. Fewer homers per barrel means the ball carried less.</p>
+        <div class="legend"><span><i class="ln" style="background:var(--teal)"></i>Barrels per game</span><span><i class="ln" style="background:var(--pink)"></i>Home runs per game</span></div>
+        <div class="chart" id="ballChart"></div>
+        <div class="hrb" id="hrb"></div>
+        <p class="hrb-cap">Home runs per barrel, by season.</p>
+      </article>
+      <article class="panel bump" id="pBump">
+        <p class="eyebrow">04 · the league table</p>
+        <h3>Who finished where, all five years</h3>
+        <p class="sub">Roto finish for each of the ten teams. Rosters are auto-drafted fresh every season, so no team gets to carry a dynasty from one year to the next. Hover over a team to trace its line. Yellow dots are champions.</p>
+        <div class="chart" id="bumpChart"></div>
+      </article>
+      <article class="panel" id="pMix">
+        <p class="eyebrow">05 · what pitchers threw</p>
+        <h3 id="mixTitle">Pitch mix drift</h3>
+        <p class="sub">Share of all regular-season pitches by type. Two-seamers are counted as sinkers, and knuckle-curves as curveballs.</p>
+        <div class="legend" id="mixLegend"></div>
+        <div class="chart" id="mixChart"></div>
+      </article>
+      <article class="panel" id="pPulse">
+        <p class="eyebrow">06 · league pulse</p>
+        <h3>The league's vital signs</h3>
+        <p class="sub">League-wide rates from tracked pitches, plus official MLB totals for steals and runs. The big number is 2021. The delta compares it with 2017.</p>
+        <div class="pulse" id="pulse"></div>
+      </article>
+    </div>
+
+    <section class="hall" aria-labelledby="hallTitle">
+      <div class="sec-head">
+        <div>
+          <p class="eyebrow">07 · repeatable skill</p>
+          <h2 class="h2" id="hallTitle">Never Lucky: the five-year signal hall</h2>
+        </div>
+        <p class="sub">Luck doesn't repeat. These players rank highest by average Statcast value across at least four qualified seasons. Each cell is that season's pooled percentile.</p>
+      </div>
+      <div class="hall-grid" id="hall"></div>
+    </section>
+
+    <section class="thesis" id="thesis" aria-labelledby="thTitle">
+      <div class="sec-head">
+        <div>
+          <p class="eyebrow">08 · the thesis, tested</p>
+          <h2 class="h2" id="thTitle">Does skill show up next year?</h2>
+        </div>
+        <p class="sub">If Statcast measures skill and the box score measures skill plus luck, Statcast should hold steady from year to year and help forecast next year's box score. Here's what every back-to-back pair of qualified seasons says, including where it doesn't hold.</p>
+      </div>
+      <p class="th-lead" id="thesisLead"></p>
+      <div class="seg" id="thesisSet" role="group" aria-label="Which season pairs" style="margin-bottom:14px">
+        <button type="button" data-set="full" aria-pressed="true">Full seasons only</button>
+        <button type="button" data-set="all" aria-pressed="false">All five, 2020 included</button>
+      </div>
+      <div class="thesis-grid" id="thesisGrid"></div>
+      <p class="note" id="thesisNote"></p>
+    </section>
+
+    <a class="enter" href="#standings">Enter the signal room
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 9l7 7 7-7" fill="none" stroke="currentColor" stroke-width="2"/></svg></a>
+  </div>
+</section>
+
+<div class="divider" aria-hidden="true"></div>
+
+<section id="standings" class="app-sec shell">
+  <div class="sec-head">
+    <div><p class="eyebrow">Standings · <span class="curYear"></span></p><h2 class="h2">Roto standings</h2>
+      <p class="sub">Ten teams, eleven categories, 1–10 points per category. Cell color shows how each team placed in that category. Click a team to audit its roster.</p></div>
+    <div class="ckey" aria-label="Color code">
+      <span class="ty" data-t="teal"><b>Teal</b>skill rate</span>
+      <span class="ty" data-t="volt"><b>Yellow</b>volume &amp; power</span>
+      <span class="ty" data-t="blue"><b>Blue</b>lower is better</span>
+      <span class="ty" data-t="pink"><b>Pink</b>luck &amp; cold</span>
+    </div>
+  </div>
+  <div class="app-grid">
+    <div>
+      <div class="tbl-wrap"><table id="stTable"></table></div>
+      <p class="note">Barrels, xwOBA, EV90, chase%, K, xFIP, whiff% and barrel% allowed come from the pitch files. R+RBI and SB are official MLB season totals. QS is rebuilt from outs and runs (see Method).</p>
+    </div>
+    <div class="roster" id="roster"></div>
+  </div>
+</section>
+
+<section id="leaders" class="app-sec shell">
+  <div class="sec-head">
+    <div><p class="eyebrow">Leaderboards · <span class="curYear"></span></p><h2 class="h2">Category leaders</h2></div>
+    <label class="season-pick" for="winSel">Window <select id="winSel"></select></label>
+  </div>
+  <div class="lb-controls" id="lbChips"></div>
+  <div class="lb" id="lb"></div>
+  <p class="lb-meta" id="lbMeta"></p>
+</section>
+
+<section id="players" class="app-sec shell">
+  <div class="sec-head">
+    <div><p class="eyebrow">Players · <span class="curYear"></span></p><h2 class="h2">The scouting table</h2>
+      <p class="sub">Search, filter, and sort any column. The colored edge on each stat cell is that player's percentile, pooled across all five seasons (pink = low, teal = high). Dimmed rows are small samples. Click a row to open the full profile.</p></div>
+  </div>
+  <div class="pl-controls">
+    <div class="seg" id="plSide" role="group" aria-label="Player side">
+      <button type="button" data-side="hitting" aria-pressed="true">Hitters</button>
+      <button type="button" data-side="pitching" aria-pressed="false">Pitchers</button>
+    </div>
+    <label class="sr" for="plSearch">Search players</label>
+    <input type="search" id="plSearch" placeholder="Search a player…">
+    <label class="sr" for="plPos">Position</label>
+    <select id="plPos"></select>
+    <label class="sr" for="plAction">Signal</label>
+    <select id="plAction"></select>
+    <label class="check" for="plQual"><input type="checkbox" id="plQual"> Qualified only</label>
+    <div class="seg pctSeg" role="group" aria-label="Percentile lens">
+      <button type="button" data-m="pooled" aria-pressed="true" title="Rank against every qualified player-season, 2017–2021">Pooled 2017–21</button>
+      <button type="button" data-m="season" aria-pressed="false" title="Rank against qualified players in the same season only">Within season</button>
+    </div>
+    <span class="count" id="plCount"></span>
+  </div>
+  <div class="tbl-wrap pl-wrap"><table id="plTable"></table></div>
+</section>
+
+<section id="method" class="app-sec shell">
+  <div class="sec-head"><div><p class="eyebrow">Method · the honesty layer</p><h2 class="h2">What's measured, what's approximated, what's missing</h2></div></div>
+  <div class="method">
+    <article class="ok"><h3>Measured cleanly</h3>
+      <ul><li><b>From the pitch files:</b> barrels (launch_speed_angle = 6), 90th-pct EV and barrel% allowed (balls in play only), chase% (swings at pitches outside the zone), whiff%, K (strikeout double plays included).</li>
+      <li><b>Official season lines</b> from the public MLB Stats API, matched by MLBAM id (every player matched, all five seasons): PA, R, RBI, SB, CS, AVG, OBP, SLG, OPS, W, L, SV, ERA, WHIP, GS, IP. Traded players are one combined line.</li>
+      <li>Pitch-file league totals cover <b>regular-season games only</b> and match MLB's published home-run totals exactly: 6,105 / 5,585 / 6,776 / 2,304 / 5,944.</li>
+      <li>Every barrel counted is a ball in play; I checked all five seasons and found no foul balls. So the barrel trend is contact, not a tracking change. Fouls carry exit velocity in every season, and 2021 tracked about 44% more of them than 2019, so EV90 and barrel% allowed use balls in play only and league average exit velocity isn't shown.</li></ul></article>
+    <article><h3>Labeled approximations</h3>
+      <ul><li><b>xwOBA</b> is the mean of the speed/angle estimate over balls in play (xwOBA on contact; strikeouts and walks aren't in it). <b>xFIP</b> is a FIP-style proxy. <b>QS</b> is rebuilt from outs and runs allowed in each start (runs, not earned runs).</li>
+      <li><b>2020</b> had 60 games, so every opportunity threshold that season (PA, IP, pitches, batted balls, category and leaderboard minimums) is scaled by 60/162.</li>
+      <li>Percentiles rank against <b>qualified</b> player-seasons. Pooled mode ranks across all five seasons so years compare; the tradeoff is that era shifts are baked in. Within-season mode ranks against the same year only.</li>
+      <li>The two slates weigh volume differently (the box score is mostly counting stats), so a big positive gap often means strong rate skills in limited playing time.</li></ul></article>
+    <article class="key"><h3>Color code</h3>
+      <div class="ckey">
+        <span class="ty" data-t="teal"><b>Teal: skill.</b> Rate stats that measure skill (xwOBA, whiff%, the signal score) and players whose skill beats their stats.</span>
+        <span class="ty" data-t="volt"><b>Yellow: volume.</b> Counting and power (barrels, EV90, HR, R, RBI, SB, K, QS, W, SV), plus champions and records.</span>
+        <span class="ty" data-t="blue"><b>Blue: lower is better.</b> Chase%, xFIP, barrel% allowed, ERA, WHIP.</span>
+        <span class="ty" data-t="pink"><b>Pink: luck and cold.</b> Stats running ahead of skill, bottom percentiles, regression risk.</span>
+      </div>
+      <p style="margin-top:10px">Percentile shading always runs pink → grey → teal, low to high, with lower-is-better stats flipped so teal always means good.</p></article>
+    <article class="warn"><h3>Fixed: the stolen-base trap</h3>
+      <ul><li>Pitch files can't see most steals: nearly every hitter showed <b>0 SB</b>. The one to three players per season with a single stray steal event got a z-score large enough to make them the <b>#1 “signal” hitter</b> in earlier builds (Steven Duggar in 2019, Kelvin Gutiérrez in 2021).</li>
+      <li>SB, R, AVG, W, SV, ERA and WHIP now come from official season lines, so stolen bases score again, in both the league table and the value model.</li>
+      <li>Rosters are <b>auto-drafted per season</b> (10 teams, 9 hitters and 7 pitchers each). The team names carry over from year to year; the rosters don't.</li></ul></article>
+  </div>
+</section>
+
+<footer class="shell">
+  <div class="foot"><span>Never Lucky · Statcast-scored roto · data: Baseball Savant pitch files and MLB Stats API season lines, 2017–2021 regular seasons · not affiliated with MLB</span><span class="sig">🟤🟡 let the signals emerge, and know which ones are actually there</span></div>
+</footer>
+</main>
+
+<div class="scrim" id="scrim" hidden></div>
+<aside class="drawer" id="drawer" hidden aria-modal="true" role="dialog" aria-labelledby="drName"></aside>
+
+<script>
+const D = /*__PAYLOAD__*/null;
+const L = /*__LEAGUE__*/null;
+</script>
+<script>
+(() => {
+"use strict";
+const TAGS = D.tags;
+const SIDES = ["hitting", "pitching"];
+const $ = (s, r = document) => r.querySelector(s);
+const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({"&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;"}[c]));
+const REDUCED = matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+/* ---------------- data prep ---------------- */
+const P = {}, BYID = {hitting: {}, pitching: {}};
+for (const t of TAGS) {
+  P[t] = {};
+  for (const side of SIDES) {
+    const cols = D.cols[side];
+    P[t][side] = D.seasons[t].players[side].map(a => {
+      const o = {year: t, side};
+      cols.forEach((c, i) => { o[c] = a[i]; });
+      o.small = !!o.small;
+      o.short = shortName(o.name);
+      o.key = fold(o.name);
+      return o;
+    });
+    for (const o of P[t][side]) (BYID[side][o.id] ||= {})[t] = o;
+  }
+}
+function fold(s) { return String(s).normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase(); } // "Ramírez" matches "ramirez"
+function shortName(n) { const p = String(n).split(" "); return p.length > 1 ? `${p[0][0]}. ${p[p.length - 1]}` : n; }
+const qualified = (side, year) => (year === "ALL" ? TAGS : [year]).flatMap(t => P[t][side]).filter(o => !o.small && o.sig != null && o.trad != null);
+
+const STAT = {
+  sig: {label: "Signal", fmt: "z", pct: "signal_score"}, gap: {label: "Skill gap", fmt: "z"}, trad: {label: "Box score", fmt: "z"},
+  scr: {label: "SC rank", fmt: "int", low: true}, trr: {label: "Trad rank", fmt: "int", low: true},
+  pa: {label: "PA", fmt: "int"}, xwoba: {label: "xwOBA", fmt: "r3", pct: "xwoba"}, barrels: {label: "Barrels", fmt: "int", pct: "barrels"},
+  ev90: {label: "EV90", fmt: "r1", pct: "ev90"}, chase_rate: {label: "Chase%", fmt: "pct", pct: "chase_rate", low: true},
+  hr: {label: "HR", fmt: "int", pct: "hr"}, r_plus_rbi: {label: "R+RBI", fmt: "int", pct: "r_plus_rbi"},
+  r: {label: "R", fmt: "int", pct: "r"}, rbi: {label: "RBI", fmt: "int", pct: "rbi"}, sb: {label: "SB", fmt: "int", pct: "sb"},
+  avg: {label: "AVG", fmt: "r3", pct: "avg"}, obp: {label: "OBP", fmt: "r3", pct: "obp"}, slg: {label: "SLG", fmt: "r3", pct: "slg"}, ops: {label: "OPS", fmt: "r3", pct: "ops"},
+  w: {label: "W", fmt: "int", pct: "w"}, sv: {label: "SV", fmt: "int", pct: "sv"}, era: {label: "ERA", fmt: "r2", pct: "era", low: true}, whip: {label: "WHIP", fmt: "r2", pct: "whip", low: true},
+  gs: {label: "GS", fmt: "int"},
+  ip: {label: "IP", fmt: "r1"}, k: {label: "K", fmt: "int", pct: "k"}, xfip: {label: "xFIP", fmt: "r2", pct: "xfip", low: true},
+  whiff_rate: {label: "Whiff%", fmt: "pct", pct: "whiff_rate"}, barrel_rate_allowed: {label: "Brl% allowed", fmt: "pct", pct: "barrel_rate_allowed", low: true},
+  qs: {label: "QS", fmt: "int", pct: "qs"},
+};
+/* stat-type color code (teal skill rate · volt volume & power · blue lower is better) */
+const TYPE = {sig: "teal", signal_score: "teal", xwoba: "teal", whiff_rate: "teal", avg: "teal", obp: "teal", slg: "teal", ops: "teal",
+  barrels: "volt", ev90: "volt", hr: "volt", r_plus_rbi: "volt", r: "volt", rbi: "volt", sb: "volt", k: "volt", qs: "volt", w: "volt", sv: "volt",
+  chase_rate: "blue", xfip: "blue", barrel_rate_allowed: "blue", era: "blue", whip: "blue"};
+const TYPE_CSS = {teal: "var(--teal)", volt: "var(--volt)", blue: "var(--blue)", pink: "var(--pink)"};
+const tAttr = k => (TYPE[k] ? ` data-t="${TYPE[k]}"` : "");
+function fmt(v, f) {
+  if (v == null || Number.isNaN(v)) return "—";
+  switch (f) {
+    case "int": return Math.round(v).toLocaleString("en-US");
+    case "r3": return v.toFixed(3).replace(/^0/, "").replace(/^-0/, "−");
+    case "r2": return v.toFixed(2);
+    case "r1": return v.toFixed(1);
+    case "pct": return (v * 100).toFixed(1) + "%";
+    case "z": return (v > 0.005 ? "+" : v < -0.005 ? "−" : "") + Math.abs(v).toFixed(2);
+    default: return String(v);
+  }
+}
+const n0 = v => Math.round(v).toLocaleString("en-US");
+
+/* diverging ramp: pink (0) -> neutral violet-grey (0.5) -> teal (1) */
+const C_P = [255, 61, 158], C_M = [91, 85, 128], C_T = [25, 240, 210];
+function ramp(t) {
+  t = Math.max(0, Math.min(1, t));
+  const [a, b, u] = t < 0.5 ? [C_P, C_M, t / 0.5] : [C_M, C_T, (t - 0.5) / 0.5];
+  return a.map((x, i) => Math.round(x + (b[i] - x) * u));
+}
+const rgba = (c, a = 1) => `rgba(${c[0]},${c[1]},${c[2]},${a})`;
+const gapCol = (g, a = 1) => rgba(ramp(0.5 + (g || 0) / 3), a);
+const pctCol = (p, a = 1) => rgba(ramp((p ?? 50) / 100), a);
+
+/* league derived */
+const LG = TAGS.map(t => {
+  const r = L[t], mix = {FF: 0, SI: 0, SL: 0, CH: 0, CU: 0, FC: 0, OT: 0};
+  for (const [k, v] of Object.entries(r.pitch_mix)) {
+    const g = {FF: "FF", FA: "FF", SI: "SI", FT: "SI", SL: "SL", CH: "CH", CU: "CU", KC: "CU", CS: "CU", FC: "FC"}[k] || "OT";
+    mix[g] += v;
+  }
+  return {t, ...r, mix, hrg: r.hr / r.games, brg: r.barrels / r.games, hrb: r.hr / r.barrels, v100g: r.velo_100plus / r.games};
+});
+const LO = D.league_official; // official MLB totals: r, rbi, sb, cs, h, sv, w
+LG.forEach(r => { Object.assign(r, {off: LO[r.t]}); r.sbg = LO[r.t].sb / r.games; r.rg = LO[r.t].r / r.games; });
+const TOT = LG.reduce((a, r) => { for (const k of ["pitches", "games", "hr", "barrels", "k", "pa"]) a[k] = (a[k] || 0) + r[k]; return a; }, {});
+TOT.r = TAGS.reduce((a, t) => a + LO[t].r, 0); TOT.sb = TAGS.reduce((a, t) => a + LO[t].sb, 0);
+TOT.playerSeasons = TAGS.reduce((a, t) => a + D.seasons[t].n_hitters + D.seasons[t].n_pitchers, 0);
+const uniq = new Set(); TAGS.forEach(t => SIDES.forEach(s => P[t][s].forEach(o => uniq.add(o.id))));
+TOT.players = uniq.size;
+const champ = t => D.seasons[t].standings.filter(s => s.rank === 1);
+const topBy = (arr, key, dir = -1) => arr.slice().sort((a, b) => dir * ((a[key] ?? -1e9 * dir) - (b[key] ?? -1e9 * dir)))[0];
+
+/* global state */
+const S = {tag: TAGS[TAGS.length - 1], fieldYear: "ALL", fieldSide: "hitting", plSide: "hitting", sort: {key: "sig", dir: -1}, lbKey: "xwoba", win: "season", team: null, pctMode: "pooled", profile: null, thesisSet: "full"};
+
+/* ---------------- odometer + ticker ---------------- */
+$("#ledePitches").textContent = n0(TOT.pitches);
+$("#odometer").innerHTML = `<div class="odo-head"><span>Five-season totals</span><span class="live">2017–2021 loaded</span></div>` + [
+  ["Pitches tracked", n0(TOT.pitches), "every regular-season pitch", "hot"],
+  ["Games", n0(TOT.games), "2020 had only 898", ""],
+  ["Barrels", n0(TOT.barrels), `${(TOT.barrels / TOT.games).toFixed(2)} per game`, "hot"],
+  ["Home runs", n0(TOT.hr), `${(TOT.hr / TOT.games).toFixed(2)} per game`, "pink"],
+  ["Player-seasons scored", n0(TOT.playerSeasons), `${n0(TOT.players)} different players`, ""],
+  ["Strikeouts", n0(TOT.k), `${(TOT.k / TAGS.reduce((a, t) => a + LO[t].pa, 0) * 100).toFixed(1)}% of plate appearances`, ""],
+  ["Runs scored", n0(TOT.r), `${(TOT.r / TOT.games).toFixed(2)} per game`, ""],
+  ["Stolen bases", n0(TOT.sb), `${(TOT.sb / TOT.games).toFixed(2)} per game`, "hot"],
+].map(([l, v, c, cls]) => `<div class="odo ${cls}"><div class="odo-l">${l}</div><div class="odo-v">${v}</div><div class="odo-c">${c}</div></div>`).join("");
+
+const hardest = LG.map(r => r.hardest_hit);
+const allStanton = hardest.every(h => h.batter === hardest[0].batter);
+const fastest = LG.reduce((a, r) => (r.fastest_pitch.mph > a.mph ? {...r.fastest_pitch, t: r.t} : a), {mph: 0});
+const longest = LG.reduce((a, r) => (r.longest_hr && r.longest_hr.ft > a.ft ? {...r.longest_hr, t: r.t} : a), {ft: 0});
+const hrPeak = LG.reduce((a, r) => (r.hr > a.hr ? r : a), LG[0]);
+const brPeak = LG.reduce((a, r) => (r.brg > a.brg ? r : a), LG[0]);
+const v100 = LG.reduce((a, r) => (r.velo_100plus > a.velo_100plus ? r : a), LG[0]);
+const flip = s => { const [last, first] = String(s).split(", "); return first ? `${first} ${last}` : s; };
+const tickerItems = [
+  `<b>${n0(TOT.pitches)}</b> pitches tracked <i>2017–2021</i>`,
+  allStanton ? `<b>${esc(hardest[0].batter)}</b> hit the hardest ball in <i>all five seasons</i>, up to <b>${Math.max(...hardest.map(h => h.ev)).toFixed(1)} mph</b>` : "",
+  `<b>${hrPeak.t}</b>: <b>${n0(hrPeak.hr)}</b> home runs, <em>the most of the five seasons</em>`,
+  `<b>${brPeak.t}</b>: <i>most barrels per game</i> of the five years (${brPeak.brg.toFixed(2)})`,
+  `Fastest pitch: <b>${esc(flip(fastest.pitcher))}</b> <i>${fastest.mph.toFixed(1)} mph</i> (${fastest.t})`,
+  `Longest home run: <b>${esc(longest.batter)}</b> <i>${longest.ft} ft</i> (${longest.t})`,
+  `<b>2020</b>: a <em>60-game season</em>, ${n0(L["2020"].games)} games, ${n0(L["2020"].pitches)} pitches`,
+  `<b>${v100.t}</b>: <i>${n0(v100.velo_100plus)}</i> pitches at 100+ mph`,
+  ...TAGS.map(t => { const c = champ(t); return `<b>${t}</b> champion${c.length > 1 ? "s" : ""}: <i>${c.map(x => esc(x.team)).join(" &amp; ")}</i> (${c[0].total} pts)`; }),
+  `Home runs per barrel: <b>${(LG[2].hrb * 100).toFixed(0)}%</b> in 2019, <em>${(LG[4].hrb * 100).toFixed(0)}%</em> in 2021`,
+  ...LG.filter(r => r.k > r.off.h).map(r => `<b>${r.t}</b>: <em>more strikeouts (${n0(r.k)}) than hits (${n0(r.off.h)})</em>`),
+  ...TAGS.map(t => { const top = P[t].hitting.slice().sort((a, b) => (b.sb ?? 0) - (a.sb ?? 0))[0]; return `<b>${t}</b> steals leader: <i>${esc(top.name)}</i> (${top.sb} SB)`; }),
+].filter(Boolean).map(s => `<span class="tk">${s}</span>`).join("");
+$("#ticker").innerHTML = tickerItems + tickerItems;
+
+/* ---------------- signal field ---------------- */
+const FB = $("#fieldBox"), CV = $("#fieldCanvas"), CX = CV.getContext("2d"), LN = $("#fieldLines"), TIP = $("#fieldTip");
+const F = {dots: [], w: 0, h: 0, m: {l: 46, r: 16, t: 30, b: 34}, hover: null, callouts: [], anim: null, dom: null};
+
+function fieldData(side) {
+  const dots = TAGS.flatMap(t => P[t][side]).filter(o => !o.small && o.sig != null && o.trad != null).map(o => ({o, a: 1, ta: 1}));
+  const xs = dots.map(d => d.o.trad), ys = dots.map(d => d.o.sig);
+  const pad = (lo, hi) => { const p = (hi - lo) * 0.06; return [lo - p, hi + p]; };
+  F.dom = {x: pad(Math.min(...xs), Math.max(...xs)), y: pad(Math.min(...ys), Math.max(...ys))};
+  // keep previous alpha state when switching side is not needed; start at target
+  return dots;
+}
+const X = v => F.m.l + (v - F.dom.x[0]) / (F.dom.x[1] - F.dom.x[0]) * (F.w - F.m.l - F.m.r);
+const Y = v => F.h - F.m.b - (v - F.dom.y[0]) / (F.dom.y[1] - F.dom.y[0]) * (F.h - F.m.t - F.m.b);
+
+function sizeField() {
+  const w = FB.clientWidth;
+  const h = Math.round(Math.max(360, Math.min(600, w * (w < 640 ? 0.95 : 0.6))));
+  const dpr = Math.min(2, window.devicePixelRatio || 1);
+  F.w = w; F.h = h;
+  CV.width = w * dpr; CV.height = h * dpr; CV.style.height = h + "px";
+  CX.setTransform(dpr, 0, 0, dpr, 0, 0);
+  LN.setAttribute("viewBox", `0 0 ${w} ${h}`);
+}
+
+function drawField() {
+  const {w, h, m} = F;
+  CX.clearRect(0, 0, w, h);
+  const x0 = m.l, x1 = w - m.r, y0 = m.t, y1 = h - m.b;
+  // regions split by y = x
+  CX.save();
+  CX.beginPath(); CX.rect(x0, y0, x1 - x0, y1 - y0); CX.clip();
+  const lo = Math.min(F.dom.x[0], F.dom.y[0]) - 5, hi = Math.max(F.dom.x[1], F.dom.y[1]) + 5;
+  CX.beginPath(); CX.moveTo(X(lo), Y(lo)); CX.lineTo(X(hi), Y(hi)); CX.lineTo(X(lo), Y(hi)); CX.closePath();
+  CX.fillStyle = "rgba(25,240,210,0.045)"; CX.fill();
+  CX.beginPath(); CX.moveTo(X(lo), Y(lo)); CX.lineTo(X(hi), Y(hi)); CX.lineTo(X(hi), Y(lo)); CX.closePath();
+  CX.fillStyle = "rgba(255,61,158,0.05)"; CX.fill();
+  // grid
+  CX.lineWidth = 1;
+  for (let v = Math.ceil(F.dom.x[0] * 2) / 2; v <= F.dom.x[1]; v += 0.5) {
+    CX.strokeStyle = Math.abs(v) < 1e-6 ? "rgba(194,187,230,0.22)" : "rgba(58,50,112,0.45)";
+    CX.beginPath(); CX.moveTo(X(v) + .5, y0); CX.lineTo(X(v) + .5, y1); CX.stroke();
+  }
+  for (let v = Math.ceil(F.dom.y[0] * 2) / 2; v <= F.dom.y[1]; v += 0.5) {
+    CX.strokeStyle = Math.abs(v) < 1e-6 ? "rgba(194,187,230,0.22)" : "rgba(58,50,112,0.45)";
+    CX.beginPath(); CX.moveTo(x0, Y(v) + .5); CX.lineTo(x1, Y(v) + .5); CX.stroke();
+  }
+  // diagonal
+  CX.setLineDash([6, 6]); CX.strokeStyle = "rgba(241,237,255,0.45)"; CX.lineWidth = 1.5;
+  CX.beginPath(); CX.moveTo(X(lo), Y(lo)); CX.lineTo(X(hi), Y(hi)); CX.stroke(); CX.setLineDash([]);
+  // dots: dim first, then lit
+  const order = F.dots.slice().sort((a, b) => a.a - b.a);
+  for (const d of order) {
+    const r = d.a > 0.5 ? 3.4 : 2.4;
+    CX.beginPath(); CX.arc(X(d.o.trad), Y(d.o.sig), r, 0, 6.2832);
+    CX.fillStyle = gapCol(d.o.gap, 0.08 + 0.84 * d.a); CX.fill();
+  }
+  // callout pings
+  for (const c of F.callouts) {
+    if (!c.row) continue;
+    const px = X(c.row.trad), py = Y(c.row.sig);
+    CX.beginPath(); CX.arc(px, py, 7.5, 0, 6.2832);
+    CX.strokeStyle = c.kind === "down" ? "#ff3d9e" : c.kind === "top" ? "#f4f269" : "#19f0d2"; CX.lineWidth = 2;
+    CX.shadowColor = CX.strokeStyle; CX.shadowBlur = 12; CX.stroke(); CX.shadowBlur = 0;
+    CX.beginPath(); CX.arc(px, py, 4, 0, 6.2832); CX.fillStyle = gapCol(c.row.gap, 1); CX.fill();
+  }
+  CX.restore();
+  // axes labels
+  CX.fillStyle = "#8e87b8"; CX.font = "500 11px 'JetBrains Mono', monospace"; CX.textAlign = "center"; CX.textBaseline = "top";
+  for (let v = Math.ceil(F.dom.x[0]); v <= F.dom.x[1]; v += 1) CX.fillText((v > 0 ? "+" : "") + v, X(v), y1 + 8);
+  CX.textAlign = "right"; CX.textBaseline = "middle";
+  for (let v = Math.ceil(F.dom.y[0]); v <= F.dom.y[1]; v += 1) CX.fillText((v > 0 ? "+" : "") + v, x0 - 8, Y(v));
+  // diagonal label
+  const dv = Math.min(F.dom.x[1], F.dom.y[1]) - 0.35;
+  if (dv > F.dom.x[0] && dv > F.dom.y[0]) {
+    CX.save(); CX.translate(X(dv), Y(dv)); CX.rotate(Math.atan2(Y(dv + 1) - Y(dv), X(dv + 1) - X(dv)));
+    CX.fillStyle = "rgba(241,237,255,0.65)"; CX.textAlign = "center"; CX.textBaseline = "bottom"; CX.font = "600 10.5px 'JetBrains Mono', monospace";
+    CX.fillText("SKILL = STATS", 0, -5); CX.restore();
+  }
+  // hover
+  if (F.hover) {
+    const px = X(F.hover.o.trad), py = Y(F.hover.o.sig);
+    CX.beginPath(); CX.arc(px, py, 9, 0, 6.2832); CX.strokeStyle = "#f1edff"; CX.lineWidth = 2; CX.stroke();
+    CX.beginPath(); CX.arc(px, py, 4.5, 0, 6.2832); CX.fillStyle = gapCol(F.hover.o.gap, 1); CX.fill();
+  }
+}
+
+function setFieldTargets(animate) {
+  for (const d of F.dots) d.ta = (S.fieldYear === "ALL" || d.o.year === S.fieldYear) ? 1 : 0.06;
+  if (!animate || REDUCED) { F.dots.forEach(d => { d.a = d.ta; }); drawField(); return; }
+  cancelAnimationFrame(F.anim);
+  const start = performance.now(), from = F.dots.map(d => d.a);
+  const step = now => {
+    const k = Math.min(1, (now - start) / 420), e = 1 - Math.pow(1 - k, 3);
+    F.dots.forEach((d, i) => { d.a = from[i] + (d.ta - from[i]) * e; });
+    drawField(); placeLines();
+    if (k < 1) F.anim = requestAnimationFrame(step);
+  };
+  F.anim = requestAnimationFrame(step);
+}
+
+function nearest(mx, my) {
+  let best = null, bd = 196;
+  for (const d of F.dots) {
+    if (d.ta < 0.5) continue;
+    const dx = X(d.o.trad) - mx, dy = Y(d.o.sig) - my, dd = dx * dx + dy * dy;
+    if (dd < bd) { bd = dd; best = d; }
+  }
+  return best;
+}
+function tipHTML(o) {
+  const side = o.side === "hitting";
+  const rows = side ? [["xwOBA", fmt(o.xwoba, "r3")], ["Barrels", fmt(o.barrels, "int")], ["EV90", fmt(o.ev90, "r1") + " mph"], ["Chase%", fmt(o.chase_rate, "pct")], ["HR", fmt(o.hr, "int")]]
+    : [["K", fmt(o.k, "int")], ["xFIP", fmt(o.xfip, "r2")], ["Whiff%", fmt(o.whiff_rate, "pct")], ["Brl% allowed", fmt(o.barrel_rate_allowed, "pct")], ["IP", fmt(o.ip, "r1")]];
+  return `<h4>${esc(o.name)}</h4><div class="meta">${o.year} · ${side ? esc(o.pos) : "P"} · ${esc(o.action)}</div>
+    <dl><dt>Statcast value</dt><dd>${fmt(o.sig, "z")}</dd><dt>Box-score value</dt><dd>${fmt(o.trad, "z")}</dd>
+    <dt>Skill gap</dt><dd style="color:${gapCol(o.gap)}">${fmt(o.gap, "z")}</dd>${rows.map(([a, b]) => `<dt>${a}</dt><dd>${b}</dd>`).join("")}</dl>
+    <div class="hint">Click to open the profile</div>`;
+}
+let rafMove = 0;
+CV.addEventListener("mousemove", e => {
+  const r = CV.getBoundingClientRect(), mx = e.clientX - r.left, my = e.clientY - r.top;
+  cancelAnimationFrame(rafMove);
+  rafMove = requestAnimationFrame(() => {
+    const d = nearest(mx, my);
+    if (d !== F.hover) { F.hover = d; drawField(); }
+    if (!d) { TIP.classList.remove("show"); return; }
+    TIP.innerHTML = tipHTML(d.o);
+    const px = X(d.o.trad), py = Y(d.o.sig), tw = TIP.offsetWidth, th = TIP.offsetHeight;
+    let left = px + 16, top = py - th / 2;
+    if (left + tw > F.w - 6) left = px - tw - 16;
+    top = Math.max(6, Math.min(F.h - th - 6, top));
+    TIP.style.left = left + "px"; TIP.style.top = top + "px"; TIP.classList.add("show");
+  });
+});
+CV.addEventListener("mouseleave", () => { F.hover = null; TIP.classList.remove("show"); drawField(); });
+CV.addEventListener("click", e => {
+  const r = CV.getBoundingClientRect(), d = nearest(e.clientX - r.left, e.clientY - r.top);
+  if (d) openProfile(d.o);
+});
+
+/* callouts: computed from the data for the current side/year */
+function buildCallouts() {
+  const side = S.fieldSide, y = S.fieldYear, pool = qualified(side, y), used = new Set(), out = [];
+  const pick = (key, dir) => { const s = pool.slice().sort((a, b) => dir * (a[key] - b[key])); return s.find(o => !used.has(o.id)); };
+  const who = side === "hitting" ? "hitter" : "pitcher";
+  const span = y === "ALL" ? "of the five years" : `of ${y}`;
+  const up = pick("gap", -1); used.add(up.id);
+  out.push({kind: "up", k: "Skill > stats", row: up, name: `${up.name} · ${up.year}`,
+    body: `Statcast <b>${fmt(up.sig, "z")}</b> vs box score <b>${fmt(up.trad, "z")}</b>. Widest skill gap ${span}: <b>${fmt(up.gap, "z")}</b>.`});
+  const dn = pick("gap", 1); used.add(dn.id);
+  out.push({kind: "down", k: "Stats > skill", row: dn, name: `${dn.name} · ${dn.year}`,
+    body: `The box score flattered him by <b>${fmt(-dn.gap, "r2")}σ</b>, the most of any ${who} ${span}. Classic regression bait.`});
+  const tp = pick("sig", -1); used.add(tp.id);
+  const stat = side === "hitting" ? `${fmt(tp.xwoba, "r3")} xwOBA · ${tp.barrels} barrels · ${fmt(tp.ev90, "r1")} EV90` : `${tp.k} K · ${fmt(tp.xfip, "r2")} xFIP · ${fmt(tp.whiff_rate, "pct")} whiff`;
+  out.push({kind: "top", k: y === "ALL" ? "Top signal, 2017–21" : `Top signal, ${y}`, row: tp, name: `${tp.name} · ${tp.year}`, body: `<b>${fmt(tp.sig, "z")}</b> Statcast value. ${stat}.`});
+  // fourth: a repeat-skill note (all years) or a league fact (single year)
+  if (y === "ALL") {
+    const hall = hallFor(side).find(h => !used.has(h.id));
+    if (hall) {
+      const best = hall.rows.slice().sort((a, b) => b.sig - a.sig)[0];
+      out.push({kind: "up", k: "Never lucky", row: best, name: hall.name,
+        body: `Averaged <b>${fmt(hall.avg, "z")}</b> across <b>${hall.n}</b> qualified seasons. Luck doesn't repeat. This did.`});
+    }
+  } else {
+    const r = LG.find(z => z.t === y);
+    const fact = side === "hitting"
+      ? `<b>${n0(r.hr)}</b> HR on <b>${n0(r.barrels)}</b> barrels, or <b>${(r.hrb * 100).toFixed(0)}%</b> per barrel. Hardest-hit ball: ${esc(r.hardest_hit.batter)}, <b>${r.hardest_hit.ev.toFixed(1)} mph</b>.`
+      : `Four-seamers averaged <b>${r.ff_velo.toFixed(1)} mph</b>, and <b>${(r.velo_95plus_share * 100).toFixed(1)}%</b> hit 95+. League whiff rate: <b>${(r.whiff_rate * 100).toFixed(1)}%</b>.`;
+    out.push({kind: "fact", k: `${y} league`, row: null, name: `${n0(r.games)} games · ${n0(r.pitches)} pitches`, body: fact});
+  }
+  return out;
+}
+
+function bubbleHTML(c, i) {
+  return `<div class="bub ${c.kind}" data-i="${i}" style="--d:${(-i * 1.3).toFixed(1)}s" ${c.row ? `tabindex="0" role="button" aria-label="Open ${esc(c.row.name)} ${c.row.year} profile"` : ""}>
+    <div class="bub-k">${esc(c.k)}</div><div class="bub-n">${esc(c.name)}</div><div class="bub-b" data-html="${esc(c.body)}">${c.body}</div></div>`;
+}
+function renderCallouts(animate) {
+  F.callouts = buildCallouts();
+  const box = $("#bubbles"), list = $("#bubbleList");
+  box.innerHTML = F.callouts.map(bubbleHTML).join("");
+  list.innerHTML = F.callouts.map(bubbleHTML).join("");
+  placeBubbles();
+  for (const root of [box, list]) {
+    $$(".bub", root).forEach(el => {
+      const c = F.callouts[+el.dataset.i];
+      if (!c.row) return;
+      el.addEventListener("click", () => openProfile(c.row));
+      el.addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); openProfile(c.row); } });
+      el.addEventListener("mouseenter", () => { F.hover = F.dots.find(d => d.o === c.row) || null; drawField(); });
+      el.addEventListener("mouseleave", () => { F.hover = null; drawField(); });
+    });
+  }
+  if (animate && !REDUCED) typeBubbles(box);
+}
+function typeBubbles(root) {
+  $$(".bub-b", root).forEach((el, i) => {
+    const html = el.dataset.html, tmp = document.createElement("div"); tmp.innerHTML = html;
+    const text = tmp.textContent; let n = 0;
+    el.textContent = ""; el.classList.add("caret");
+    const stepMs = Math.max(8, Math.min(22, 700 / text.length));
+    setTimeout(function tick() {
+      n += 2; el.textContent = text.slice(0, n);
+      if (n < text.length) setTimeout(tick, stepMs); else { el.innerHTML = html; el.classList.remove("caret"); placeLines(); }
+    }, 120 + i * 140);
+  });
+}
+const NARROW = () => matchMedia("(max-width:640px)").matches; // same breakpoint as the CSS list switch
+function placeBubbles() {
+  if (NARROW()) { LN.innerHTML = ""; return; }
+  const placed = [];
+  const els = $$("#bubbles .bub");
+  const pref = {up: [[-1, -1], [0, -1], [-1, 0], [1, -1], [-1, 1]], down: [[1, 1], [0, 1], [1, 0], [1, -1], [-1, 1]], top: [[-1, 0], [-1, 1], [0, 1], [-1, -1], [1, 1]]};
+  els.forEach((el, i) => {
+    const c = F.callouts[i], bw = el.offsetWidth, bh = el.offsetHeight;
+    let rect = null;
+    if (!c.row) { // league fact: bottom-right corner above the axis label
+      rect = {x: F.w - bw - 18, y: F.h - F.m.b - bh - 22, w: bw, h: bh};
+      if (placed.some(p => overlap(p, rect))) rect = {x: F.m.l + 14, y: F.m.t + 4, w: bw, h: bh};
+    } else {
+      const px = X(c.row.trad), py = Y(c.row.sig);
+      for (const [dx, dy] of pref[c.kind]) {
+        for (const dist of [34, 70, 120]) {
+          const cx = px + dx * (bw / 2 + dist), cy = py + dy * (bh / 2 + dist * 0.6);
+          const r = {x: cx - bw / 2, y: cy - bh / 2, w: bw, h: bh};
+          if (r.x < 6 || r.y < F.m.t || r.x + bw > F.w - 6 || r.y + bh > F.h - F.m.b - 4) continue;
+          if (placed.some(p => overlap(p, r))) continue;
+          rect = r; break;
+        }
+        if (rect) break;
+      }
+      if (!rect) rect = {x: Math.max(6, Math.min(F.w - bw - 6, px - bw / 2)), y: Math.max(6, Math.min(F.h - bh - 40, py - bh - 30)), w: bw, h: bh};
+    }
+    placed.push(rect); c.rect = rect;
+    el.style.left = rect.x + "px"; el.style.top = rect.y + "px";
+  });
+  placeLines();
+}
+const overlap = (a, b) => !(a.x + a.w + 10 < b.x || b.x + b.w + 10 < a.x || a.y + a.h + 10 < b.y || b.y + b.h + 10 < a.y);
+function placeLines() {
+  if (NARROW()) return;
+  LN.innerHTML = F.callouts.filter(c => c.row && c.rect).map(c => {
+    const px = X(c.row.trad), py = Y(c.row.sig), r = c.rect;
+    const ex = Math.max(r.x, Math.min(r.x + r.w, px)), ey = Math.max(r.y, Math.min(r.y + r.h, py));
+    const col = c.kind === "down" ? "#ff3d9e" : c.kind === "top" ? "#f4f269" : "#19f0d2";
+    return `<line x1="${px}" y1="${py}" x2="${ex}" y2="${ey}" stroke="${col}" stroke-width="1.4" stroke-dasharray="3 3" opacity=".8"/>`;
+  }).join("");
+}
+
+function updateReadout() {
+  const pool = qualified(S.fieldSide, S.fieldYear);
+  const bigUp = pool.filter(o => o.gap >= 0.75).length, bigDn = pool.filter(o => o.gap <= -0.75).length;
+  const spread = Math.max(...pool.map(o => o.gap)) - Math.min(...pool.map(o => o.gap));
+  const loud = pool.filter(o => Math.abs(o.gap) >= 0.75).length;
+  $("#readoutTitle").textContent = `Readout · ${S.fieldYear === "ALL" ? "all seasons" : S.fieldYear} · ${S.fieldSide === "hitting" ? "hitters" : "pitchers"}`;
+  $("#readout").innerHTML = `
+    <dt>Player-seasons plotted</dt><dd>${n0(pool.length)}</dd>
+    <dt>Gap ≥ +0.75 (blind spots)</dt><dd style="color:var(--teal)">${bigUp}</dd>
+    <dt>Gap ≤ −0.75 (regression bait)</dt><dd style="color:var(--pink)">${bigDn}</dd>
+    <dt>Share with a loud gap</dt><dd>${(loud / pool.length * 100).toFixed(1)}%</dd>
+    <dt>Gap range, end to end</dt><dd>${spread.toFixed(2)}σ</dd>`;
+  $("#readSplit").innerHTML = `<i style="width:${bigDn / pool.length * 100}%;background:var(--pink)"></i><i style="flex:1;background:var(--mid)"></i><i style="width:${bigUp / pool.length * 100}%;background:var(--teal)"></i>`;
+}
+
+function renderYearSeg() {
+  $("#yearSeg").innerHTML = ["ALL", ...TAGS].map(y => `<button type="button" data-y="${y}" aria-pressed="${S.fieldYear === y}">${y === "ALL" ? "All 5" : y}</button>`).join("");
+}
+function setFieldYear(y, animate = true) {
+  S.fieldYear = y;
+  $$("#yearSeg button").forEach(b => b.setAttribute("aria-pressed", b.dataset.y === y));
+  $$("#ribbon .season").forEach(b => b.setAttribute("aria-pressed", b.dataset.y === y));
+  setFieldTargets(animate); renderCallouts(animate); updateReadout(); drawField();
+}
+function setFieldSide(side) {
+  S.fieldSide = side;
+  $$("#sideSeg button").forEach(b => b.setAttribute("aria-pressed", b.dataset.side === side));
+  F.dots = fieldData(side); F.hover = null;
+  setFieldTargets(false); renderCallouts(true); updateReadout(); drawField();
+  $("#cornerTL").textContent = "Statcast value ↑";
+}
+$("#yearSeg").addEventListener("click", e => { const b = e.target.closest("button"); if (!b) return; setFieldYear(b.dataset.y); if (b.dataset.y !== "ALL") setSeason(b.dataset.y); });
+$("#sideSeg").addEventListener("click", e => { const b = e.target.closest("button"); if (b) setFieldSide(b.dataset.side); });
+
+/* ---------------- five-year hall ---------------- */
+const hallCache = {};
+function hallFor(side) {
+  if (hallCache[side]) return hallCache[side];
+  const g = {};
+  for (const t of TAGS) for (const o of P[t][side]) if (!o.small && o.sig != null) (g[o.id] ||= []).push(o);
+  return (hallCache[side] = Object.entries(g).filter(([, rows]) => rows.length >= 4)
+    .map(([id, rows]) => ({id, name: rows[rows.length - 1].name, rows, n: rows.length, avg: rows.reduce((a, o) => a + o.sig, 0) / rows.length}))
+    .sort((a, b) => b.avg - a.avg).slice(0, 8));
+}
+function renderHall() {
+  $("#hall").innerHTML = SIDES.map(side => {
+    const rows = hallFor(side);
+    return `<div class="hall-col"><h3><span>${side === "hitting" ? "Hitters" : "Pitchers"}</span><span>≥ 4 qualified seasons</span></h3>
+      <div class="hall-hdr"><span></span><span style="text-align:left">Player</span>${TAGS.map(t => `<span>’${t.slice(2)}</span>`).join("")}<span>Avg</span></div>
+      ${rows.map((h, i) => `<button type="button" class="hall-row" data-side="${side}" data-id="${h.id}">
+        <span class="rk">${i + 1}</span><span class="nm">${esc(h.name)}</span>
+        ${TAGS.map(t => { const o = h.rows.find(r => r.year === t); if (!o) return `<span class="cell none" title="${t}: not qualified">·</span>`;
+          const p = o.pct.signal_score; return `<span class="cell" style="background:${pctCol(p)}" title="${t}: Statcast value ${fmt(o.sig, "z")}, ${p}th percentile">${Math.round(p)}</span>`; }).join("")}
+        <span class="avg">${fmt(h.avg, "z")}</span></button>`).join("")}</div>`;
+  }).join("");
+  $$("#hall .hall-row").forEach(b => b.addEventListener("click", () => {
+    const seasons = BYID[b.dataset.side][b.dataset.id]; const last = TAGS.slice().reverse().find(t => seasons[t]);
+    openProfile(seasons[last]);
+  }));
+}
+
+/* ---------------- ribbon ---------------- */
+const crown = `<svg class="crown" viewBox="0 0 14 11" aria-hidden="true"><path d="M1 10h12L12 3 9 6 7 1 5 6 2 3z" fill="#f4f269"/></svg>`;
+function renderRibbon() {
+  const maxP = Math.max(...LG.map(r => r.pitches));
+  $("#ribbon").innerHTML = LG.map(r => {
+    const t = r.t, ch = champ(t), hq = qualified("hitting", t), pq = qualified("pitching", t);
+    const kingH = topBy(hq, "sig"), kingP = topBy(pq, "sig"), up = topBy(hq, "gap"), dn = topBy(hq, "gap", 1);
+    const tag = t === "2020" ? "60 games" : ""; // a fact, not an era label: five adjacent seasons aren't separate eras
+    return `<button type="button" class="season" data-y="${t}" aria-pressed="${S.fieldYear === t}">
+      <div class="yr"><span class="yr-n">${t}</span><span class="yr-tag">${tag}</span></div>
+      <div class="vol"><i style="width:${(r.pitches / maxP * 100).toFixed(1)}%"></i></div>
+      <div class="vol-l">${n0(r.pitches)} pitches · ${n0(r.games)} games</div>
+      <ul class="facts">
+        <li class="champ"><span class="fl">Champion</span><span class="fv">${crown}${ch.map(c => esc(c.team)).join(" &amp; ")} <small>${ch[0].total} pts</small></span></li>
+        <li><span class="fl">Top hitter signal</span><span class="fv">${esc(kingH.name)} <small>${fmt(kingH.sig, "z")}</small></span></li>
+        <li><span class="fl">Top pitcher signal</span><span class="fv">${esc(kingP.name)} <small>${fmt(kingP.sig, "z")}</small></span></li>
+        <li><span class="fl" style="color:var(--teal)">Skill &gt; stats · hitter</span><span class="fv">${esc(up.name)} <small>${fmt(up.gap, "z")}</small></span></li>
+        <li><span class="fl" style="color:var(--pink)">Stats &gt; skill · hitter</span><span class="fv">${esc(dn.name)} <small>${fmt(dn.gap, "z")}</small></span></li>
+        <li><span class="fl">HR · barrels</span><span class="fv mono">${n0(r.hr)} <small>·</small> ${n0(r.barrels)}</span></li>
+        <li><span class="fl">Hardest hit · longest HR</span><span class="fv"><small>${r.hardest_hit.ev.toFixed(1)} mph ${esc(shortName(r.hardest_hit.batter))} · ${r.longest_hr.ft} ft ${esc(shortName(r.longest_hr.batter))}</small></span></li>
+      </ul></button>`;
+  }).join("");
+  $$("#ribbon .season").forEach(b => b.addEventListener("click", () => {
+    const y = S.fieldYear === b.dataset.y ? "ALL" : b.dataset.y;
+    setFieldYear(y); if (y !== "ALL") setSeason(y);
+  }));
+}
+
+/* ---------------- panels ---------------- */
+function svgTip(host) {
+  let t = host.querySelector(".tip");
+  if (!t) { t = document.createElement("div"); t.className = "tip"; host.appendChild(t); }
+  return {
+    show(html, x, y) { t.innerHTML = html; t.classList.add("show"); const hw = host.clientWidth, tw = t.offsetWidth; t.style.left = Math.max(0, Math.min(hw - tw, x + 14)) + "px"; t.style.top = Math.max(0, y - t.offsetHeight - 10) + "px"; },
+    hide() { t.classList.remove("show"); },
+  };
+}
+function renderBall() {
+  const W = 560, H = 250, m = {l: 34, r: 96, t: 18, b: 28}, host = $("#ballChart");
+  const xs = i => m.l + i * (W - m.l - m.r) / (LG.length - 1), ys = v => H - m.b - v / 4.5 * (H - m.t - m.b);
+  const line = key => LG.map((r, i) => `${i ? "L" : "M"}${xs(i).toFixed(1)},${ys(r[key]).toFixed(1)}`).join("");
+  let g = "";
+  for (let v = 0; v <= 4; v++) g += `<line x1="${m.l}" x2="${W - m.r}" y1="${ys(v)}" y2="${ys(v)}" stroke="${v ? "#272148" : "#3a3270"}"/><text class="ax" x="${m.l - 8}" y="${ys(v) + 4}" text-anchor="end">${v}</text>`;
+  LG.forEach((r, i) => { g += `<text class="ax-strong" x="${xs(i)}" y="${H - 8}" text-anchor="middle">${r.t}</text>`; });
+  g += `<path d="M${xs(0)},${ys(LG[0].brg)} ${LG.map((r, i) => `L${xs(i)},${ys(r.brg)}`).join(" ")} L${xs(4)},${ys(LG[4].hrg)} ${LG.slice().reverse().map((r, j) => `L${xs(4 - j)},${ys(r.hrg)}`).join(" ")} Z" fill="rgba(155,123,255,.10)"/>`;
+  g += `<path d="${line("brg")}" fill="none" stroke="#19f0d2" stroke-width="2.5" style="filter:drop-shadow(0 0 6px rgba(25,240,210,.5))"/>`;
+  g += `<path d="${line("hrg")}" fill="none" stroke="#ff3d9e" stroke-width="2.5" style="filter:drop-shadow(0 0 6px rgba(255,61,158,.5))"/>`;
+  LG.forEach((r, i) => {
+    g += `<circle cx="${xs(i)}" cy="${ys(r.brg)}" r="4.5" fill="#19f0d2" stroke="#100d1f" stroke-width="2"/><circle cx="${xs(i)}" cy="${ys(r.hrg)}" r="4.5" fill="#ff3d9e" stroke="#100d1f" stroke-width="2"/>`;
+  });
+  const last = LG[4], peak = LG.reduce((a, r) => (r.hrg > a.hrg ? r : a), LG[0]), pi = LG.indexOf(peak);
+  g += `<text class="lbl" x="${xs(4) + 10}" y="${ys(last.brg) + 4}">${last.brg.toFixed(2)}</text><text class="lbl-s" x="${xs(4) + 10}" y="${ys(last.brg) + 18}">barrels/g</text>`;
+  g += `<text class="lbl" x="${xs(4) + 10}" y="${ys(last.hrg) + 4}">${last.hrg.toFixed(2)}</text><text class="lbl-s" x="${xs(4) + 10}" y="${ys(last.hrg) + 18}">HR/g</text>`;
+  g += `<text class="lbl" x="${xs(pi)}" y="${ys(peak.hrg) + 20}" text-anchor="middle">${peak.hrg.toFixed(2)} peak</text>`;
+  g += `<text class="lbl" x="${xs(0)}" y="${ys(LG[0].brg) - 10}" text-anchor="middle">${LG[0].brg.toFixed(2)}</text>`;
+  LG.forEach((r, i) => { g += `<rect class="hit" data-i="${i}" x="${xs(i) - 44}" y="${m.t}" width="88" height="${H - m.t - m.b}" fill="transparent"/>`; });
+  host.innerHTML = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Barrels per game rose from ${LG[0].brg.toFixed(2)} in 2017 to ${last.brg.toFixed(2)} in 2021 while home runs per game peaked at ${peak.hrg.toFixed(2)} in ${peak.t}.">${g}</svg>`;
+  const tip = svgTip(host);
+  $$(".hit", host).forEach(el => {
+    el.addEventListener("mousemove", e => { const r = LG[+el.dataset.i], b = host.getBoundingClientRect();
+      tip.show(`<h4>${r.t}</h4><dl><dt>Barrels / game</dt><dd>${r.brg.toFixed(2)}</dd><dt>HR / game</dt><dd>${r.hrg.toFixed(2)}</dd><dt>HR per barrel</dt><dd>${(r.hrb * 100).toFixed(1)}%</dd><dt>Games</dt><dd>${n0(r.games)}</dd></dl>`, e.clientX - b.left, e.clientY - b.top); });
+    el.addEventListener("mouseleave", tip.hide);
+  });
+  const mx = Math.max(...LG.map(r => r.hrb));
+  $("#hrb").innerHTML = LG.map(r => `<div><div class="y">${r.t}</div><div class="v">${(r.hrb * 100).toFixed(0)}%</div><div class="b"><i style="width:${(r.hrb / mx * 100).toFixed(0)}%;background:${pctCol(20 + (r.hrb - 0.6) / (mx - 0.6) * 60)}"></i></div></div>`).join("");
+}
+
+function renderBump() {
+  const W = 560, host = $("#bumpChart"), teams = D.seasons[TAGS[0]].standings.map(s => s.team);
+  const pos = {}; // pos[team][t] = 1..10 order, plus rank/total
+  for (const t of TAGS) D.seasons[t].standings.forEach((s, i) => { (pos[s.team] ||= {})[t] = {p: i + 1, rank: s.rank, total: s.total}; });
+  const H = 300, m = {l: 30, r: 186, t: 14, b: 26};
+  const xs = i => m.l + i * (W - m.l - m.r) / (TAGS.length - 1), ys = p => m.t + (p - 1) * (H - m.t - m.b) / 9;
+  let g = "";
+  for (let p = 1; p <= 10; p++) g += `<text class="ax" x="${m.l - 14}" y="${ys(p) + 4}" text-anchor="end">${p}</text>`;
+  TAGS.forEach((t, i) => { g += `<text class="ax-strong" x="${xs(i)}" y="${H - 6}" text-anchor="middle">${t}</text>`; });
+  const lastT = TAGS[TAGS.length - 1];
+  const ordered = teams.slice().sort((a, b) => pos[a][lastT].p - pos[b][lastT].p);
+  for (const team of ordered) {
+    const pts = TAGS.map((t, i) => [xs(i), ys(pos[team][t].p)]);
+    const d = pts.map(([x, y], i) => i ? `C${(pts[i - 1][0] + x) / 2},${pts[i - 1][1]} ${(pts[i - 1][0] + x) / 2},${y} ${x},${y}` : `M${x},${y}`).join(" ");
+    g += `<path class="bump-line" data-team="${esc(team)}" d="${d}"/>`;
+  }
+  for (const team of ordered) TAGS.forEach((t, i) => {
+    const c = pos[team][t];
+    g += `<circle class="bump-dot${c.rank === 1 ? " champ" : ""}" data-team="${esc(team)}" cx="${xs(i)}" cy="${ys(c.p)}" r="${c.rank === 1 ? 6 : 4.5}"/>`;
+  });
+  ordered.forEach(team => { g += `<text class="bump-name" data-team="${esc(team)}" x="${xs(TAGS.length - 1) + 14}" y="${ys(pos[team][lastT].p) + 4}">${esc(team)}</text>`; });
+  ordered.forEach(team => {
+    const pts = TAGS.map((t, i) => `M${xs(i) - 8},${ys(pos[team][t].p)} L${xs(i) + 8},${ys(pos[team][t].p)}`).join(" ");
+    g += `<path class="bump-hit" data-team="${esc(team)}" d="${pts}" stroke="transparent" stroke-width="16" fill="none"/>`;
+  });
+  host.innerHTML = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Bump chart of roto finishes for ten teams across five seasons.">${g}</svg>`;
+  const svg = $("svg", host), tip = svgTip(host);
+  const hi = team => {
+    svg.classList.toggle("dim", !!team);
+    $$("[data-team]", svg).forEach(el => el.classList.toggle("on", el.dataset.team === team));
+  };
+  $$("[data-team]", svg).forEach(el => {
+    el.addEventListener("mouseenter", () => hi(el.dataset.team));
+    el.addEventListener("mousemove", e => {
+      const team = el.dataset.team, b = host.getBoundingClientRect();
+      tip.show(`<h4>${esc(team)}</h4><dl>${TAGS.map(t => { const c = pos[team][t]; return `<dt>${t}</dt><dd>#${c.rank} · ${c.total} pts</dd>`; }).join("")}</dl>`, e.clientX - b.left, e.clientY - b.top);
+    });
+    el.addEventListener("mouseleave", () => { hi(null); tip.hide(); });
+  });
+}
+
+const MIX = [["FF", "Four-seam", "#19f0d2"], ["SI", "Sinker", "#3b8cff"], ["SL", "Slider", "#ff3d9e"], ["CH", "Changeup", "#f4f269"], ["CU", "Curveball", "#9b7bff"], ["FC", "Cutter", "#ff8a3d"], ["OT", "Split / other", "#6d6799"]];
+function renderMix() {
+  const host = $("#mixChart"), W = 560, rowH = 34, gap = 10, m = {l: 44, r: 4, t: 4}, H = m.t + LG.length * (rowH + gap);
+  const sl0 = LG[0].mix.SL, sl1 = LG[4].mix.SL, ff0 = LG[0].mix.FF, ff1 = LG[4].mix.FF;
+  $("#mixTitle").textContent = `Sliders ${(sl0 * 100).toFixed(1)}% → ${(sl1 * 100).toFixed(1)}%`;
+  $("#mixLegend").innerHTML = MIX.map(([, n, c]) => `<span><i style="background:${c}"></i>${n}</span>`).join("");
+  let g = "";
+  LG.forEach((r, i) => {
+    const y = m.t + i * (rowH + gap);
+    g += `<text class="ax-strong" x="${m.l - 10}" y="${y + rowH / 2 + 4}" text-anchor="end">${r.t}</text>`;
+    let x = m.l; const tw = W - m.l - m.r, total = MIX.reduce((a, [k]) => a + r.mix[k], 0);
+    MIX.forEach(([k, n, c], j) => {
+      const w = r.mix[k] / total * tw; if (w <= 0) return;
+      const ww = Math.max(0, w - 2);
+      g += `<rect class="mixseg" data-i="${i}" data-k="${k}" x="${x.toFixed(1)}" y="${y}" width="${ww.toFixed(1)}" height="${rowH}" rx="${j === 0 ? 4 : 1}" fill="${c}" opacity=".92"/>`;
+      if (w > 34) g += `<text x="${(x + ww / 2).toFixed(1)}" y="${y + rowH / 2 + 4}" text-anchor="middle" style="font:700 11px var(--f-mono);fill:#0a0815;pointer-events:none">${(r.mix[k] / total * 100).toFixed(0)}%</text>`;
+      x += w;
+    });
+  });
+  host.innerHTML = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Pitch mix by season. Four-seam share went from ${(ff0 * 100).toFixed(1)}% to ${(ff1 * 100).toFixed(1)}%; slider share from ${(sl0 * 100).toFixed(1)}% to ${(sl1 * 100).toFixed(1)}%.">${g}</svg>`;
+  const tip = svgTip(host);
+  $$(".mixseg", host).forEach(el => {
+    el.addEventListener("mousemove", e => { const r = LG[+el.dataset.i], k = el.dataset.k, name = MIX.find(z => z[0] === k)[1], b = host.getBoundingClientRect();
+      tip.show(`<h4>${name} · ${r.t}</h4><dl><dt>Share of pitches</dt><dd>${(r.mix[k] * 100).toFixed(1)}%</dd><dt>Pitches</dt><dd>${n0(r.mix[k] * r.pitches)}</dd><dt>vs 2017</dt><dd>${((r.mix[k] - LG[0].mix[k]) * 100 >= 0 ? "+" : "−") + Math.abs((r.mix[k] - LG[0].mix[k]) * 100).toFixed(1)} pts</dd></dl>`, e.clientX - b.left, e.clientY - b.top); });
+    el.addEventListener("mouseleave", tip.hide);
+  });
+}
+
+function renderPulse() {
+  const M = [
+    ["Strikeout rate", "k_rate", "pct"], ["Unintentional walk rate", "bb_rate", "pct"], ["Chase rate", "chase_rate", "pct"],
+    ["Whiff rate", "whiff_rate", "pct"], ["Four-seamers at 95+", "velo_95plus_share", "pct"], ["100+ mph pitches per game", "v100g", "r2"],
+    ["Stolen bases per game, both teams", "sbg", "r2"], ["Runs per game, both teams", "rg", "r2"],
+  ];
+  $("#pulse").innerHTML = M.map(([label, key, f]) => {
+    const vals = LG.map(r => r[key]), lo = Math.min(...vals), hi = Math.max(...vals), W = 150, H = 42;
+    const xs = i => 4 + i * (W - 8) / 4, ys = v => H - 6 - (hi === lo ? 0.5 : (v - lo) / (hi - lo)) * (H - 14);
+    const d = vals.map((v, i) => `${i ? "L" : "M"}${xs(i).toFixed(1)},${ys(v).toFixed(1)}`).join("");
+    const delta = vals[4] - vals[0];
+    const dtxt = f === "pct" ? `${delta >= 0 ? "+" : "−"}${Math.abs(delta * 100).toFixed(1)} pts vs ’17` : `${delta >= 0 ? "+" : "−"}${Math.abs(delta).toFixed(2)} vs ’17`;
+    return `<div class="pt"><div class="pt-l">${label}</div><div class="pt-v">${f === "pct" ? (vals[4] * 100).toFixed(1) + "%" : vals[4].toFixed(2)}</div>
+      <div class="pt-d">${dtxt}</div>
+      <svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" aria-hidden="true">
+        <path d="${d} L${xs(4)},${H} L${xs(0)},${H} Z" fill="rgba(25,240,210,.08)"/>
+        <path d="${d}" fill="none" stroke="#9b7bff" stroke-width="2" vector-effect="non-scaling-stroke"/>
+        ${vals.map((v, i) => `<circle cx="${xs(i)}" cy="${ys(v)}" r="${i === 4 ? 3.5 : 2}" fill="${i === 4 ? "#19f0d2" : "#9b7bff"}"><title>${TAGS[i]}: ${f === "pct" ? (v * 100).toFixed(1) + "%" : v.toFixed(2)}</title></circle>`).join("")}
+      </svg></div>`;
+  }).join("");
+}
+
+/* ---------------- thesis test ---------------- */
+function renderThesis() {
+  const TH = D.thesis, set = S.thesisSet, r2 = v => v.toFixed(2).replace(/^0/, "").replace(/^-0/, "−");
+  const r3 = v => v.toFixed(3).replace(/^0/, "").replace(/^-0/, "−");
+  const sgn = (v, d = 3) => (v >= 0 ? "+" : "−") + Math.abs(v).toFixed(d).replace(/^0/, "");
+  const pick = side => (set === "full" ? TH[side].full : TH[side]);
+  const rate = side => TH[side].rate[set === "full" ? "full" : "all"];
+  // The thesis: Statcast measures skill better than the box score. Three tests per side, each decided by its interval.
+  const tests = side => {
+    const t = pick(side), rt = rate(side), gain = t.r2_oos_both - t.r2_oos_box, tstat = t.gap_coef / t.gap_se, rgain = rt.r2_oos_both - rt.r2_oos_box;
+    return [
+      t.stick_ci[0] > 0 ? "sc" : t.stick_ci[1] < 0 ? "box" : "tie",
+      t.diff_ci[0] > 0 || (gain >= 0.01 && tstat >= 2) ? "sc" : t.diff_ci[1] < 0 && gain < 0.01 ? "box" : "tie",
+      rt.diff_ci[0] > 0 || rgain >= 0.01 ? "sc" : rt.diff_ci[1] < 0 && rgain < 0.01 ? "box" : "tie",
+    ];
+  };
+  $$("#thesisSet button").forEach(b => b.setAttribute("aria-pressed", b.dataset.set === set));
+  const score = side => tests(side).filter(x => x === "sc").length;
+  const h = pick("hitting"), pt = pick("pitching");
+  $("#thesisLead").innerHTML = `<b>The thesis: Statcast measures skill better than the box score.</b> Three tests per side, decided by their 95% intervals and out-of-sample forecasts: does it repeat more, does it sharpen next year's box-score forecast, and does it hold up rate for rate with playing time taken out? ${set === "full" ? "Full-season pairs (2017→18 and 2018→19; 2021 can only pair with 2020)" : "All four season pairs, 2020 included"}: Statcast wins ${score("hitting")} of 3 for hitters and ${score("pitching")} of 3 for pitchers.`;
+  const MARK = {sc: ["w", "Statcast"], box: ["l", "Box score"], tie: ["", "Tie"]};
+  $("#thesisGrid").innerHTML = SIDES.map(side => {
+    const all = TH[side], t = pick(side), other = set === "full" ? all : all.full, rt = rate(side), stat = all.rate.stat;
+    const d = t.r_sc - t.r_box, [lo, hi] = t.diff_ci, tstat = t.gap_coef / t.gap_se, gain = t.r2_oos_both - t.r2_oos_box;
+    const res = tests(side), wins = res.filter(x => x === "sc").length, losses = res.filter(x => x === "box").length;
+    const v = wins >= 2 ? ["yes", `Statcast wins ${wins} of 3`] : losses >= 2 ? ["no", `Box score wins ${losses} of 3`] : ["mixed", `Split: ${wins}–${losses}`];
+    const who = side === "hitting" ? "hitter" : "pitcher";
+    const scope = set === "full" ? "over full seasons" : "across all five seasons";
+    const forecast = gain >= 0.01 ? `improves the forecast of next year's box score (out-of-sample R² ${r3(t.r2_oos_box)} → ${r3(t.r2_oos_both)})`
+      : gain > 0 ? `barely moves the forecast of next year's box score (${r3(t.r2_oos_box)} → ${r3(t.r2_oos_both)}, under the .01 bar)`
+      : `doesn't improve the forecast of next year's box score (${r3(t.r2_oos_box)} → ${r3(t.r2_oos_both)})`;
+    const rateLine = rt.diff_ci[0] > 0 ? `this year's skill rates predict next year's ${stat} better than this year's ${stat} does (r ${r2(Math.abs(rt.r_sc))} vs ${r2(Math.abs(rt.r_box))})`
+      : rt.diff_ci[1] < 0 ? `this year's ${stat} still predicts next year's ${stat} better (r ${r2(Math.abs(rt.r_box))} vs ${r2(Math.abs(rt.r_sc))})`
+      : `skill rates predict next year's ${stat} about as well as this year's ${stat} does (r ${r2(Math.abs(rt.r_sc))} vs ${r2(Math.abs(rt.r_box))})`;
+    const rgain = rt.r2_oos_both - rt.r2_oos_box;
+    const rateTail = rgain >= 0.01 ? `, and adding them sharpens the ${stat} forecast (out-of-sample R² ${r3(rt.r2_oos_box)} → ${r3(rt.r2_oos_both)})` : "";
+    const say = `Statcast value repeats more than box-score value ${scope} (r ${r2(t.r_sc_sc)} vs ${r2(t.r_box)}). Added to this year's box score, it ${forecast}. Rate against rate, ${rateLine}${rateTail}.${side === "hitting" ? " Hitter box scores are mostly volume and lineup role, which carry over on their own." : " When the box score flatters a pitcher, the bill tends to come due."}`;
+    const flip = (other.diff_ci[0] > 0) !== (lo > 0) || (other.diff_ci[1] < 0) !== (hi < 0);
+    const otherNote = `${set === "full" ? "With 2020 included" : "Over full seasons only"}, head to head: r ${r2(other.r_sc)} vs ${r2(other.r_box)}, interval [${sgn(other.diff_ci[0])}, ${sgn(other.diff_ci[1])}]${flip ? ". The 60-game season changes that answer." : "."}`;
+    const bar = (label, r, color) => `<div class="rbar"><span>${label}</span><span class="trk"><i style="width:${Math.max(2, Math.abs(r) * 100).toFixed(1)}%;background:${color}"></i></span><span class="v">${(Math.abs(r) < 0.1 ? r3 : r2)(Math.abs(r))}</span></div>`;
+    const sc = "linear-gradient(90deg,rgba(25,240,210,.3),var(--teal))", bx = "linear-gradient(90deg,rgba(194,187,230,.2),var(--ink2))";
+    const head = (i, text) => `<h4>${i + 1} · ${text} <span class="th-res ${MARK[res[i]][0]}">${MARK[res[i]][1]}</span></h4>`;
+    return `<article class="th-card">
+      <div class="th-top"><h3>${side === "hitting" ? "Hitters" : "Pitchers"}</h3><span class="verdict ${v[0]}">${v[1]}</span></div>
+      <p class="th-say">${say}</p>
+      <div class="th-q">${head(0, "Repeats the next season (same measure, r)")}
+        ${bar("Statcast value", t.r_sc_sc, sc)}${bar("Box-score value", t.r_box, bx)}
+        <p class="th-fine">Difference ${sgn(t.r_sc_sc - t.r_box)}, 95% interval [${sgn(t.stick_ci[0])}, ${sgn(t.stick_ci[1])}] (players resampled).</p></div>
+      <div class="th-q">${head(1, "Forecasting next season's box score (out-of-sample R²)")}
+        ${bar("Box score alone", t.r2_oos_box, bx)}${bar("Box score + Statcast", t.r2_oos_both, sc)}
+        <p class="th-fine">Each season pair is held out in turn and forecast from the others. In sample: R² ${r3(t.r2_box)} → ${r3(t.r2_both)}. Head to head, Statcast r ${r2(t.r_sc)} vs box score ${r2(t.r_box)}, difference ${sgn(d)}, interval [${sgn(lo)}, ${sgn(hi)}]. ${otherNote}</p></div>
+      <div class="th-q">${head(2, `Rate against rate, no playing time: predicting next season's ${stat}`)}
+        ${bar("This year's skill rates", rt.r_sc, sc)}${bar(`This year's ${stat}`, rt.r_box, bx)}
+        <p class="th-fine">Skill rates: ${side === "hitting" ? "barrels per ball in play, xwOBA on contact, EV90, chase" : "xFIP, whiff%, barrel% allowed"}. Difference ${sgn(Math.abs(rt.r_sc) - Math.abs(rt.r_box))}, interval [${sgn(rt.diff_ci[0])}, ${sgn(rt.diff_ci[1])}]. Out of sample, ${stat} alone R² ${r3(rt.r2_oos_box)} → with skill rates ${r3(rt.r2_oos_both)}. ${n0(rt.n)} pairs.</p></div>
+      <div class="th-q"><h4>What happened next, by this year's skill gap</h4>
+        <div class="th-chart" data-side="${side}"></div>
+        <p class="th-fine">Bars: average change in box-score value the next season, per fifth of the gap (whiskers: 95% interval). Dashed tick: the change regression to the mean alone predicts. Holding last year's box score fixed, each +1σ of gap moves next season ${sgn(t.gap_coef, 2)}σ (± ${t.gap_se.toFixed(2).replace(/^0/, "")}, player-clustered).</p></div>
+      <div class="th-pairs">${all.per.map(p => { const scWin = p.r_sc > p.r_box, short = [p.from, p.to].includes("2020"); return `<div${short && set === "full" ? ' style="opacity:.5"' : ""}><b>’${p.from.slice(2)} → ’${p.to.slice(2)}${short ? " · 60g" : ""}</b><span class="${scWin ? "w" : "l"}">SC ${r2(p.r_sc)}</span> · <span class="${scWin ? "l" : "w"}">box ${r2(p.r_box)}</span><br>n ${p.n}</div>`; }).join("")}</div>
+      <p class="th-fine">${n0(t.n)} pairs from ${n0(t.players)} ${who}s.</p>
+    </article>`;
+  }).join("");
+  $$(".th-chart").forEach(host => {
+    const t = pick(host.dataset.side), W = 520, H = 230, m = {l: 46, r: 10, t: 16, b: 46};
+    const ext = Math.max(...t.bins.flatMap(b => [Math.abs(b.dtrad) + 1.96 * b.se, Math.abs(b.rtm)])) * 1.15;
+    const bw = (W - m.l - m.r) / t.bins.length, ys = v => m.t + (ext - v) / (2 * ext) * (H - m.t - m.b), x0 = i => m.l + i * bw;
+    let g = "";
+    const step = ext > 0.6 ? 0.2 : 0.1;
+    for (let v = -Math.floor(ext / step) * step; v <= ext + 1e-9; v += step) {
+      const y = ys(v), z = Math.abs(v) < 1e-9;
+      g += `<line x1="${m.l}" x2="${W - m.r}" y1="${y}" y2="${y}" stroke="${z ? "#5f5989" : "#272148"}"${z ? "" : ' stroke-dasharray="2 4"'}/><text class="ax" x="${m.l - 8}" y="${y + 4}" text-anchor="end">${z ? "0" : (v > 0 ? "+" : "−") + Math.abs(v).toFixed(1)}</text>`;
+    }
+    t.bins.forEach((b, i) => {
+      const cx = x0(i) + bw / 2, w = bw * 0.52, y0 = ys(0), y1 = ys(b.dtrad), col = gapCol(b.gap);
+      g += `<rect x="${cx - w / 2}" y="${Math.min(y0, y1)}" width="${w}" height="${Math.max(1, Math.abs(y1 - y0))}" rx="3" fill="${col}" opacity=".9"/>`;
+      g += `<line x1="${cx}" x2="${cx}" y1="${ys(b.dtrad + 1.96 * b.se)}" y2="${ys(b.dtrad - 1.96 * b.se)}" stroke="#c2bbe6" stroke-width="1.5"/>`;
+      g += `<line x1="${cx - w / 2 - 6}" x2="${cx + w / 2 + 6}" y1="${ys(b.rtm)}" y2="${ys(b.rtm)}" stroke="#f1edff" stroke-width="2" stroke-dasharray="4 3"/>`;
+      g += `<text class="ax-strong" x="${cx}" y="${H - m.b + 16}" text-anchor="middle">${b.gap >= 0 ? "+" : "−"}${Math.abs(b.gap).toFixed(2)}</text>`;
+      g += `<rect class="hit" data-i="${i}" x="${x0(i)}" y="${m.t}" width="${bw}" height="${H - m.t - m.b}" fill="transparent"/>`;
+    });
+    g += `<text class="lbl-s" x="${x0(0) + 4}" y="${H - 6}" style="fill:var(--pink)">← stats &gt; skill</text><text class="lbl-s" x="${W - m.r - 4}" y="${H - 6}" text-anchor="end" style="fill:var(--teal)">skill &gt; stats →</text>`;
+    host.innerHTML = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Average next-season change in box-score value for each fifth of this season's skill gap, ${host.dataset.side}.">${g}</svg>`;
+    const tip = svgTip(host);
+    $$(".hit", host).forEach(el => {
+      el.addEventListener("mousemove", e => { const b = t.bins[+el.dataset.i], bb = host.getBoundingClientRect();
+        tip.show(`<h4>Gap ${sgn(b.lo, 2)} to ${sgn(b.hi, 2)}</h4><dl><dt>Player pairs</dt><dd>${b.n}</dd><dt>Actual change next season</dt><dd>${fmt(b.dtrad, "z")}</dd><dt>Regression to the mean alone</dt><dd>${fmt(b.rtm, "z")}</dd><dt>Beyond that</dt><dd style="color:${gapCol(b.dtrad - b.rtm)}">${fmt(b.dtrad - b.rtm, "z")}</dd></dl>`, e.clientX - bb.left, e.clientY - bb.top); });
+      el.addEventListener("mouseleave", tip.hide);
+    });
+  });
+  $("#thesisNote").innerHTML = THESIS_NOTE;
+}
+const THESIS_NOTE = `How it's computed: the same player in back-to-back seasons, qualified both years, using within-season z-scores. Tests 1 and 2 use this league's Statcast slate, which keeps some volume (barrels, R+RBI and SB for hitters; K and QS for pitchers). Test 3 strips volume out and compares rates only. xwOBA, xFIP and QS are approximated from pitch data. 2020 had 60 games: its thresholds are scaled by 60/162 and its pairs can be switched off above. Players who lose their job after a lucky year drop out of the pairs, which hides some of the fall.`;
+$("#thesisSet").addEventListener("click", e => { const b = e.target.closest("button"); if (b) { S.thesisSet = b.dataset.set; renderThesis(); } });
+
+/* ---------------- app: season ---------------- */
+function renderSeasonSel() {
+  $("#seasonSel").innerHTML = TAGS.slice().reverse().map(t => `<option value="${t}"${t === S.tag ? " selected" : ""}>${t}${t === "2020" ? " (60 g)" : ""}</option>`).join("");
+}
+$("#seasonSel").addEventListener("change", e => setSeason(e.target.value));
+function setSeason(t) {
+  S.tag = t; $("#seasonSel").value = t; S.team = null;
+  $$(".curYear").forEach(el => { el.textContent = t; });
+  renderStandings(); renderWinSel(); renderLeaders(); renderPlayers();
+}
+
+/* percentile of a value within one season's pool */
+const pctCache = {};
+function seasonPct(t, side, key, v, low) {
+  if (v == null) return null;
+  const ck = `${t}|${side}|${key}`;
+  const arr = pctCache[ck] ||= P[t][side].filter(o => !o.small).map(o => o[key]).filter(x => x != null).sort((a, b) => a - b);
+  if (!arr.length) return null;
+  const bisect = strict => { let lo = 0, hi = arr.length; while (lo < hi) { const mid = (lo + hi) >> 1; if (strict ? arr[mid] < v : arr[mid] <= v) lo = mid + 1; else hi = mid; } return lo; };
+  const p = (bisect(true) + bisect(false)) / 2 / arr.length * 100; // mid-rank: ties share a percentile
+  return low ? 100 - p : p;
+}
+
+const CATS = D.categories;
+const CAT_SHORT = {barrels: "BRL", r_plus_rbi: "R+RBI", xwoba: "xwOBA", ev90: "EV90", chase_rate: "Chase", sb: "SB", k: "K", xfip: "xFIP", whiff_rate: "Whiff", barrel_rate_allowed: "Brl%A", qs: "QS"};
+function renderStandings() {
+  const s = D.seasons[S.tag], cp = Object.fromEntries(s.category_points.map(r => [r.team, r])), cv = Object.fromEntries(s.category_values.map(r => [r.team, r]));
+  const maxT = Math.max(...s.standings.map(r => r.total)), n = s.standings.length;
+  $("#stTable").innerHTML = `<thead><tr><th class="l">#</th><th class="l">Team</th>${CATS.map(c => `<th${tAttr(c.key)} title="${esc(c.label)}${c.higher ? "" : " (lower is better)"}">${CAT_SHORT[c.key] || c.label}</th>`).join("")}<th>Total</th></tr></thead>
+  <tbody>${s.standings.map(r => `<tr data-team="${esc(r.team)}" class="${S.team === r.team ? "sel" : ""}"><td class="l"><span class="rank-badge${r.rank === 1 ? " gold" : ""}">${r.rank}</span></td><td class="l name">${esc(r.team)}</td>
+    ${CATS.map(c => { const p = cp[r.team][c.key], v = cv[r.team][c.key]; const f = {xwoba: "r3", ev90: "r1", chase_rate: "pct", xfip: "r2", whiff_rate: "pct", barrel_rate_allowed: "pct"}[c.key] || "int";
+      return `<td class="pts" style="background:${pctCol((p - 1) / (n - 1) * 100, .30)}" title="${esc(c.label)}: ${fmt(v, f)} → ${p} pts">${p}</td>`; }).join("")}
+    <td><div class="tot"><i style="width:${(r.total / maxT * 70).toFixed(0)}px"></i><b>${r.total}</b></div></td></tr>`).join("")}</tbody>`;
+  $$("#stTable tbody tr").forEach(tr => tr.addEventListener("click", () => { S.team = tr.dataset.team; renderStandings(); }));
+  renderRoster();
+}
+function renderRoster() {
+  const box = $("#roster");
+  if (!S.team) { box.innerHTML = `<div class="roster-empty">Pick a team to audit its roster. Each player's stats are tinted by where they rank in the ${S.tag} player pool.</div>`; return; }
+  const team = D.seasons[S.tag].teams[S.team], byShort = {};
+  for (const side of SIDES) for (const o of P[S.tag][side]) byShort[side + o.short] ||= o;
+  const cell = (side, key, v, f, low) => { const p = seasonPct(S.tag, side, key, v, low); return `<td class="pcell" style="--pc:${p == null ? "transparent" : pctCol(p)}">${fmt(v, f)}</td>`; };
+  box.innerHTML = `<h3 class="h3">${esc(S.team)}</h3><p class="sub">#${team.rank} · ${team.pts} roto points · ${S.tag}. Click a player to open the profile.</p>
+    <div class="tbl-wrap"><table><thead><tr><th class="l">Hitter</th><th data-t="teal">xwOBA</th><th data-t="volt">BRL</th><th data-t="volt">EV90</th><th data-t="blue">Chase</th><th data-t="volt">SB</th><th data-t="volt">R+RBI</th><th data-t="volt">HR</th></tr></thead><tbody>
+    ${team.hitters.map(h => `<tr data-side="hitting" data-id="${esc(h.id ?? "")}" data-k="hitting${esc(h.name)}"><td class="l name">${esc(h.name)}</td>${cell("hitting", "xwoba", h.xwoba, "r3")}${cell("hitting", "barrels", h.barrels, "int")}${cell("hitting", "ev90", h.ev90, "r1")}${cell("hitting", "chase_rate", h.chase, "pct", true)}${cell("hitting", "sb", h.sb, "int")}${cell("hitting", "r_plus_rbi", h.rrbi, "int")}${cell("hitting", "hr", h.hr, "int")}</tr>`).join("")}
+    </tbody></table></div>
+    <div class="tbl-wrap" style="margin-top:12px"><table><thead><tr><th class="l">Pitcher</th><th data-t="volt">K</th><th data-t="blue">xFIP</th><th data-t="teal">Whiff</th><th data-t="blue">Brl%A</th><th data-t="volt">QS</th></tr></thead><tbody>
+    ${team.pitchers.map(p => `<tr data-side="pitching" data-id="${esc(p.id ?? "")}" data-k="pitching${esc(p.name)}"><td class="l name">${esc(p.name)}</td>${cell("pitching", "k", p.k, "int")}${cell("pitching", "xfip", p.xfip, "r2", true)}${cell("pitching", "whiff_rate", p.whiff, "pct")}${cell("pitching", "barrel_rate_allowed", p.brla, "pct", true)}${cell("pitching", "qs", p.qs, "int")}</tr>`).join("")}
+    </tbody></table></div>`;
+  // Match by MLBAM id; the short-name lookup is only a fallback (short names collide).
+  $$("tbody tr", box).forEach(tr => tr.addEventListener("click", () => { const o = (BYID[tr.dataset.side][tr.dataset.id] || {})[S.tag] || byShort[tr.dataset.k]; if (o) openProfile(o); }));
+}
+
+/* leaderboards */
+/* Two slates per side: the league's scoring categories (precomputed lists, which also carry the
+   rolling windows) and the box score (computed here from official season lines, season only). */
+const LEAGUE_KEYS = new Set(["risers", "barrels", "r_plus_rbi", "xwoba", "ev90", "chase", "sb", "k", "xfip", "whiff", "barrel_allowed", "qs"]);
+const LB_FMT = {rate3: "r3", rate2: "r2", rate1: "r1", pct: "pct", int: "int", delta: "z"};
+const TEAM_GAMES = t => (t === "2020" ? 60 : 162);
+const BOX_SPECS = [
+  ["hr", "Home runs", "hitting", "int"], ["r", "Runs", "hitting", "int"], ["rbi", "RBI", "hitting", "int"],
+  ["avg", "Batting average", "hitting", "rate3", "pa"], ["obp", "On-base %", "hitting", "rate3", "pa"], ["ops", "OPS", "hitting", "rate3", "pa"],
+  ["w", "Wins", "pitching", "int"], ["sv", "Saves", "pitching", "int"],
+  ["era", "ERA (lowest)", "pitching", "rate2", "ip", true], ["whip", "WHIP (lowest)", "pitching", "rate2", "ip", true],
+].map(([col, label, side, fmt_, qual, low]) => ({key: "bx_" + col, col, label, side, fmt: fmt_, qual, low: !!low, box: true}));
+const LB_SPECS = [...D.specs.filter(s => LEAGUE_KEYS.has(s.key)), ...BOX_SPECS];
+const specType = s => (s.key === "risers" ? "teal" : TYPE[s.col] || {amber: "volt", teal: "teal", blue: "blue"}[s.color] || "teal");
+const LB_NAMES = {risers: "Value risers", barrels: "Barrels", ev90: "90th-pct EV", sb: "Stolen bases", r_plus_rbi: "R+RBI", k: "Strikeouts", whiff: "Whiff%", qs: "Quality starts", xwoba: "xwOBA"};
+const specLabel = s => LB_NAMES[s.key] || s.label.replace(" leaders", "");
+function boxRows(spec) {
+  const g = TEAM_GAMES(S.tag), min = spec.qual === "pa" ? Math.round(3.1 * g) : spec.qual === "ip" ? g : 0;
+  return P[S.tag][spec.side].filter(o => o[spec.col] != null && (!spec.qual || (o[spec.qual] ?? 0) >= min))
+    .sort((a, b) => (spec.low ? a[spec.col] - b[spec.col] : b[spec.col] - a[spec.col])).slice(0, 10).map(o => [o.name, o[spec.col], o]);
+}
+function seasonRows(spec) {
+  const scale = TEAM_GAMES(S.tag) / 162, mc = spec.min_col, min = (spec.min_val || 0) * scale;
+  if (spec.key === "risers") return SIDES.flatMap(side => P[S.tag][side].filter(o => !o.small && o.gap != null))
+    .sort((a, b) => b.gap - a.gap).slice(0, 10).map(o => [o.name, o.gap, o]);
+  return P[S.tag][spec.side].filter(o => o[spec.col] != null && (!mc || (o[mc] ?? 0) >= min))
+    .sort((a, b) => (spec.low ? a[spec.col] - b[spec.col] : b[spec.col] - a[spec.col]) || ((b[mc] ?? 0) - (a[mc] ?? 0)))
+    .slice(0, 10).map(o => [o.name, o[spec.col], o]);
+}
+function renderWinSel() {
+  const w = D.seasons[S.tag].windows;
+  $("#winSel").innerHTML = ["season", "last30", "last14", "last7"].filter(k => w[k]).map(k => `<option value="${k}"${k === S.win ? " selected" : ""}>${w[k].label}</option>`).join("");
+  if (!w[S.win]) S.win = "season";
+}
+$("#winSel").addEventListener("change", e => { S.win = e.target.value; renderLeaders(); });
+function renderLeaders() {
+  // Rolling windows come from the pitch files, so only pitch-file categories have them.
+  const specs = LB_SPECS.filter(s => S.win === "season" || (!s.box && !s.season_only && s.key !== "risers"));
+  if (!specs.find(s => s.key === S.lbKey)) S.lbKey = "xwoba";
+  const groups = [["hitting", false, "Hitting · league"], ["hitting", true, "Hitting · box score"], ["pitching", false, "Pitching · league"], ["pitching", true, "Pitching · box score"]];
+  $("#lbChips").innerHTML = groups.map(([side, box, n]) => {
+    const list = specs.filter(s => !!s.box === box && (side === "hitting" ? s.side !== "pitching" : s.side === "pitching"));
+    return list.length ? `<div class="chips"><span class="chip-group-l">${n}</span>${list.map(s => `<button type="button" class="chip" data-k="${s.key}" data-t="${specType(s)}" aria-pressed="${s.key === S.lbKey}">${esc(specLabel(s))}</button>`).join("")}</div>` : "";
+  }).join("");
+  $$("#lbChips .chip").forEach(b => b.addEventListener("click", () => { S.lbKey = b.dataset.k; renderLeaders(); }));
+  const spec = specs.find(s => s.key === S.lbKey), w = D.seasons[S.tag].windows[S.win];
+  const rows = spec.box ? boxRows(spec) : S.win === "season" ? seasonRows(spec) : (w.lb[spec.key] || []);
+  const vals = rows.map(r => r[1]), f = LB_FMT[spec.fmt] || "r2";
+  const mx = Math.max(...vals), mn = Math.min(...vals);
+  const tc = TYPE_CSS[specType(spec)];
+  const col = `linear-gradient(90deg,color-mix(in srgb,${tc} 25%,transparent),${tc})`;
+  $("#lb").innerHTML = rows.length ? rows.map((r, i) => {
+    const frac = spec.low ? (mx > mn ? 0.25 + 0.75 * (mx - r[1]) / (mx - mn) : 1) : (mx > 0 ? r[1] / mx : 0);
+    return `<div class="lb-row"${r[2] ? ` data-i="${i}" style="cursor:pointer"` : ""}><span class="rk">${i + 1}</span><span class="nm">${esc(r[0])}</span><span class="bar"><i style="width:${Math.max(4, frac * 100).toFixed(1)}%;background:${col}"></i></span><span class="v">${fmt(r[1], f)}</span></div>`;
+  }).join("") : `<div class="roster-empty">No qualified leaders in this window.</div>`;
+  $$("#lb .lb-row[data-i]").forEach(el => el.addEventListener("click", () => openProfile(rows[+el.dataset.i][2])));
+  const meta = [`${specLabel(spec)}${spec.low ? " · lower is better" : ""}`];
+  if (spec.box) meta.push(spec.qual ? `qualified: ${spec.qual === "pa" ? `${Math.round(3.1 * TEAM_GAMES(S.tag))} PA (3.1 per team game)` : `${TEAM_GAMES(S.tag)} IP (1 per team game)`}` : "official MLB season totals");
+  else if (spec.min_col && S.win === "season") meta.push(`min ${Math.round(spec.min_val * TEAM_GAMES(S.tag) / 162)} ${spec.min_col.replace(/_/g, " ")}${S.tag === "2020" ? " (scaled to 60 games)" : ""}`);
+  if (w.start && !spec.box) meta.push(`${w.start} → ${w.end} · ${n0(w.n)} pitches`);
+  if (spec.key === "risers") meta.push("Statcast value minus box-score value, hitters and pitchers together");
+  $("#lbMeta").textContent = meta.join("  ·  ");
+}
+
+/* players */
+const PCOLS = {
+  hitting: ["name", "pos", "sig", "gap", "scr", "pa", "xwoba", "barrels", "ev90", "chase_rate", "sb", "r_plus_rbi", "hr", "r", "rbi", "avg", "obp", "ops", "action", "arch"],
+  pitching: ["name", "sig", "gap", "scr", "ip", "k", "xfip", "whiff_rate", "barrel_rate_allowed", "qs", "w", "sv", "era", "whip", "gs", "action", "arch"],
+};
+/* percentile lens: pooled across all five seasons (stored) or within the row's own season (computed) */
+function pctOf(o, k) {
+  if (!k) return null;
+  if (S.pctMode !== "season") return o.pct[k] ?? null;
+  const vk = k === "signal_score" ? "sig" : k, v = o[vk];
+  return v == null ? null : seasonPct(o.year, o.side, vk, v, !!STAT[vk]?.low);
+}
+function setPctMode(mode) {
+  S.pctMode = mode;
+  $$(".pctSeg button").forEach(b => b.setAttribute("aria-pressed", b.dataset.m === mode));
+  renderPlayers();
+  if (!$("#drawer").hidden && S.profile) openProfile(S.profile, "rerender");
+}
+const TEXT_COLS = {name: "Player", pos: "Pos", action: "Signal read", arch: "Archetype"};
+function renderPlayerFilters() {
+  const rows = P[S.tag][S.plSide];
+  const pos = [...new Set(rows.map(o => o.pos))].filter(p => p && p !== "—").sort();
+  const act = [...new Set(rows.map(o => o.action))].sort();
+  const pv = $("#plPos").value, av = $("#plAction").value;
+  $("#plPos").innerHTML = `<option value="">All positions</option>` + pos.map(p => `<option${p === pv ? " selected" : ""}>${esc(p)}</option>`).join("");
+  $("#plPos").hidden = S.plSide !== "hitting";
+  $("#plAction").innerHTML = `<option value="">All signal reads</option>` + act.map(a => `<option${a === av ? " selected" : ""}>${esc(a)}</option>`).join("");
+}
+function renderPlayers() {
+  renderPlayerFilters();
+  const q = fold($("#plSearch").value.trim()), pos = S.plSide === "hitting" ? $("#plPos").value : "", act = $("#plAction").value, qual = $("#plQual").checked;
+  let rows = P[S.tag][S.plSide].filter(o => (!q || o.key.includes(q)) && (!pos || o.pos === pos) && (!act || o.action === act) && (!qual || !o.small));
+  const {key, dir} = S.sort;
+  rows.sort((a, b) => {
+    const x = a[key], y = b[key];
+    if (x == null && y == null) return 0; if (x == null) return 1; if (y == null) return -1;
+    return typeof x === "string" ? dir * x.localeCompare(y) : dir * (x - y);
+  });
+  const cols = PCOLS[S.plSide];
+  $("#plCount").textContent = `${rows.length} ${S.plSide === "hitting" ? "hitters" : "pitchers"} · ${S.tag}`;
+  $("#plTable").innerHTML = `<thead><tr>${cols.map(c => `<th class="${c === "name" ? "name" : ""} ${TEXT_COLS[c] ? "l" : ""}" data-k="${c}"${tAttr(c)} ${key === c ? `aria-sort="${dir > 0 ? "ascending" : "descending"}"` : ""} scope="col">${TEXT_COLS[c] || STAT[c].label}</th>`).join("")}</tr></thead>
+  <tbody>${rows.map((o, i) => `<tr data-i="${i}" class="${o.small ? "small" : ""}">${cols.map(c => {
+    if (c === "name") return `<td class="name">${esc(o.name)}${o.small ? ` <span class="tag sm">small</span>` : ""}</td>`;
+    if (c === "pos") return `<td class="l">${esc(o.pos)}</td>`;
+    if (c === "action") { const cls = /Positive|Strong/.test(o.action) ? "up" : /Negative|Weak/.test(o.action) ? "down" : ""; return `<td class="l"><span class="tag ${cls}">${esc(o.action)}</span></td>`; }
+    if (c === "arch") return `<td class="l" style="font-family:var(--f-ui);color:var(--ink2)">${esc(o.arch)}</td>`;
+    const st = STAT[c], p = pctOf(o, st.pct);
+    if (c === "gap") return `<td class="pcell" style="--pc:${gapCol(o.gap)}">${fmt(o.gap, "z")}</td>`;
+    return `<td class="${p != null ? "pcell" : ""}" ${p != null ? `style="--pc:${pctCol(p)}"` : ""}>${fmt(o[c], st.fmt)}</td>`;
+  }).join("")}</tr>`).join("")}</tbody>`;
+  $$("#plTable th").forEach(th => th.addEventListener("click", () => {
+    const k = th.dataset.k; S.sort = {key: k, dir: S.sort.key === k ? -S.sort.dir : (TEXT_COLS[k] || STAT[k]?.low ? 1 : -1)}; renderPlayers();
+  }));
+  $$("#plTable tbody tr").forEach(tr => tr.addEventListener("click", () => openProfile(rows[+tr.dataset.i])));
+}
+$("#plSide").addEventListener("click", e => {
+  const b = e.target.closest("button"); if (!b) return;
+  S.plSide = b.dataset.side; S.sort = {key: "sig", dir: -1};
+  $$("#plSide button").forEach(x => x.setAttribute("aria-pressed", x === b));
+  $("#plPos").value = ""; $("#plAction").value = ""; renderPlayers();
+});
+["plSearch", "plPos", "plAction", "plQual"].forEach(id => $("#" + id).addEventListener(id === "plSearch" ? "input" : "change", renderPlayers));
+document.addEventListener("click", e => { const b = e.target.closest(".pctSeg button"); if (b) setPctMode(b.dataset.m); });
+
+/* ---------------- profile drawer ---------------- */
+const PROFILE = {
+  hitting: [["signal_score", "Signal score", "z"], ["xwoba", "xwOBA", "r3"], ["barrels", "Barrels", "int"], ["ev90", "90th-pct EV", "r1"], ["chase_rate", "Chase discipline", "pct"], ["sb", "Stolen bases", "int"], ["r_plus_rbi", "R+RBI", "int"]],
+  pitching: [["signal_score", "Signal score", "z"], ["k", "Strikeouts", "int"], ["xfip", "xFIP", "r2"], ["whiff_rate", "Whiff%", "pct"], ["barrel_rate_allowed", "Barrel% allowed", "pct"], ["qs", "Quality starts", "int"]],
+};
+const PROFILE_BOX = {
+  hitting: [["hr", "Home runs", "int"], ["r", "Runs", "int"], ["rbi", "RBI", "int"], ["avg", "AVG", "r3"], ["obp", "OBP", "r3"], ["ops", "OPS", "r3"]],
+  pitching: [["w", "Wins", "int"], ["sv", "Saves", "int"], ["era", "ERA", "r2"], ["whip", "WHIP", "r2"]],
+};
+let lastFocus = null;
+function openProfile(o, mode) { // mode: undefined = fresh open, "nav" = another season inside the drawer, "rerender"
+  if (!mode) lastFocus = document.activeElement;
+  S.profile = o;
+  const side = o.side, hist = BYID[side][o.id], ti = TAGS.indexOf(o.year), prev = ti > 0 ? hist[TAGS[ti - 1]] : null;
+  const val = (row, k) => (k === "signal_score" ? row.sig : row[k]);
+  const barsFor = list => list.map(([k, label, f]) => {
+    const p = pctOf(o, k), gp = prev ? pctOf(prev, k) : null;
+    return `<div class="pbar"><span class="pl ty"${tAttr(k)}>${label}</span><span class="ptrack">
+      ${p != null ? `<span class="fill" style="width:${p}%;background:linear-gradient(90deg,rgba(255,61,158,.35),${pctCol(p, .75)})"></span>` : ""}
+      ${gp != null ? `<span class="ghost" style="left:${gp}%" title="${prev.year}: ${Math.round(gp)}th percentile"></span>` : ""}
+      ${p != null ? `<span class="knob" style="left:${p}%;background:${pctCol(p)};box-shadow:0 0 14px ${pctCol(p, .6)}">${Math.round(p)}</span>` : ""}
+    </span><span class="pv">${fmt(val(o, k), f)}</span></div>`;
+  }).join("");
+  // five-season arc
+  const W = 500, H = 150, m = {l: 34, r: 16, t: 16, b: 26};
+  const pts = TAGS.map(t => hist[t] ? {t, o: hist[t]} : null);
+  const sigs = pts.filter(Boolean).map(p => p.o.sig).filter(v => v != null);
+  const lo = Math.min(-0.5, ...sigs) - 0.2, hi = Math.max(1, ...sigs) + 0.2;
+  const xs = i => m.l + i * (W - m.l - m.r) / 4, ys = v => H - m.b - (v - lo) / (hi - lo) * (H - m.t - m.b);
+  let arc = `<line x1="${m.l}" x2="${W - m.r}" y1="${ys(0)}" y2="${ys(0)}" stroke="#3a3270" stroke-dasharray="4 4"/><text class="ax" x="${m.l - 6}" y="${ys(0) + 4}" text-anchor="end">0</text>`;
+  TAGS.forEach((t, i) => { arc += `<text class="ax-strong" x="${xs(i)}" y="${H - 6}" text-anchor="middle" style="${t === o.year ? "fill:var(--teal)" : ""}">${t}</text>`; });
+  for (let i = 1; i < 5; i++) if (pts[i] && pts[i - 1] && pts[i].o.sig != null && pts[i - 1].o.sig != null)
+    arc += `<line x1="${xs(i - 1)}" y1="${ys(pts[i - 1].o.sig)}" x2="${xs(i)}" y2="${ys(pts[i].o.sig)}" stroke="#9b7bff" stroke-width="2"/>`;
+  pts.forEach((p, i) => {
+    if (!p) { arc += `<text class="ax" x="${xs(i)}" y="${ys(0) - 8}" text-anchor="middle">—</text>`; return; }
+    if (p.o.sig == null) return;
+    const c = gapCol(p.o.gap), cur = p.t === o.year;
+    arc += `<circle cx="${xs(i)}" cy="${ys(p.o.sig)}" r="${cur ? 7 : 5}" fill="${p.o.small ? "#100d1f" : c}" stroke="${cur ? "#f1edff" : c}" stroke-width="2"><title>${p.t}: ${fmt(p.o.sig, "z")}${p.o.small ? " (small sample)" : ""}</title></circle>`;
+    arc += `<text class="lbl" x="${xs(i)}" y="${ys(p.o.sig) - 12}" text-anchor="middle">${fmt(p.o.sig, "z")}</text>`;
+  });
+  const tcols = side === "hitting" ? [["pa", "PA", "int"], ["xwoba", "xwOBA", "r3"], ["barrels", "BRL", "int"], ["hr", "HR", "int"], ["sb", "SB", "int"], ["avg", "AVG", "r3"], ["obp", "OBP", "r3"]]
+    : [["ip", "IP", "r1"], ["k", "K", "int"], ["xfip", "xFIP", "r2"], ["w", "W", "int"], ["sv", "SV", "int"], ["era", "ERA", "r2"], ["whip", "WHIP", "r2"]];
+  const actCls = /Positive|Strong/.test(o.action) ? "up" : /Negative|Weak/.test(o.action) ? "down" : "";
+  const dr = $("#drawer");
+  dr.innerHTML = `<div class="dr-top"><div><h2 class="dr-name" id="drName">${esc(o.name)}</h2>
+      <div class="dr-meta">${o.year} · ${side === "hitting" ? esc(o.pos) + " · hitter" : "pitcher"} · Statcast rank #${o.scr ?? "—"} · box-score rank #${o.trr ?? "—"}</div></div>
+      <button type="button" class="x" id="drClose" aria-label="Close profile">×</button></div>
+    <div class="dr-tags"><span class="tag ${actCls}">${esc(o.action)}</span><span class="tag">${esc(o.arch)}</span>${o.small ? `<span class="tag sm">small sample</span>` : ""}</div>
+    <div class="dr-big">
+      <div><div class="l">Statcast value</div><div class="v" style="color:${gapCol(Math.max(-1.5, Math.min(1.5, o.sig)))}">${fmt(o.sig, "z")}</div><div class="c">skill categories</div></div>
+      <div><div class="l">Box-score value</div><div class="v">${fmt(o.trad, "z")}</div><div class="c">traditional stats</div></div>
+      <div><div class="l">Skill gap</div><div class="v" style="color:${gapCol(o.gap)}">${fmt(o.gap, "z")}</div><div class="c">${o.gap >= 0 ? "skill > stats" : "stats > skill"}</div></div>
+    </div>
+    <div class="dr-h"><span>Skill percentiles · ${S.pctMode === "season" ? `within ${o.year}` : "pooled 2017–21"}</span><span>${prev ? `dashed ring = ${prev.year}` : "no prior season on file"}</span></div>
+    <div class="seg pctSeg" role="group" aria-label="Percentile lens" style="margin-bottom:8px">
+      <button type="button" data-m="pooled" aria-pressed="${S.pctMode !== "season"}">Pooled 2017–21</button>
+      <button type="button" data-m="season" aria-pressed="${S.pctMode === "season"}">Within season</button>
+    </div>
+    ${barsFor(PROFILE[side])}
+    <div class="dr-h"><span>Box-score percentiles · official season lines</span><span></span></div>
+    ${barsFor(PROFILE_BOX[side])}
+    <div class="dr-h"><span>Five-season arc · Statcast value</span><span>hollow = small sample</span></div>
+    <div class="arc"><svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Statcast value by season for ${esc(o.name)}">${arc}</svg></div>
+    <div class="tbl-wrap arc-tbl"><table><thead><tr><th class="l">Season</th>${tcols.map(c => `<th>${c[1]}</th>`).join("")}<th>Gap</th></tr></thead><tbody>
+      ${TAGS.filter(t => hist[t]).map(t => { const r = hist[t]; return `<tr class="${t === o.year ? "cur" : ""}" data-t="${t}"><td class="l">${t}${r.small ? " ·s" : ""}</td>${tcols.map(([k, , f]) => `<td>${fmt(r[k], f)}</td>`).join("")}<td style="color:${gapCol(r.gap)}">${fmt(r.gap, "z")}</td></tr>`; }).join("")}
+    </tbody></table></div>`;
+  dr.hidden = false; $("#scrim").hidden = false; document.body.style.overflow = "hidden";
+  $("#drClose").addEventListener("click", closeProfile);
+  $$(".arc-tbl tbody tr", dr).forEach(tr => tr.addEventListener("click", () => openProfile(hist[tr.dataset.t], "nav")));
+  if (mode === "rerender") ($("#drawer .pctSeg button[aria-pressed=true]") || $("#drClose")).focus();
+  else { dr.scrollTop = 0; $("#drClose").focus(); }
+}
+function closeProfile() {
+  S.profile = null;
+  $("#drawer").hidden = true; $("#scrim").hidden = true; document.body.style.overflow = "";
+  const back = lastFocus && lastFocus.isConnected ? lastFocus : $("#plSearch"); // the opener may have been re-rendered away
+  if (back && back.focus) back.focus();
+}
+$("#scrim").addEventListener("click", closeProfile);
+document.addEventListener("keydown", e => {
+  const dr = $("#drawer");
+  if (dr.hidden) return;
+  if (e.key === "Escape") { closeProfile(); return; }
+  if (e.key !== "Tab") return; // keep Tab inside the open drawer
+  const f = $$("button, [href], input, select, [tabindex]:not([tabindex='-1'])", dr).filter(el => !el.disabled && el.offsetParent !== null);
+  if (!f.length) return;
+  if (e.shiftKey && document.activeElement === f[0]) { e.preventDefault(); f[f.length - 1].focus(); }
+  else if (!e.shiftKey && document.activeElement === f[f.length - 1]) { e.preventDefault(); f[0].focus(); }
+  else if (!dr.contains(document.activeElement)) { e.preventDefault(); f[0].focus(); }
+});
+
+/* ---------------- boot ---------------- */
+renderYearSeg(); renderRibbon(); renderHall();
+sizeField(); F.dots = fieldData(S.fieldSide); setFieldTargets(false); renderCallouts(false); updateReadout(); drawField();
+renderBall(); renderBump(); renderMix(); renderPulse(); renderThesis();
+// Motion budget: everything ambient stops while the tab is hidden.
+document.addEventListener("visibilitychange", () => document.documentElement.classList.toggle("paused", document.hidden));
+renderSeasonSel(); setSeason(S.tag);
+let rz = 0;
+new ResizeObserver(() => { clearTimeout(rz); rz = setTimeout(() => { if (FB.clientWidth !== F.w) { sizeField(); drawField(); placeBubbles(); } }, 80); }).observe(FB);
+if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { drawField(); placeBubbles(); });
+})();
+</script>

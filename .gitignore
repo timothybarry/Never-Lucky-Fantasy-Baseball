@@ -1,0 +1,36 @@
+# Python / tooling
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+build/
+dist/
+.venv/
+venv/
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+*.stackdump
+
+# Archives
+*.zip
+*.rar
+*.7z
+
+# Raw MLB data: rebuild it, never commit it (see DATA_NOTICE.md and README "Rebuild")
+data/raw_sample/*
+!data/raw_sample/.gitkeep
+data/fantasy_outcomes/*
+!data/fantasy_outcomes/.gitkeep
+
+# Generated outputs
+outputs/
+outputs_*/
+assets/*.png
+site/payload.json
+site/never_lucky_five_seasons.html
+site/never-lucky.html
+
+# Stale duplicate of scripts/build_precomputed.py
+data/build_precomputed.py

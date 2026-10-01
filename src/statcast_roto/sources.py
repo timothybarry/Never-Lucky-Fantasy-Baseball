@@ -54,8 +54,8 @@ class PrecomputedCSVSource:
     notes: tuple[str, ...] = field(default=(
         "Aggregated from real 2020 pitch-level Statcast data.",
         "xwOBA is a per-pitch mean approximation; xFIP and QS are transparent "
-        "approximations derived from pitch rows; R and SB are not fully "
-        "recoverable from pitch data and are reported as 0 / approximate. "
+        "approximations derived from pitch rows. R/RBI/SB/slash stats should "
+        "be enriched from a season-level batting table when available. "
         "See docs/design_memo.md for the full accounting.",
     ))
 
@@ -64,3 +64,66 @@ class PrecomputedCSVSource:
         pitchers = read_csv(self.directory / self.pitchers_file, label="pitchers")
         rosters = read_csv(self.directory / self.rosters_file, label="rosters")
         return DataBundle(hitters, pitchers, rosters, self.source_name, self.notes).validate()
+
+    @classmethod
+    def from_paths(
+        cls,
+        hitters: str | Path,
+        pitchers: str | Path,
+        rosters: str | Path,
+        *,
+        source_name: str = "precomputed-custom",
+    ) -> "PrecomputedCSVSource":
+        """Build a source from three explicit file paths (any location).
+
+        Lets you point the engine at precomputed files you generated yourself
+        (e.g. via scripts/build_precomputed.py for a different season) rather
+        than the bundled defaults.
+        """
+        hitters, pitchers, rosters = Path(hitters), Path(pitchers), Path(rosters)
+        # All three must share a parent for the directory/filename split, so we
+        # validate existence here and load by absolute path in a tiny subclass
+        # instance via the directory+name fields.
+        for p, lbl in [(hitters, "hitters"), (pitchers, "pitchers"), (rosters, "rosters")]:
+            if not p.exists():
+                raise FileNotFoundError(f"Could not find {lbl} CSV: {p}")
+        # Use each file's own parent dir; load() joins directory/file, so set
+        # directory per-file by reading directly instead. Simplest: a thin
+        # instance whose load() reads the absolute paths.
+        inst = cls(
+            directory=hitters.parent,
+            hitters_file=hitters.name,
+            pitchers_file=pitchers.name,
+            rosters_file=rosters.name,
+            source_name=source_name,
+            notes=(
+                "Custom precomputed tables (user-generated).",
+                "If aggregated from raw pitch data, the same honesty caveats "
+                "apply: xwOBA/xFIP/QS are approximations; R/RBI/SB/slash "
+                "need season batting enrichment for official fantasy outcomes. "
+                "See docs/design_memo.md.",
+            ),
+        )
+        # If pitchers/rosters live in a different folder than hitters, fall back
+        # to absolute reads.
+        if not (inst.directory / inst.pitchers_file) == pitchers or \
+           not (inst.directory / inst.rosters_file) == rosters:
+            return _ExplicitPathSource(hitters, pitchers, rosters, source_name)
+        return inst
+
+
+@dataclass(frozen=True, slots=True)
+class _ExplicitPathSource:
+    """Fallback source when the three CSVs live in different directories."""
+
+    hitters_path: Path
+    pitchers_path: Path
+    rosters_path: Path
+    source_name: str = "precomputed-custom"
+
+    def load(self) -> DataBundle:
+        hitters = read_csv(self.hitters_path, label="hitters")
+        pitchers = read_csv(self.pitchers_path, label="pitchers")
+        rosters = read_csv(self.rosters_path, label="rosters")
+        notes = ("Custom precomputed tables (user-generated, mixed dirs).",)
+        return DataBundle(hitters, pitchers, rosters, self.source_name, notes).validate()

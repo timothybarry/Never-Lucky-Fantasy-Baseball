@@ -4,7 +4,7 @@
 PYTHON ?= python3
 export PYTHONPATH := src
 
-.PHONY: help install demo run run-pitch test clean
+.PHONY: help install demo run run-pitch raw enrich site test clean
 
 help:
 	@echo "Targets:"
@@ -12,6 +12,9 @@ help:
 	@echo "  demo       Run the full demo on bundled real-2020 data -> outputs/"
 	@echo "  run        Score the bundled league (CLI, precomputed source)"
 	@echo "  run-pitch  Aggregate the raw pitch SAMPLE from scratch, then score"
+	@echo "  raw        Download the raw Statcast seasons (~1.6 GB, needs pybaseball)"
+	@echo "  enrich     Fetch official MLB season lines and merge them (needs internet)"
+	@echo "  site       Rebuild the five-season page -> site/never_lucky_five_seasons.html"
 	@echo "  test       Run the test suite"
 	@echo "  clean      Remove generated outputs and caches"
 
@@ -29,6 +32,23 @@ run-pitch:
 		--pitches data/raw_sample/statcast_2020_sample.csv \
 		--rosters data/precomputed/rosters_2020.csv \
 		--outputs outputs_pitch
+
+# Convert a raw pitch CSV into precomputed files. Override PITCHES and TAG:
+#   make precompute PITCHES=data/raw_sample/Statcast_2021.csv TAG=2021
+PITCHES ?= data/raw_sample/statcast_2020_sample.csv
+TAG ?= sample
+precompute:
+	$(PYTHON) scripts/build_precomputed.py --pitches $(PITCHES) --tag $(TAG)
+
+raw:
+	$(PYTHON) scripts/fetch_raw_statcast.py
+
+enrich:
+	$(PYTHON) scripts/enrich_precomputed.py --tags 2017 2018 2019 2020 2021 --fetch
+
+site: enrich
+	$(PYTHON) site/build_payload.py
+	$(PYTHON) site/build_site.py
 
 test:
 	$(PYTHON) -m pytest

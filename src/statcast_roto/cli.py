@@ -43,6 +43,12 @@ def build_parser() -> argparse.ArgumentParser:
                         "pitch = aggregate a raw pitch-level Statcast CSV.")
     p.add_argument("--pitches", type=Path, default=None,
                    help="Raw pitch-level Statcast CSV (required for --source pitch).")
+    p.add_argument("--hitters", type=Path, default=None,
+                   help="Precomputed hitters CSV (for --source precomputed; "
+                        "defaults to bundled 2020).")
+    p.add_argument("--pitchers", type=Path, default=None,
+                   help="Precomputed pitchers CSV (for --source precomputed; "
+                        "defaults to bundled 2020).")
     p.add_argument("--rosters", type=Path, default=None,
                    help="Roster CSV (team, side, player_id). Defaults to bundled.")
     p.add_argument("--outputs", type=Path, default=Path("outputs"),
@@ -70,11 +76,25 @@ def main(argv: list[str] | None = None) -> int:
             min_ip=args.min_ip,
         ).load()
     else:
-        bundle = PrecomputedCSVSource()
-        if args.rosters is not None:
-            bundle = PrecomputedCSVSource(rosters_file=args.rosters.name,
-                                          directory=args.rosters.parent)
-        bundle = bundle.load()
+        # Precomputed source. If the user passed custom files, use them;
+        # otherwise fall back to the bundled 2020 tables.
+        if args.hitters or args.pitchers:
+            if not (args.hitters and args.pitchers):
+                raise SystemExit("Provide BOTH --hitters and --pitchers (or neither).")
+            default_dir = PrecomputedCSVSource().directory
+            rosters = args.rosters or (default_dir / "rosters_2020.csv")
+            bundle = PrecomputedCSVSource.from_paths(
+                hitters=args.hitters,
+                pitchers=args.pitchers,
+                rosters=rosters,
+                source_name=f"precomputed-custom({args.hitters.stem})",
+            ).load()
+        else:
+            src = PrecomputedCSVSource()
+            if args.rosters is not None:
+                src = PrecomputedCSVSource(rosters_file=args.rosters.name,
+                                           directory=args.rosters.parent)
+            bundle = src.load()
 
     # --- score + compare ---
     result = RotoScorer(DEFAULT_CATEGORIES).score(bundle)

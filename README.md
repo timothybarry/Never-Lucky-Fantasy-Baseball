@@ -1,177 +1,142 @@
-# Statcast Roto
+# Never Lucky
 
-**A fantasy baseball rotisserie engine scored on Statcast / expected-stat
-categories instead of luck-polluted traditional stats.**
+**A fantasy baseball rotisserie league scored on Statcast skill instead of
+luck-polluted box scores, built over five MLB seasons (2017–2021) of
+pitch-level data.**
 
 Traditional roto categories (HR, R, RBI, SB, AVG / W, K, SV, ERA, WHIP) mostly
-measure *outcomes* — which are contaminated by luck, park, defense, and lineup
-context. This engine scores teams on *skill and process* metrics — **barrels,
-xwOBA, 90th-percentile exit velocity, chase rate, xFIP, whiff rate, and barrel%
-allowed** — blending counting stats (which reward volume) with rate/expected
-stats (which reward per-opportunity quality). In effect, the scoring engine
-*is* the analytical judgment layer: "trust the underlying skill, not the noisy
-result" is baked into how you win.
+measure outcomes, and outcomes carry luck, park, defense and lineup context.
+Never Lucky scores the process instead: barrels, xwOBA, 90th-percentile exit
+velocity, chase rate, whiff rate, xFIP and barrel% allowed, alongside a few
+volume lanes (R+RBI, SB, K, QS) so playing time still matters. The gap between
+a player's Statcast value and his box-score value is where the edge lives.
 
-It runs on **real 2020 Statcast data** out of the box, aggregated from
-pitch-by-pitch rows, with player names resolved via the Chadwick register.
+The project ships two things:
 
----
+- **`statcast_roto`**, a Python package: swappable data sources, a roto scoring
+  engine, and a value model comparing the Statcast and traditional slates.
+- **A five-season site** (`site/`): a single self-contained HTML page with an
+  infographic splash (the signal field, season ribbon, league trends, a
+  five-year "signal hall"), a test of the thesis, and standings, leaderboards
+  and a scouting table with per-player percentile profiles.
+
+## What the five seasons say
+
+Same player, back-to-back qualified seasons, within-season z-scores. The 60-game
+2020 season is reported separately.
+
+| Full-season pairs (2017→18, 2018→19) | Hitters | Pitchers |
+|---|---|---|
+| 1. Repeats next season (r): Statcast value vs box-score value | .735 vs .616 | .566 vs .454 |
+| 2. Next season's box score, out-of-sample R²: box score alone → + Statcast | .378 → .375 | .199 → .222 |
+| 3. Rate vs rate, next season's OPS / ERA, out-of-sample R²: rate alone → + skill rates | .091 → .133 | −.021 → .042 |
+
+The thesis is that Statcast measures skill better than the box score, and the
+site tests it in the open. Statcast wins two of three for hitters and three of
+three for pitchers. The one loss is hitters' box-score composite, which is
+mostly playing time and lineup role, and those carry over on their own. Rate
+for rate, skill stats sharpen the forecast on both sides, and a pitcher's ERA
+barely predicts his next ERA at all. The site shows every test with its
+interval, with and without the 60-game 2020 season.
 
 ## Quick start
 
 ```bash
-# 1. (optional) create a venv, then install
 pip install -e ".[dev]"
-
-# 2. run the full demo on the bundled real-2020 data
-make demo            # or: python examples/run_demo.py
-
-# 3. run the test suite
-make test            # 18 tests
+python -m pytest            # pitch-level tests skip unless the raw sample is present
+python examples/run_demo.py # score a precomputed season
 ```
 
-No network or paid data feed is required for the default path — a real-2020
-player pool is precomputed and bundled in `data/precomputed/`.
+## Rebuild the site
 
-### As a library
-
-```python
-from statcast_roto import PrecomputedCSVSource, score_roto
-
-bundle = PrecomputedCSVSource().load()      # real 2020 pool + 10-team league
-result = score_roto(bundle)
-print(result.standings)
-```
-
-### From the command line
+`data/precomputed/` is committed, so the site builds without the raw files.
+The official season lines it was enriched with are not committed; fetch them
+first (about ten requests to the public MLB Stats API):
 
 ```bash
-# Score the bundled league on the Statcast slate
-python -m statcast_roto.cli --source precomputed --outputs outputs
-
-# Aggregate a RAW pitch-level Statcast CSV from scratch, then score
-python -m statcast_roto.cli --source pitch \
-    --pitches data/raw_sample/statcast_2020_sample.csv \
-    --rosters data/precomputed/rosters_2020.csv \
-    --outputs outputs_pitch
+python scripts/enrich_precomputed.py --tags 2017 2018 2019 2020 2021 --fetch
+python site/build_payload.py     # scores all five seasons -> site/payload.json
+python site/build_site.py        # -> site/never_lucky_five_seasons.html
 ```
 
----
+Or `make enrich` then `make site`.
 
-## What you get
+### Re-deriving the Statcast aggregates (optional, about 1.6 GB)
 
-Running the demo produces standings plus the **headline analysis** — how player
-*values* shift when you move from outcome scoring to process scoring:
+The raw pitch files are too big for the repo, so they download after you clone,
+the same way a model's weights would. `scripts/fetch_raw_statcast.py` pulls each
+regular season from Baseball Savant through pybaseball (slow: roughly 10–20
+minutes a season) into `data/raw_sample/`:
 
-- **Biggest risers under Statcast scoring**: elite-stuff arms the old stats
-  undervalue (e.g. Devin Williams's historic 2020 changeup season, deGrom,
-  Bieber, Karinchak — high-whiff, low-barrel pitchers).
-- **Players who look better under traditional scoring**: soft-contact veterans
-  whose ERA/W flattered them while their underlying stuff lagged.
+```bash
+pip install -e ".[live]"
+python scripts/fetch_raw_statcast.py --seasons 2017 2018 2019 2020 2021   # or: make raw
+python scripts/build_precomputed.py --pitches data/raw_sample/statcast_2021.csv --tag 2021 --min-pa 50 --min-ip 20
+python scripts/build_precomputed.py --pitches data/raw_sample/statcast_2020.csv --tag 2020 --min-pa 19 --min-ip 7.4  # 60-game season
+python site/league_agg.py        # league totals for the splash; needs all five raw seasons
+```
 
-That contrast is the whole point: **process scoring rewards skill; outcome
-scoring rewards results, which are partly luck.**
+The fetch script hasn't been run end to end here (pybaseball isn't in this
+project's environment); the five seasons in `data/precomputed` were built from
+Baseball Savant exports.
 
-Outputs (CSV + PNG) land in `outputs/`:
+`build_precomputed.py` keeps regular-season games only and merges the official
+season lines automatically when `data/fantasy_outcomes/mlb_*_<tag>.csv` exist.
+`WORKFLOW.md` walks through the pipeline step by step.
 
-| File | Contents |
-|---|---|
-| `standings.csv` | Final roto standings + per-category points |
-| `team_category_values.csv` | Raw aggregated category values per team |
-| `team_category_points.csv` | Roto points per category per team |
-| `player_value_comparison.csv` | Each player's value under both slates |
-| `biggest_statcast_bumps.csv` | Players who gain most under Statcast scoring |
-| `biggest_traditional_bumps.csv` | Players who gain most under traditional scoring |
-| `standings.png`, `value_delta.png` | Charts |
+## Category slate
 
----
+| Hitting | Better | | Pitching | Better |
+|---|---|---|---|---|
+| Barrels | higher | | K | higher |
+| R+RBI | higher | | xFIP | lower |
+| xwOBA | higher | | Whiff% | higher |
+| 90th-pct EV | higher | | Barrel% allowed | lower |
+| Chase% | lower | | QS | higher |
+| SB | higher | | | |
+
+Rate categories carry minimum-opportunity thresholds (`categories.py`), so a
+tiny-sample waiver legend can't top them.
 
 ## How it works
 
-```
-data source ──► normalized DataBundle ──► RotoScorer ──► standings
-   │                                          ▲
-   ├── PrecomputedCSVSource (bundled CSVs)     │
-   └── PitchLevelCSVSource  (raw pitch CSV) ───┘
-                                          └──► PlayerValueModel ──► value comparison
-```
-
-The **data layer is decoupled from the scoring engine** (sources all satisfy
-one `DataSource` protocol and return the same normalized schema). That means:
-
-- the engine runs identically whether rows come from precomputed CSVs, raw
-  pitch aggregation, or (later) a live/keyed feed;
-- the whole thing is testable and runnable without a network pull;
-- swapping in a real season-stat export for the context categories changes only
-  the data layer, never the scoring.
-
-### Modules
-
-| Module | Responsibility |
-|---|---|
-| `categories.py` | The category slate as declarative data — *the objective function* |
-| `schemas.py` | Normalized data contract + validation |
-| `sources.py` | `PrecomputedCSVSource` (bundled aggregated data) |
-| `pitch_level.py` | `PitchLevelCSVSource` — aggregate raw pitch data from scratch |
-| `scoring.py` | `RotoScorer` — counting sums, opportunity-weighted rates, roto ranks |
-| `value.py` | `PlayerValueModel` — how player value shifts between slates |
-| `drafting.py` | Snake-draft helper to build example leagues |
-| `charts.py` | Standings + value-delta charts |
-| `cli.py` | Command-line entry point |
-
----
-
-## Data sources & honest accounting
-
-This project aggregates **raw pitch-by-pitch Statcast data** (the freely
-available form) into season-level stats. Not every fantasy stat is cleanly
-recoverable from pitch rows, and the integrity of the project depends on being
-honest about which is which rather than fabricating the gaps. In brief:
-
-- **Real / clean:** barrels, 90th-pct EV, chase rate, K, whiff%, barrel%
-  allowed, HR, IP (from outs).
-- **Approximated & labeled:** xwOBA (per-pitch contact mean), xFIP (FIP-style
-  proxy), QS (from outs + runs per game).
-- **Not recoverable from pitch data alone (never faked):** R, SB, W, SV, ERA,
-  WHIP — reported as 0/approximate, to be merged from an audited season export
-  for a published league.
-
-The full accounting — including the barrel/zone definitions, the name-resolution
-fix (in pitch data `player_name` is always the *pitcher*), and the
-minimum-opportunity design lever — is in **[`docs/design_memo.md`](docs/design_memo.md)**.
-
-### Using your own data
-
-- **Raw pitch CSV** (Savant / `pybaseball.statcast` schema, one row per pitch):
-  point `PitchLevelCSVSource` at it.
-- **Already-aggregated CSVs**: drop them in `data/precomputed/` matching the
-  schema in `schemas.py` and use `PrecomputedCSVSource`.
-- **Your own league**: supply a rosters CSV with columns `team, side,
-  player_id` (MLBAM IDs). `snake_draft_rosters()` can generate one from a pool.
-
----
-
-## Project layout
-
-```
-statcast-fantasy-roto/
-├── src/statcast_roto/        # the package
-├── data/
-│   ├── precomputed/          # real-2020 aggregated hitters/pitchers/rosters
-│   └── raw_sample/           # a small real pitch-level sample (aggregation demo)
-├── examples/run_demo.py      # end-to-end demonstration
-├── tests/                    # 18 tests (scoring math, aggregation, value model)
-├── docs/design_memo.md       # thesis + category design + honest data accounting
-├── outputs/                  # generated CSVs + charts
-├── pyproject.toml
-└── Makefile
+```text
+src/statcast_roto/
+  categories.py        the objective function: both slates as declarative data
+  sources.py           precomputed CSV source (data-origin agnostic)
+  pitch_level.py       raw pitch rows -> season tables (regular season only)
+  mlb_stats_api.py     official season lines from statsapi.mlb.com, keyed by MLBAM id
+  fantasy_outcomes.py  merges official R/RBI/SB/AVG/OBP/SLG and W/SV/ERA/WHIP/IP
+  scoring.py           roto aggregation and standings
+  value.py             Statcast vs traditional value per player
+  dashboard.py         the older Chart.js dashboard (scripts/build_dashboard.py)
+scripts/               build_precomputed, enrich_precomputed, build_dashboard
+site/                  the five-season page: build_payload, build_site, league_agg, template
+tests/                 pytest suite
 ```
 
-The bundled real-2020 pool is **415 hitters, 323 pitchers**, drafted into a
-**10-team, 16-player league**.
+The scoring engine never learns where its numbers came from: a new data source
+is one new loader, with scoring, value and the site unchanged.
 
----
+## Honest data accounting
+
+- **From the pitch files** (regular season only): barrels, EV90 and barrel%
+  allowed (balls in play only), chase%, whiff%, K (strikeout double plays
+  included), HR.
+- **Official season lines** (MLB Stats API, matched by MLBAM id): PA, R, RBI,
+  SB, AVG, OBP, SLG, OPS, W, SV, ERA, WHIP, IP. Checked against
+  Baseball-Reference for every player-season, 2017–2021.
+- **Labeled approximations:** xwOBA on contact (mean of the speed/angle
+  estimate over balls in play), xFIP (FIP-style proxy), QS (rebuilt from outs
+  and runs in each start).
+- **2020** had 60 games, so every opportunity threshold that season is scaled
+  by 60/162 (player-pool floors, small-sample flags, category minimums).
+- **Rosters** are auto-drafted per season for a 10-team league; team names
+  carry over, rosters don't.
+
+See `DATA_NOTICE.md` for what data is and isn't in this repository.
 
 ## License
 
-MIT.
+Code: MIT (see `LICENSE`). Data: see `DATA_NOTICE.md`. Not affiliated with
+Major League Baseball.

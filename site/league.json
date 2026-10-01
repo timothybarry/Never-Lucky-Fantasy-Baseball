@@ -1,0 +1,567 @@
+{
+ "2017": {
+  "game_types": {
+   "R": 721244
+  },
+  "pitches": 721244,
+  "games": 2430,
+  "first": "2017-04-02",
+  "last": "2017-10-01",
+  "pa": 184565,
+  "bip": 199437,
+  "barrels": 7891,
+  "hr": 6105,
+  "k": 40104,
+  "bb": 14858,
+  "hbp": 1763,
+  "swings": 337367,
+  "whiffs": 75969,
+  "chase_rate": 0.275,
+  "whiff_rate": 0.2252,
+  "k_rate": 0.2173,
+  "bb_rate": 0.0805,
+  "woba": 0.3332,
+  "xwoba": 0.3203,
+  "avg_ev": 82.09,
+  "ev95_share": 0.2399,
+  "avg_la": 16.46,
+  "ff_velo": 93.24,
+  "ff_spin": 2259.0,
+  "velo_95plus_share": 0.2718,
+  "velo_100plus": 1101,
+  "hardest_hit": {
+   "ev": 122.2,
+   "batter": "Giancarlo Stanton",
+   "date": "2017-10-01",
+   "event": "single"
+  },
+  "fastest_pitch": {
+   "mph": 104.2,
+   "pitcher": "Chapman, Aroldis",
+   "date": "2017-09-01"
+  },
+  "longest_hr": {
+   "ft": 496.0,
+   "batter": "Aaron Judge",
+   "date": "2017-09-30",
+   "ev": 118.3
+  },
+  "max_spin_ff": {
+   "rpm": 3660.0,
+   "pitcher": "Bettis, Chad"
+  },
+  "pitch_mix": {
+   "FF": 0.3462,
+   "SL": 0.1616,
+   "FT": 0.1289,
+   "CH": 0.0989,
+   "SI": 0.0784,
+   "CU": 0.0783,
+   "FC": 0.0528,
+   "KC": 0.0295,
+   "FS": 0.0164,
+   "OT": 0.0088,
+   "PO": 0.0002
+  },
+  "monthly": [
+   {
+    "m": "2017-04",
+    "pitches": 108345,
+    "hr": 863,
+    "barrels": 1273,
+    "bip": 29045
+   },
+   {
+    "m": "2017-05",
+    "pitches": 126129,
+    "hr": 1060,
+    "barrels": 1461,
+    "bip": 34260
+   },
+   {
+    "m": "2017-06",
+    "pitches": 121581,
+    "hr": 1101,
+    "barrels": 1340,
+    "bip": 33485
+   },
+   {
+    "m": "2017-07",
+    "pitches": 112310,
+    "hr": 936,
+    "barrels": 1167,
+    "bip": 31819
+   },
+   {
+    "m": "2017-08",
+    "pitches": 125101,
+    "hr": 1119,
+    "barrels": 1331,
+    "bip": 35100
+   },
+   {
+    "m": "2017-09",
+    "pitches": 123380,
+    "hr": 1001,
+    "barrels": 1284,
+    "bip": 34512
+   },
+   {
+    "m": "2017-10",
+    "pitches": 4398,
+    "hr": 25,
+    "barrels": 35,
+    "bip": 1216
+   }
+  ],
+  "unique_batters": 957,
+  "unique_pitchers": 755
+ },
+ "2018": {
+  "game_types": {
+   "R": 721190
+  },
+  "pitches": 721190,
+  "games": 2431,
+  "first": "2018-03-29",
+  "last": "2018-10-01",
+  "pa": 184480,
+  "bip": 200980,
+  "barrels": 8463,
+  "hr": 5585,
+  "k": 41207,
+  "bb": 14757,
+  "hbp": 1922,
+  "swings": 338145,
+  "whiffs": 77999,
+  "chase_rate": 0.278,
+  "whiff_rate": 0.2307,
+  "k_rate": 0.2234,
+  "bb_rate": 0.08,
+  "woba": 0.3244,
+  "xwoba": 0.314,
+  "avg_ev": 83.51,
+  "ev95_share": 0.2514,
+  "avg_la": 16.49,
+  "ff_velo": 93.16,
+  "ff_spin": 2266.0,
+  "velo_95plus_share": 0.2646,
+  "velo_100plus": 1366,
+  "hardest_hit": {
+   "ev": 121.7,
+   "batter": "Giancarlo Stanton",
+   "date": "2018-08-09",
+   "event": "home_run"
+  },
+  "fastest_pitch": {
+   "mph": 105.0,
+   "pitcher": "Hicks, Jordan",
+   "date": "2018-05-20"
+  },
+  "longest_hr": {
+   "ft": 495.0,
+   "batter": "Joey Gallo",
+   "date": "2018-07-20",
+   "ev": 114.3
+  },
+  "max_spin_ff": {
+   "rpm": 3632.0,
+   "pitcher": "Rodr\u00edguez, Dereck"
+  },
+  "pitch_mix": {
+   "FF": 0.3497,
+   "SL": 0.1679,
+   "FT": 0.1076,
+   "CH": 0.1036,
+   "SI": 0.0875,
+   "CU": 0.0797,
+   "FC": 0.0557,
+   "KC": 0.027,
+   "FS": 0.0141,
+   "OT": 0.007,
+   "PO": 0.0001
+  },
+  "monthly": [
+   {
+    "m": "2018-03",
+    "pitches": 11784,
+    "hr": 81,
+    "barrels": 155,
+    "bip": 3300
+   },
+   {
+    "m": "2018-04",
+    "pitches": 114835,
+    "hr": 831,
+    "barrels": 1508,
+    "bip": 31757
+   },
+   {
+    "m": "2018-05",
+    "pitches": 123004,
+    "hr": 977,
+    "barrels": 1517,
+    "bip": 34258
+   },
+   {
+    "m": "2018-06",
+    "pitches": 118207,
+    "hr": 933,
+    "barrels": 1384,
+    "bip": 33124
+   },
+   {
+    "m": "2018-07",
+    "pitches": 111314,
+    "hr": 857,
+    "barrels": 1240,
+    "bip": 31240
+   },
+   {
+    "m": "2018-08",
+    "pitches": 121691,
+    "hr": 989,
+    "barrels": 1316,
+    "bip": 34353
+   },
+   {
+    "m": "2018-09",
+    "pitches": 119825,
+    "hr": 912,
+    "barrels": 1338,
+    "bip": 32878
+   },
+   {
+    "m": "2018-10",
+    "pitches": 530,
+    "hr": 5,
+    "barrels": 5,
+    "bip": 142
+   }
+  ],
+  "unique_batters": 990,
+  "unique_pitchers": 799
+ },
+ "2019": {
+  "game_types": {
+   "R": 732473
+  },
+  "pitches": 732473,
+  "games": 2429,
+  "first": "2019-03-20",
+  "last": "2019-09-29",
+  "pa": 186025,
+  "bip": 200572,
+  "barrels": 9218,
+  "hr": 6776,
+  "k": 42823,
+  "bb": 15142,
+  "hbp": 1984,
+  "swings": 346434,
+  "whiffs": 82383,
+  "chase_rate": 0.2897,
+  "whiff_rate": 0.2378,
+  "k_rate": 0.2302,
+  "bb_rate": 0.0814,
+  "woba": 0.3359,
+  "xwoba": 0.3199,
+  "avg_ev": 83.87,
+  "ev95_share": 0.2594,
+  "avg_la": 16.59,
+  "ff_velo": 93.4,
+  "ff_spin": 2288.0,
+  "velo_95plus_share": 0.277,
+  "velo_100plus": 1051,
+  "hardest_hit": {
+   "ev": 120.6,
+   "batter": "Giancarlo Stanton",
+   "date": "2019-03-28",
+   "event": "single"
+  },
+  "fastest_pitch": {
+   "mph": 104.3,
+   "pitcher": "Hicks, Jordan",
+   "date": "2019-05-31"
+  },
+  "longest_hr": {
+   "ft": 505.0,
+   "batter": "Nomar Mazara",
+   "date": "2019-06-21",
+   "ev": 109.7
+  },
+  "max_spin_ff": {
+   "rpm": 3656.0,
+   "pitcher": "L\u00f3pez, Jorge"
+  },
+  "pitch_mix": {
+   "FF": 0.3578,
+   "SL": 0.1746,
+   "CH": 0.1089,
+   "CU": 0.0883,
+   "FT": 0.0828,
+   "SI": 0.0775,
+   "FC": 0.0645,
+   "KC": 0.0218,
+   "FS": 0.0139,
+   "OT": 0.0099
+  },
+  "monthly": [
+   {
+    "m": "2019-03",
+    "pitches": 15976,
+    "hr": 134,
+    "barrels": 197,
+    "bip": 4149
+   },
+   {
+    "m": "2019-04",
+    "pitches": 115064,
+    "hr": 1010,
+    "barrels": 1541,
+    "bip": 30848
+   },
+   {
+    "m": "2019-05",
+    "pitches": 123936,
+    "hr": 1136,
+    "barrels": 1638,
+    "bip": 33853
+   },
+   {
+    "m": "2019-06",
+    "pitches": 121725,
+    "hr": 1142,
+    "barrels": 1543,
+    "bip": 33801
+   },
+   {
+    "m": "2019-07",
+    "pitches": 110615,
+    "hr": 1057,
+    "barrels": 1366,
+    "bip": 30921
+   },
+   {
+    "m": "2019-08",
+    "pitches": 125867,
+    "hr": 1228,
+    "barrels": 1521,
+    "bip": 34782
+   },
+   {
+    "m": "2019-09",
+    "pitches": 119290,
+    "hr": 1069,
+    "barrels": 1412,
+    "bip": 32218
+   }
+  ],
+  "unique_batters": 990,
+  "unique_pitchers": 831
+ },
+ "2020": {
+  "game_types": {
+   "R": 263584,
+   "F": 1163
+  },
+  "pitches": 263584,
+  "games": 898,
+  "first": "2020-07-23",
+  "last": "2020-09-27",
+  "pa": 66400,
+  "bip": 77862,
+  "barrels": 3351,
+  "hr": 2304,
+  "k": 15586,
+  "bb": 5890,
+  "hbp": 821,
+  "swings": 121617,
+  "whiffs": 30055,
+  "chase_rate": 0.2742,
+  "whiff_rate": 0.2471,
+  "k_rate": 0.2347,
+  "bb_rate": 0.0887,
+  "woba": 0.3308,
+  "xwoba": 0.3207,
+  "avg_ev": 82.78,
+  "ev95_share": 0.2459,
+  "avg_la": 16.62,
+  "ff_velo": 93.34,
+  "ff_spin": 2307.0,
+  "velo_95plus_share": 0.2779,
+  "velo_100plus": 311,
+  "hardest_hit": {
+   "ev": 121.3,
+   "batter": "Giancarlo Stanton",
+   "date": "2020-07-25",
+   "event": "home_run"
+  },
+  "fastest_pitch": {
+   "mph": 102.2,
+   "pitcher": "deGrom, Jacob",
+   "date": "2020-09-26"
+  },
+  "longest_hr": {
+   "ft": 495.0,
+   "batter": "Ronald Acu\u00f1a",
+   "date": "2020-09-25",
+   "ev": 112.9
+  },
+  "max_spin_ff": {
+   "rpm": 3599.0,
+   "pitcher": "Means, John"
+  },
+  "pitch_mix": {
+   "FF": 0.3412,
+   "SL": 0.1772,
+   "SI": 0.1619,
+   "CH": 0.1192,
+   "CU": 0.0931,
+   "FC": 0.0681,
+   "KC": 0.0228,
+   "FS": 0.0164,
+   "OT": 0.0001
+  },
+  "monthly": [
+   {
+    "m": "2020-07",
+    "pitches": 30909,
+    "hr": 254,
+    "barrels": 342,
+    "bip": 8643
+   },
+   {
+    "m": "2020-08",
+    "pitches": 119100,
+    "hr": 1078,
+    "barrels": 1544,
+    "bip": 34588
+   },
+   {
+    "m": "2020-09",
+    "pitches": 113575,
+    "hr": 972,
+    "barrels": 1465,
+    "bip": 34631
+   }
+  ],
+  "unique_batters": 581,
+  "unique_pitchers": 735
+ },
+ "2021": {
+  "game_types": {
+   "R": 709851
+  },
+  "pitches": 709851,
+  "games": 2429,
+  "first": "2021-04-01",
+  "last": "2021-10-03",
+  "pa": 181348,
+  "bip": 232268,
+  "barrels": 9639,
+  "hr": 5944,
+  "k": 42145,
+  "bb": 15091,
+  "hbp": 2112,
+  "swings": 336851,
+  "whiffs": 80805,
+  "chase_rate": 0.2767,
+  "whiff_rate": 0.2399,
+  "k_rate": 0.2324,
+  "bb_rate": 0.0832,
+  "woba": 0.3247,
+  "xwoba": 0.3157,
+  "avg_ev": 82.23,
+  "ev95_share": 0.237,
+  "avg_la": 16.84,
+  "ff_velo": 93.64,
+  "ff_spin": 2272.0,
+  "velo_95plus_share": 0.3108,
+  "velo_100plus": 1829,
+  "hardest_hit": {
+   "ev": 122.2,
+   "batter": "Giancarlo Stanton",
+   "date": "2021-08-09",
+   "event": "grounded_into_double_play"
+  },
+  "fastest_pitch": {
+   "mph": 103.4,
+   "pitcher": "Chapman, Aroldis",
+   "date": "2021-06-19"
+  },
+  "longest_hr": {
+   "ft": 495.0,
+   "batter": "Miguel San\u00f3",
+   "date": "2021-08-25",
+   "ev": 116.7
+  },
+  "max_spin_ff": {
+   "rpm": 3594.0,
+   "pitcher": "Means, John"
+  },
+  "pitch_mix": {
+   "FF": 0.354,
+   "SL": 0.1927,
+   "SI": 0.1546,
+   "CH": 0.1137,
+   "CU": 0.0834,
+   "FC": 0.0662,
+   "KC": 0.0193,
+   "FS": 0.0153,
+   "OT": 0.0007
+  },
+  "monthly": [
+   {
+    "m": "2021-04",
+    "pitches": 111567,
+    "hr": 875,
+    "barrels": 1566,
+    "bip": 35297
+   },
+   {
+    "m": "2021-05",
+    "pitches": 121755,
+    "hr": 936,
+    "barrels": 1618,
+    "bip": 38903
+   },
+   {
+    "m": "2021-06",
+    "pitches": 116217,
+    "hr": 1019,
+    "barrels": 1597,
+    "bip": 38178
+   },
+   {
+    "m": "2021-07",
+    "pitches": 108332,
+    "hr": 955,
+    "barrels": 1433,
+    "bip": 35705
+   },
+   {
+    "m": "2021-08",
+    "pitches": 121090,
+    "hr": 1028,
+    "barrels": 1602,
+    "bip": 40299
+   },
+   {
+    "m": "2021-09",
+    "pitches": 117781,
+    "hr": 1017,
+    "barrels": 1646,
+    "bip": 39506
+   },
+   {
+    "m": "2021-10",
+    "pitches": 13109,
+    "hr": 114,
+    "barrels": 177,
+    "bip": 4381
+   }
+  ],
+  "unique_batters": 1049,
+  "unique_pitchers": 909
+ }
+}

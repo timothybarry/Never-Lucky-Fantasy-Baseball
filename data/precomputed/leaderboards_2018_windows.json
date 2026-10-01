@@ -1,0 +1,1423 @@
+{
+  "timeframes": {
+    "last7": {
+      "label": "Last 7 days",
+      "start": "2018-09-25",
+      "end": "2018-10-01",
+      "n_pitches": 25675,
+      "leaderboards": {
+        "risers": [
+          [
+            "W. Buehler",
+            1.2527
+          ],
+          [
+            "N. Syndergaard",
+            1.2527
+          ],
+          [
+            "J. Mart\u00ednez",
+            0.938
+          ],
+          [
+            "G. M\u00e1rquez",
+            0.5956
+          ],
+          [
+            "M. Bumgarner",
+            0.5956
+          ],
+          [
+            "J. Junis",
+            0.5956
+          ],
+          [
+            "M. Mikolas",
+            0.5956
+          ],
+          [
+            "Z. Greinke",
+            0.5956
+          ],
+          [
+            "J. Vargas",
+            0.5956
+          ],
+          [
+            "E. Lauer",
+            0.5956
+          ]
+        ],
+        "xwoba": [
+          [
+            "L. Voit",
+            0.8973
+          ],
+          [
+            "C. Yelich",
+            0.8376
+          ],
+          [
+            "R. Braun",
+            0.7113
+          ],
+          [
+            "P. O'Brien",
+            0.6489
+          ],
+          [
+            "E. Su\u00e1rez",
+            0.6421
+          ],
+          [
+            "T. Pham",
+            0.6311
+          ],
+          [
+            "T. Story",
+            0.6262
+          ],
+          [
+            "E. Encarnaci\u00f3n",
+            0.6064
+          ],
+          [
+            "C. Pinder",
+            0.5921
+          ],
+          [
+            "M. Muncy",
+            0.5867
+          ]
+        ],
+        "obp": [],
+        "barrels": [
+          [
+            "J. Mart\u00ednez",
+            5
+          ],
+          [
+            "L. Voit",
+            5
+          ],
+          [
+            "T. Story",
+            5
+          ],
+          [
+            "R. Braun",
+            4
+          ],
+          [
+            "C. Yelich",
+            4
+          ],
+          [
+            "N. Arenado",
+            4
+          ],
+          [
+            "G. Stanton",
+            4
+          ],
+          [
+            "C. Cron",
+            3
+          ],
+          [
+            "A. Rizzo",
+            3
+          ],
+          [
+            "N. Cruz",
+            3
+          ]
+        ],
+        "ev90": [
+          [
+            "G. Stanton",
+            111.98
+          ],
+          [
+            "L. Brinson",
+            110.38
+          ],
+          [
+            "P. O'Brien",
+            110.34
+          ],
+          [
+            "C. Yelich",
+            110.33
+          ],
+          [
+            "A. Rizzo",
+            109.34
+          ],
+          [
+            "J. Mart\u00ednez",
+            109.12
+          ],
+          [
+            "Y. Puig",
+            108.84
+          ],
+          [
+            "C. Gonz\u00e1lez",
+            108.8
+          ],
+          [
+            "C. Cron",
+            108.6
+          ],
+          [
+            "J. Gallo",
+            108.47
+          ]
+        ],
+        "chase": [
+          [
+            "J. Bautista",
+            0.0294
+          ],
+          [
+            "R. P\u00e9rez",
+            0.0556
+          ],
+          [
+            "J. Votto",
+            0.0606
+          ],
+          [
+            "R. Grossman",
+            0.0769
+          ],
+          [
+            "B. Nimmo",
+            0.0833
+          ],
+          [
+            "J. Soto",
+            0.0851
+          ],
+          [
+            "T. Barnhart",
+            0.087
+          ],
+          [
+            "L. Forsythe",
+            0.1091
+          ],
+          [
+            "R. Cordell",
+            0.1111
+          ],
+          [
+            "C. Hern\u00e1ndez",
+            0.119
+          ]
+        ],
+        "r_plus_rbi": [],
+        "sb": [],
+        "hr": [
+          [
+            "D. Dahl",
+            5
+          ],
+          [
+            "N. Arenado",
+            4
+          ],
+          [
+            "R. Braun",
+            4
+          ],
+          [
+            "C. Yelich",
+            4
+          ],
+          [
+            "T. Story",
+            4
+          ],
+          [
+            "G. Stanton",
+            3
+          ],
+          [
+            "L. Voit",
+            3
+          ],
+          [
+            "T. Ward",
+            3
+          ],
+          [
+            "J. Aguilar",
+            2
+          ],
+          [
+            "J. Field",
+            2
+          ]
+        ],
+        "k": [
+          [
+            "G. M\u00e1rquez",
+            20
+          ],
+          [
+            "C. Carrasco",
+            14
+          ],
+          [
+            "S. Turnbull",
+            12
+          ],
+          [
+            "N. Syndergaard",
+            11
+          ],
+          [
+            "M. Shoemaker",
+            10
+          ],
+          [
+            "J. deGrom",
+            10
+          ],
+          [
+            "B. Snell",
+            10
+          ],
+          [
+            "S. Alc\u00e1ntara",
+            10
+          ],
+          [
+            "M. Scherzer",
+            10
+          ],
+          [
+            "A. Heaney",
+            10
+          ]
+        ],
+        "xfip": [
+          [
+            "M. Foltynewicz",
+            0.802
+          ],
+          [
+            "J. Paxton",
+            0.9775
+          ],
+          [
+            "J. deGrom",
+            1.0388
+          ],
+          [
+            "B. Anderson",
+            1.0872
+          ],
+          [
+            "G. M\u00e1rquez",
+            1.0883
+          ],
+          [
+            "J. Chavez",
+            1.1
+          ],
+          [
+            "J. Verlander",
+            1.1442
+          ],
+          [
+            "J. Lucchesi",
+            1.2056
+          ],
+          [
+            "S. Matz",
+            1.2258
+          ],
+          [
+            "S. Brault",
+            1.7416
+          ]
+        ],
+        "whiff": [
+          [
+            "B. Snell",
+            0.5
+          ],
+          [
+            "E. Rodr\u00edguez",
+            0.4286
+          ],
+          [
+            "S. Newcomb",
+            0.4222
+          ],
+          [
+            "C. Knebel",
+            0.4194
+          ],
+          [
+            "M. Foltynewicz",
+            0.4146
+          ],
+          [
+            "T. Toussaint",
+            0.4118
+          ],
+          [
+            "G. M\u00e1rquez",
+            0.4105
+          ],
+          [
+            "J. Verlander",
+            0.3922
+          ],
+          [
+            "T. Glasnow",
+            0.3878
+          ],
+          [
+            "C. Carrasco",
+            0.375
+          ]
+        ],
+        "barrel_allowed": [
+          [
+            "N. Syndergaard",
+            0
+          ],
+          [
+            "W. Buehler",
+            0
+          ],
+          [
+            "K. Freeland",
+            0
+          ],
+          [
+            "A. Pruitt",
+            0
+          ],
+          [
+            "J. Yacabonis",
+            0
+          ],
+          [
+            "M. Lorenzen",
+            0
+          ],
+          [
+            "J. Junis",
+            0
+          ],
+          [
+            "D. Hess",
+            0
+          ],
+          [
+            "Z. Greinke",
+            0
+          ],
+          [
+            "Z. Godley",
+            0
+          ]
+        ],
+        "qs": [
+          [
+            "N. Syndergaard",
+            2
+          ],
+          [
+            "W. Buehler",
+            2
+          ],
+          [
+            "C. Hamels",
+            1
+          ],
+          [
+            "S. Alc\u00e1ntara",
+            1
+          ],
+          [
+            "A. Sampson",
+            1
+          ],
+          [
+            "T. Richards",
+            1
+          ],
+          [
+            "J. Paxton",
+            1
+          ],
+          [
+            "R. Hill",
+            1
+          ],
+          [
+            "S. Matz",
+            1
+          ],
+          [
+            "M. Mikolas",
+            1
+          ]
+        ]
+      }
+    },
+    "last14": {
+      "label": "Last 14 days",
+      "start": "2018-09-18",
+      "end": "2018-10-01",
+      "n_pitches": 53404,
+      "leaderboards": {
+        "risers": [
+          [
+            "J. Mart\u00ednez",
+            1.0685
+          ],
+          [
+            "W. Buehler",
+            1.0246
+          ],
+          [
+            "K. Freeland",
+            1.0246
+          ],
+          [
+            "M. Scherzer",
+            0.6573
+          ],
+          [
+            "G. M\u00e1rquez",
+            0.6573
+          ],
+          [
+            "J. Taillon",
+            0.6573
+          ],
+          [
+            "S. Strasburg",
+            0.6573
+          ],
+          [
+            "A. Nola",
+            0.6573
+          ],
+          [
+            "K. Hendricks",
+            0.6573
+          ],
+          [
+            "D. Covey",
+            0.6573
+          ]
+        ],
+        "xwoba": [
+          [
+            "L. Voit",
+            0.7255
+          ],
+          [
+            "M. Betts",
+            0.671
+          ],
+          [
+            "T. Story",
+            0.6495
+          ],
+          [
+            "J. Mart\u00ednez",
+            0.6294
+          ],
+          [
+            "R. Braun",
+            0.6233
+          ],
+          [
+            "C. Yelich",
+            0.5917
+          ],
+          [
+            "J. Gallo",
+            0.5828
+          ],
+          [
+            "T. Pham",
+            0.5799
+          ],
+          [
+            "F. Freeman",
+            0.565
+          ],
+          [
+            "Y. Gomes",
+            0.5511
+          ]
+        ],
+        "obp": [],
+        "barrels": [
+          [
+            "J. Mart\u00ednez",
+            11
+          ],
+          [
+            "L. Voit",
+            8
+          ],
+          [
+            "N. Castellanos",
+            7
+          ],
+          [
+            "C. Yelich",
+            7
+          ],
+          [
+            "T. Pham",
+            6
+          ],
+          [
+            "G. Stanton",
+            6
+          ],
+          [
+            "F. Lindor",
+            6
+          ],
+          [
+            "H. Renfroe",
+            6
+          ],
+          [
+            "T. Austin",
+            5
+          ],
+          [
+            "M. Conforto",
+            5
+          ]
+        ],
+        "ev90": [
+          [
+            "G. Stanton",
+            111.71
+          ],
+          [
+            "C. Cron",
+            110
+          ],
+          [
+            "C. Yelich",
+            109.5
+          ],
+          [
+            "C. Iannetta",
+            109.36
+          ],
+          [
+            "P. O'Brien",
+            109.22
+          ],
+          [
+            "M. Chapman",
+            109.03
+          ],
+          [
+            "Y. D\u00edaz",
+            108.78
+          ],
+          [
+            "C. Gonz\u00e1lez",
+            108.4
+          ],
+          [
+            "A. Rizzo",
+            108.36
+          ],
+          [
+            "L. Voit",
+            108.3
+          ]
+        ],
+        "chase": [
+          [
+            "J. Votto",
+            0.0615
+          ],
+          [
+            "R. Grossman",
+            0.0776
+          ],
+          [
+            "C. Granderson",
+            0.0833
+          ],
+          [
+            "J. Marte",
+            0.1111
+          ],
+          [
+            "J. Lowrie",
+            0.117
+          ],
+          [
+            "F. Cervelli",
+            0.1296
+          ],
+          [
+            "L. Forsythe",
+            0.1304
+          ],
+          [
+            "J. Bonifacio",
+            0.1325
+          ],
+          [
+            "J. Soto",
+            0.1398
+          ],
+          [
+            "Y. D\u00edaz",
+            0.1404
+          ]
+        ],
+        "r_plus_rbi": [],
+        "sb": [],
+        "hr": [
+          [
+            "L. Voit",
+            7
+          ],
+          [
+            "D. Dahl",
+            6
+          ],
+          [
+            "C. Yelich",
+            5
+          ],
+          [
+            "M. Trout",
+            5
+          ],
+          [
+            "A. Mondes\u00ed",
+            5
+          ],
+          [
+            "R. Braun",
+            5
+          ],
+          [
+            "K. Davis",
+            5
+          ],
+          [
+            "T. Story",
+            4
+          ],
+          [
+            "N. Arenado",
+            4
+          ],
+          [
+            "R. Devers",
+            4
+          ]
+        ],
+        "k": [
+          [
+            "G. M\u00e1rquez",
+            31
+          ],
+          [
+            "C. Kluber",
+            28
+          ],
+          [
+            "B. Snell",
+            26
+          ],
+          [
+            "C. Carrasco",
+            25
+          ],
+          [
+            "J. Taillon",
+            23
+          ],
+          [
+            "S. Strasburg",
+            23
+          ],
+          [
+            "A. Nola",
+            23
+          ],
+          [
+            "R. Ray",
+            23
+          ],
+          [
+            "M. Scherzer",
+            23
+          ],
+          [
+            "J. Lucchesi",
+            22
+          ]
+        ],
+        "xfip": [
+          [
+            "J. Verlander",
+            0.9775
+          ],
+          [
+            "G. M\u00e1rquez",
+            1.2899
+          ],
+          [
+            "N. Eovaldi",
+            1.4092
+          ],
+          [
+            "J. deGrom",
+            1.4483
+          ],
+          [
+            "J. Paxton",
+            1.5285
+          ],
+          [
+            "C. Sale",
+            1.633
+          ],
+          [
+            "A. DeSclafani",
+            1.8142
+          ],
+          [
+            "B. Anderson",
+            1.9979
+          ],
+          [
+            "C. Kluber",
+            2.103
+          ],
+          [
+            "B. Snell",
+            2.1178
+          ]
+        ],
+        "whiff": [
+          [
+            "B. Snell",
+            0.4746
+          ],
+          [
+            "G. M\u00e1rquez",
+            0.4101
+          ],
+          [
+            "C. Carrasco",
+            0.3846
+          ],
+          [
+            "C. Kluber",
+            0.381
+          ],
+          [
+            "M. Scherzer",
+            0.3727
+          ],
+          [
+            "M. Foltynewicz",
+            0.36
+          ],
+          [
+            "T. Bauer",
+            0.3562
+          ],
+          [
+            "J. James",
+            0.3516
+          ],
+          [
+            "A. Heaney",
+            0.3462
+          ],
+          [
+            "P. Corbin",
+            0.3425
+          ]
+        ],
+        "barrel_allowed": [
+          [
+            "W. Buehler",
+            0
+          ],
+          [
+            "J. Junis",
+            0
+          ],
+          [
+            "Z. Greinke",
+            0
+          ],
+          [
+            "A. Jurado",
+            0
+          ],
+          [
+            "J. Tomlin",
+            0
+          ],
+          [
+            "A. Pruitt",
+            0
+          ],
+          [
+            "F. Pe\u00f1a",
+            0
+          ],
+          [
+            "T. Richards",
+            0
+          ],
+          [
+            "Z. Godley",
+            0
+          ],
+          [
+            "G. Sparkman",
+            0
+          ]
+        ],
+        "qs": [
+          [
+            "W. Buehler",
+            3
+          ],
+          [
+            "K. Freeland",
+            3
+          ],
+          [
+            "C. Hamels",
+            2
+          ],
+          [
+            "G. M\u00e1rquez",
+            2
+          ],
+          [
+            "R. Hill",
+            2
+          ],
+          [
+            "N. Syndergaard",
+            2
+          ],
+          [
+            "A. Nola",
+            2
+          ],
+          [
+            "T. Anderson",
+            2
+          ],
+          [
+            "D. Bundy",
+            2
+          ],
+          [
+            "M. Mikolas",
+            2
+          ]
+        ]
+      }
+    },
+    "last30": {
+      "label": "Last 30 days",
+      "start": "2018-09-02",
+      "end": "2018-10-01",
+      "n_pitches": 116084,
+      "leaderboards": {
+        "risers": [
+          [
+            "J. Verlander",
+            1.9745
+          ],
+          [
+            "G. M\u00e1rquez",
+            1.8645
+          ],
+          [
+            "C. Kluber",
+            1.39
+          ],
+          [
+            "C. Carrasco",
+            1.3755
+          ],
+          [
+            "W. Buehler",
+            1.3681
+          ],
+          [
+            "M. Scherzer",
+            1.3255
+          ],
+          [
+            "J. deGrom",
+            1.2841
+          ],
+          [
+            "P. Corbin",
+            1.139
+          ],
+          [
+            "B. Snell",
+            1.0882
+          ],
+          [
+            "G. Cole",
+            0.9693
+          ]
+        ],
+        "xwoba": [
+          [
+            "L. Voit",
+            0.655
+          ],
+          [
+            "J. Gallo",
+            0.6427
+          ],
+          [
+            "T. Story",
+            0.5982
+          ],
+          [
+            "R. Braun",
+            0.5684
+          ],
+          [
+            "C. Yelich",
+            0.5663
+          ],
+          [
+            "S. Ohtani",
+            0.56
+          ],
+          [
+            "M. Trout",
+            0.5342
+          ],
+          [
+            "P. O'Brien",
+            0.5253
+          ],
+          [
+            "M. Muncy",
+            0.5225
+          ],
+          [
+            "B. Holt",
+            0.5122
+          ]
+        ],
+        "obp": [],
+        "barrels": [
+          [
+            "L. Voit",
+            15
+          ],
+          [
+            "C. Yelich",
+            14
+          ],
+          [
+            "T. Story",
+            13
+          ],
+          [
+            "J. Mart\u00ednez",
+            12
+          ],
+          [
+            "M. Conforto",
+            12
+          ],
+          [
+            "R. Hoskins",
+            12
+          ],
+          [
+            "A. Beltr\u00e9",
+            11
+          ],
+          [
+            "M. Ozuna",
+            11
+          ],
+          [
+            "S. Ohtani",
+            11
+          ],
+          [
+            "F. Lindor",
+            11
+          ]
+        ],
+        "ev90": [
+          [
+            "G. Stanton",
+            110.99
+          ],
+          [
+            "J. Gallo",
+            110.16
+          ],
+          [
+            "S. Ohtani",
+            109.46
+          ],
+          [
+            "C. Yelich",
+            109.2
+          ],
+          [
+            "C. Gonz\u00e1lez",
+            109.2
+          ],
+          [
+            "D. Palka",
+            109.12
+          ],
+          [
+            "Y. Puig",
+            109.1
+          ],
+          [
+            "C. Cron",
+            108.96
+          ],
+          [
+            "P. O'Brien",
+            108.94
+          ],
+          [
+            "M. Moreland",
+            108.72
+          ]
+        ],
+        "chase": [
+          [
+            "C. Granderson",
+            0.0789
+          ],
+          [
+            "J. Votto",
+            0.0905
+          ],
+          [
+            "R. Grossman",
+            0.1084
+          ],
+          [
+            "B. Nimmo",
+            0.124
+          ],
+          [
+            "A. McCutchen",
+            0.1333
+          ],
+          [
+            "K. Wong",
+            0.1389
+          ],
+          [
+            "M. Betts",
+            0.1484
+          ],
+          [
+            "J. Donaldson",
+            0.1527
+          ],
+          [
+            "L. Forsythe",
+            0.1551
+          ],
+          [
+            "T. Pham",
+            0.1595
+          ]
+        ],
+        "r_plus_rbi": [],
+        "sb": [],
+        "hr": [
+          [
+            "T. Story",
+            11
+          ],
+          [
+            "L. Voit",
+            10
+          ],
+          [
+            "C. Yelich",
+            10
+          ],
+          [
+            "F. Lindor",
+            9
+          ],
+          [
+            "M. Conforto",
+            9
+          ],
+          [
+            "D. Dahl",
+            9
+          ],
+          [
+            "D. Palka",
+            8
+          ],
+          [
+            "S. Piscotty",
+            8
+          ],
+          [
+            "M. Trout",
+            8
+          ],
+          [
+            "K. Davis",
+            8
+          ]
+        ],
+        "k": [
+          [
+            "G. M\u00e1rquez",
+            57
+          ],
+          [
+            "C. Carrasco",
+            53
+          ],
+          [
+            "M. Scherzer",
+            51
+          ],
+          [
+            "J. Verlander",
+            50
+          ],
+          [
+            "A. Nola",
+            47
+          ],
+          [
+            "J. deGrom",
+            45
+          ],
+          [
+            "R. Ray",
+            45
+          ],
+          [
+            "W. Buehler",
+            45
+          ],
+          [
+            "B. Snell",
+            44
+          ],
+          [
+            "G. Cole",
+            42
+          ]
+        ],
+        "xfip": [
+          [
+            "C. Knebel",
+            0.9446
+          ],
+          [
+            "S. Oberg",
+            1.194
+          ],
+          [
+            "G. M\u00e1rquez",
+            1.6891
+          ],
+          [
+            "B. Snell",
+            1.8582
+          ],
+          [
+            "J. Verlander",
+            1.9036
+          ],
+          [
+            "C. Kluber",
+            2.0354
+          ],
+          [
+            "J. Paxton",
+            2.0731
+          ],
+          [
+            "D. Castillo",
+            2.2241
+          ],
+          [
+            "J. deGrom",
+            2.2528
+          ],
+          [
+            "C. Carrasco",
+            2.3132
+          ]
+        ],
+        "whiff": [
+          [
+            "B. Snell",
+            0.4072
+          ],
+          [
+            "C. Carrasco",
+            0.3912
+          ],
+          [
+            "C. Kluber",
+            0.3836
+          ],
+          [
+            "G. M\u00e1rquez",
+            0.3816
+          ],
+          [
+            "J. Hader",
+            0.3769
+          ],
+          [
+            "P. Corbin",
+            0.3697
+          ],
+          [
+            "R. Ray",
+            0.3439
+          ],
+          [
+            "G. Cole",
+            0.34
+          ],
+          [
+            "J. Verlander",
+            0.3345
+          ],
+          [
+            "J. James",
+            0.3282
+          ]
+        ],
+        "barrel_allowed": [
+          [
+            "Z. Davies",
+            0
+          ],
+          [
+            "J. Verlander",
+            0
+          ],
+          [
+            "G. Sparkman",
+            0
+          ],
+          [
+            "S. Gonsalves",
+            0
+          ],
+          [
+            "F. Liriano",
+            0.013
+          ],
+          [
+            "W. Miley",
+            0.0133
+          ],
+          [
+            "F. Pe\u00f1a",
+            0.0135
+          ],
+          [
+            "L. Lynn",
+            0.0152
+          ],
+          [
+            "D. Price",
+            0.0161
+          ],
+          [
+            "V. Velasquez",
+            0.0169
+          ]
+        ],
+        "qs": [
+          [
+            "K. Freeland",
+            6
+          ],
+          [
+            "J. deGrom",
+            5
+          ],
+          [
+            "G. M\u00e1rquez",
+            5
+          ],
+          [
+            "R. L\u00f3pez",
+            5
+          ],
+          [
+            "J. Verlander",
+            5
+          ],
+          [
+            "W. Buehler",
+            5
+          ],
+          [
+            "R. Borucki",
+            5
+          ],
+          [
+            "M. Scherzer",
+            4
+          ],
+          [
+            "Z. Greinke",
+            4
+          ],
+          [
+            "B. Keller",
+            4
+          ]
+        ]
+      }
+    }
+  }
+}

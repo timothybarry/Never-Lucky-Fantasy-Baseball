@@ -80,3 +80,4 @@ def test_known_elite_pitcher_has_high_whiff(aggregated):
     degrom = pitchers[pitchers["player_id"] == 594798]
     if not degrom.empty:
         assert float(degrom["whiff_rate"].iloc[0]) > 0.20
+

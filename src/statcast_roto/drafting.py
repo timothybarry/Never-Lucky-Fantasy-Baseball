@@ -14,6 +14,24 @@ from __future__ import annotations
 
 import pandas as pd
 
+# Analytics/sabermetrics-flavored team names, used in place of "Team 01" etc.
+# when the caller doesn't supply their own. Ordered; the Nth team drafted gets
+# the Nth name. Falls back to "Team NN" past the end of the list.
+ANALYTICS_TEAM_NAMES: list[str] = [
+    "Regression to the Mean",
+    "Barrels & Bourbon",
+    "Expected Value Villains",
+    "The Chase Rate Chasers",
+    "Standard Deviants",
+    "Launch Angle Lords",
+    "p < 0.05 Club",
+    "The Sample Sizers",
+    "Whiff Theory",
+    "xWOBA-Kenobi",
+    "The Confidence Intervals",
+    "Spin Rate Syndicate",
+]
+
 
 def snake_draft_rosters(
     hitters: pd.DataFrame,
@@ -53,7 +71,7 @@ def snake_draft_rosters(
             for t in order:
                 if idx < len(pool):
                     rows.append({
-                        "team": f"{team_prefix} {t + 1:02d}",
+                        "team": _team_name(t, team_prefix),
                         "side": side,
                         "player_id": int(pool.iloc[idx]["player_id"]),
                     })
@@ -62,3 +80,11 @@ def snake_draft_rosters(
     _deal(hpool, hitters_per_team, "hitting")
     _deal(ppool, pitchers_per_team, "pitching")
     return pd.DataFrame(rows)
+
+
+def _team_name(team_index: int, prefix: str) -> str:
+    """Map a 0-based team index to an analytics-pun name, falling back to a
+    numbered team past the end of the curated list."""
+    if 0 <= team_index < len(ANALYTICS_TEAM_NAMES):
+        return ANALYTICS_TEAM_NAMES[team_index]
+    return f"{prefix} {team_index + 1:02d}"
