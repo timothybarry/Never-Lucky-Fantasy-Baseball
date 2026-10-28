@@ -306,6 +306,13 @@ for t in TAGS:
                                  "cs": int(b["CS"].sum()), "h": int(b["H"].sum()), "pa": int(b["PA"].sum()),
                                  "sv": int(pt["SV"].sum()), "w": int(pt["W"].sum())}
 print("league_official", out["league_official"])
+# ---- Swing Lab: Savant bat tracking, mid-2023 on (a separate era from the roto league) ----
+from statcast_roto.bat_tracking import bat_payload  # noqa: E402
+
+bat = bat_payload(ROOT / "data" / "bat_tracking")  # None (with a fetch hint) until a season has all five CSVs
+if bat is not None:
+    out["bat"] = bat
+
 OUT = Path(sys.argv[1]) if len(sys.argv) > 1 else Path(__file__).with_name("payload.json")
 OUT.write_text(json.dumps(out, separators=(",", ":"), ensure_ascii=False), encoding="utf-8")
 print("wrote", OUT, OUT.stat().st_size)

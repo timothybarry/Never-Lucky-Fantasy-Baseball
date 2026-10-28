@@ -4,7 +4,7 @@
 PYTHON ?= python3
 export PYTHONPATH := src
 
-.PHONY: help install demo run run-pitch raw enrich site test clean
+.PHONY: help install demo run run-pitch raw enrich bat site test clean
 
 help:
 	@echo "Targets:"
@@ -14,6 +14,7 @@ help:
 	@echo "  run-pitch  Aggregate the raw pitch SAMPLE from scratch, then score"
 	@echo "  raw        Download the raw Statcast seasons (~1.6 GB, needs pybaseball)"
 	@echo "  enrich     Fetch official MLB season lines and merge them (needs internet)"
+	@echo "  bat        Fetch the Swing Lab's Savant bat-tracking leaderboards (optional)"
 	@echo "  site       Rebuild the five-season page -> site/never_lucky_five_seasons.html"
 	@echo "  test       Run the test suite"
 	@echo "  clean      Remove generated outputs and caches"
@@ -45,6 +46,9 @@ raw:
 
 enrich:
 	$(PYTHON) scripts/enrich_precomputed.py --tags 2017 2018 2019 2020 2021 --fetch
+
+bat:
+	$(PYTHON) scripts/fetch_bat_tracking.py
 
 site: enrich
 	$(PYTHON) site/build_payload.py

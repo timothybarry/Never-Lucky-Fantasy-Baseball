@@ -379,6 +379,82 @@ footer{position:relative;z-index:1;margin-top:60px;border-top:1px solid var(--li
 .foot{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;font-size:13px;color:var(--muted)}
 .foot .sig{font-family:var(--f-mono);color:var(--ink2)}
 
+/* ---------- swing lab ---------- */
+.sw-empty{padding:28px;color:var(--muted);text-align:center;border:1px dashed var(--line2);border-radius:4px}
+.sw-grid{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:18px;align-items:start}
+.sw-wrap{max-height:620px;overflow:auto}
+.sw-wrap th{cursor:pointer;user-select:none}
+.sw-wrap th:hover{color:var(--ink)}
+.sw-wrap th[aria-sort=descending]::after{content:" ▼";color:var(--teal)}
+.sw-wrap th[aria-sort=ascending]::after{content:" ▲";color:var(--teal)}
+.sw-wrap td.name,.sw-wrap th.name{position:sticky;left:0;z-index:1;background-color:var(--panel);text-align:left;box-shadow:1px 0 0 var(--line)}
+.sw-wrap th.name{z-index:3;background:var(--panel2)}
+.sw-wrap tr.sel td{background-color:rgba(25,240,210,.10)}
+.sw-wrap tr.sel td.name{background:linear-gradient(rgba(25,240,210,.10),rgba(25,240,210,.10)),var(--panel)}
+.sw-sort,.sw-pick{background:none;border:0;padding:0;margin:0;font:inherit;color:inherit;letter-spacing:inherit;text-transform:inherit;text-align:inherit;cursor:pointer}
+.sw-card{border:1px solid var(--line2);border-radius:4px;background:linear-gradient(180deg,#120e28,#0d0a1d);padding:16px 16px 14px;position:sticky;top:76px;min-width:0}
+.sw-card .who{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;flex-wrap:wrap}
+.sw-card .who h3{font:900 32px/.95 var(--f-display);text-transform:uppercase;letter-spacing:.01em}
+.sw-card .who .meta{font:600 11px/1.4 var(--f-mono);letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-top:6px}
+.sw-wrap tr.lg-row td{color:var(--volt);font-style:italic;cursor:default}
+.sw-tabs{margin-top:12px}
+.sw-view{border:1px solid var(--line);border-radius:4px;background:var(--void);padding:8px 8px 4px;min-width:0}
+.sw-card .sw-view{margin-top:8px}
+.sw-view h4{font:600 10px/1 var(--f-mono);letter-spacing:.16em;text-transform:uppercase;color:var(--muted);margin:2px 2px 6px}
+.sw-view svg{display:block;width:100%;max-width:440px;height:auto;margin:0 auto}
+.sw-def{font-size:12px;color:var(--faint);margin-top:6px;min-height:2.6em}
+.sw-stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin-top:12px}
+.sw-stat{border:1px solid var(--line);border-radius:3px;background:var(--panel2);padding:8px 9px 7px;min-width:0}
+.sw-stat .l{font:600 9.5px/1.25 var(--f-mono);letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.sw-stat .v{font:700 19px/1.1 var(--f-mono);font-variant-numeric:tabular-nums;margin-top:3px;white-space:nowrap}
+.sw-stat .v small{font-size:.6em;font-weight:600;color:var(--muted)}
+.sw-stat .p{font:500 10.5px/1.2 var(--f-mono);color:var(--faint);margin-top:2px}
+.sw-note{font-size:12.5px;color:var(--muted);margin-top:10px}
+.sim{margin-top:26px;border:1px solid var(--line2);border-radius:4px;background:radial-gradient(120% 140% at 0% 0%,rgba(155,123,255,.10),transparent 55%),var(--panel);padding:18px}
+.sim-head{display:flex;justify-content:space-between;align-items:flex-end;gap:12px;flex-wrap:wrap;margin-bottom:14px}
+.sim-head .eyebrow{color:var(--teal)}
+.sim-actions{display:flex;gap:8px;flex-wrap:wrap}
+.sim-grid{display:grid;grid-template-columns:minmax(0,340px) minmax(0,1fr);gap:18px;align-items:start}
+.sim-ctls{display:grid;gap:12px}
+.sim-ctl{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:4px 10px;align-items:center}
+.sim-ctl label{font-size:13px;color:var(--ink2)}
+.sim-ctl output{font:700 14px var(--f-mono);font-variant-numeric:tabular-nums;color:var(--ink);text-align:right}
+.sim-ctl input[type=range]{grid-column:1/-1;width:100%;accent-color:var(--teal)}
+.sim-ctl .hint{grid-column:1/-1;font:500 10.5px/1.3 var(--f-mono);color:var(--faint)}
+.sim-ctl select{grid-column:1/-1}
+.sim-who{font:600 11px/1.4 var(--f-mono);letter-spacing:.08em;color:var(--muted);margin-top:6px}
+.sim-who b{color:var(--ink)}
+.sim-clamp{grid-column:1/-1;font:500 11px/1.35 var(--f-mono);color:var(--volt)}
+.sim-svgs{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:10px;margin-bottom:16px}
+.sim-outs{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:8px;align-content:start}
+.sim-out{border:1px solid var(--line);border-radius:3px;background:var(--panel2);padding:9px 10px 8px;min-width:0}
+.sim-out .l{font:600 10px/1.25 var(--f-mono);letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.sim-out .v{font:700 21px/1.1 var(--f-mono);font-variant-numeric:tabular-nums;margin-top:3px}
+.sim-out .s{font-size:11.5px;color:var(--faint);margin-top:3px;line-height:1.35}
+.sim-out .tagline{display:inline-block;margin-top:5px;font:700 9.5px/1 var(--f-mono);letter-spacing:.12em;text-transform:uppercase;padding:3px 6px;border-radius:3px;border:1px solid var(--line2);color:var(--ink2)}
+.sim-out .tagline.phys{border-color:var(--blue);color:var(--blue)}
+.sim-out .tagline.stat{border-color:var(--teal);color:var(--teal)}
+.sim-out.wide{grid-column:1/-1}
+.fit{width:100%;border-collapse:collapse;margin:6px 0 4px;font-variant-numeric:tabular-nums}
+.fit-wrap{overflow-x:auto}
+.fit th,.fit td{padding:4px 8px 4px 0;text-align:right;border-bottom:1px solid var(--line);font:500 12px var(--f-mono);color:var(--ink2);white-space:normal;position:static}
+.fit thead th{font:600 9.5px/1.2 var(--f-mono);letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.fit th[scope=row],.fit thead th:first-child{text-align:left;font-family:inherit;font-size:12.5px;letter-spacing:0;text-transform:none}
+.fit td b{font:700 15px var(--f-mono);color:var(--ink)}
+.sim-out .tagline.emp{border-color:var(--violet);color:var(--violet)}
+.sim-comps{margin-top:16px}
+.sim-comps h4{font:600 11px/1 var(--f-mono);letter-spacing:.16em;text-transform:uppercase;color:var(--muted);margin-bottom:8px}
+.comp-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:8px}
+.comp{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:2px 10px;padding:9px 11px;border:1px solid var(--line);border-radius:3px;background:var(--panel2);cursor:pointer;text-align:left;color:var(--ink)}
+.comp:hover{border-color:var(--teal)}
+.comp b{font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.comp .d{font:600 11px var(--f-mono);color:var(--muted);text-align:right}
+.comp .m{grid-column:1/-1;font:500 11px var(--f-mono);color:var(--ink2)}
+.ax-l{font:500 10px var(--f-mono);fill:var(--muted)}
+.ax-v{font:700 11px var(--f-mono);fill:var(--ink)}
+@media (max-width:1100px){.sw-grid,.sim-grid{grid-template-columns:minmax(0,1fr)}.sw-card{position:static}}
+@media (max-width:560px){.sw-stats{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
 /* ---------- profile drawer ---------- */
 .scrim{position:fixed;inset:0;background:rgba(3,2,8,.62);backdrop-filter:blur(3px);z-index:70}
 .drawer{position:fixed;top:0;right:0;bottom:0;width:min(560px,100%);z-index:71;background:linear-gradient(180deg,#120e28,#0b0918);border-left:1px solid var(--line2);box-shadow:-30px 0 80px rgba(0,0,0,.6);overflow-y:auto;padding:calc(env(safe-area-inset-top,0px) + 20px) 22px calc(env(safe-area-inset-bottom,0px) + 28px);animation:slidein .22s ease-out}
@@ -455,7 +531,7 @@ footer{position:relative;z-index:1;margin-top:60px;border-top:1px solid var(--li
       <span class="brand-word">NEVER<b>LUCKY</b></span>
     </a>
     <nav class="nav" aria-label="Sections">
-      <a href="#field">Signal Field</a><a href="#thesis">Thesis</a><a href="#standings">Standings</a><a href="#leaders">Leaderboards</a><a href="#players">Players</a><a href="#method">Method</a>
+      <a href="#field">Signal Field</a><a href="#thesis">Thesis</a><a href="#standings">Standings</a><a href="#leaders">Leaderboards</a><a href="#players">Players</a><a href="#swing">Swing Lab</a><a href="#method">Method</a>
     </nav>
     <label class="season-pick" for="seasonSel">Season <select id="seasonSel"></select></label>
   </div>
@@ -658,6 +734,50 @@ footer{position:relative;z-index:1;margin-top:60px;border-top:1px solid var(--li
   <div class="tbl-wrap pl-wrap"><table id="plTable"></table></div>
 </section>
 
+<section id="swing" class="app-sec shell" aria-labelledby="swTitle">
+  <div class="sec-head">
+    <div><p class="eyebrow">Swing Lab · bat tracking · <span id="swEra">2023–2026</span></p><h2 class="h2" id="swTitle">The Swing Lab</h2>
+      <p class="sub" id="swIntro">Modeled on Baseball Savant's swing path and attack angle leaderboard. Statcast started tracking the bat itself in the second half of 2023, so this lab covers a newer era than the 2017–21 league above, through the 2026 regular season. Pick a hitter to see his average swing drawn three ways, then build your own and see which real hitters swing like it.</p></div>
+  </div>
+  <div class="sw-empty" id="swEmpty" hidden>The bat-tracking data isn't in this build. Run <code>python scripts/fetch_bat_tracking.py</code>, then rebuild the site.</div>
+  <div id="swBody">
+    <div class="pl-controls">
+      <div class="seg" id="swSeason" role="group" aria-label="Bat-tracking season"></div>
+      <div class="seg" id="swSide" role="group" aria-label="Batter side">
+        <button type="button" data-s="" aria-pressed="true">All</button>
+        <button type="button" data-s="R" aria-pressed="false">Right</button>
+        <button type="button" data-s="L" aria-pressed="false">Left</button>
+        <button type="button" data-s="S" aria-pressed="false">Switch</button>
+      </div>
+      <label class="sr" for="swSearch">Search hitters</label>
+      <input type="search" id="swSearch" placeholder="Search a hitter…">
+      <span class="count" id="swCount"></span>
+    </div>
+    <div class="sw-grid">
+      <div class="tbl-wrap sw-wrap"><table id="swTable"></table></div>
+      <article class="sw-card" id="swCard"></article>
+    </div>
+    <p class="note" id="swPartial" hidden></p>
+    <p class="sr" id="swLive" aria-live="polite"></p>
+    <div class="sim" id="sim">
+      <div class="sim-head">
+        <div><p class="eyebrow">What if · build a swing</p><h3 class="h3">Swing simulator</h3><p class="sim-who">Now drawing: <b id="simName"></b></p></div>
+        <div class="sim-actions">
+          <button type="button" class="btn" id="simLoad">Load the selected hitter</button>
+          <button type="button" class="btn pink" id="simReset">Reset to league average</button>
+        </div>
+      </div>
+      <div class="sim-svgs" id="simViz"></div>
+      <div class="sim-grid">
+        <div class="sim-ctls" id="simCtls"></div>
+        <div class="sim-outs" id="simOuts"></div>
+      </div>
+      <div class="sim-comps" id="simComps"></div>
+      <p class="note">A what-if, not a projection. The drawings put the sweet spot's last 40 ms on a flat arc, the way Savant describes swing tilt. Exit velocity is a best case and launch angle the flush-contact physics (Nathan, <i>Am. J. Phys.</i> 2003; Kensrud, Nathan and Smith, 2017). The empirical rows describe real hitters whose season-average swings look like this one, not what any single swing would do.</p>
+    </div>
+  </div>
+</section>
+
 <section id="method" class="app-sec shell">
   <div class="sec-head"><div><p class="eyebrow">Method · the honesty layer</p><h2 class="h2">What's measured, what's approximated, what's missing</h2></div></div>
   <div class="method">
@@ -683,11 +803,16 @@ footer{position:relative;z-index:1;margin-top:60px;border-top:1px solid var(--li
       <ul><li>Pitch files can't see most steals: nearly every hitter showed <b>0 SB</b>. The one to three players per season with a single stray steal event got a z-score large enough to make them the <b>#1 “signal” hitter</b> in earlier builds (Steven Duggar in 2019, Kelvin Gutiérrez in 2021).</li>
       <li>SB, R, AVG, W, SV, ERA and WHIP now come from official season lines, so stolen bases score again, in both the league table and the value model.</li>
       <li>Rosters are <b>auto-drafted per season</b> (10 teams, 9 hitters and 7 pitchers each). The team names carry over from year to year; the rosters don't.</li></ul></article>
+    <article><h3>Swing Lab: bat tracking</h3>
+      <ul><li><b>Measured by Statcast</b> and read from Baseball Savant's bat-tracking, expected-stats and Statcast leaderboards, regular season only: bat speed, attack angle and direction, swing path tilt, ideal attack angle rate, contact point, batter position, swing length, squared-up and blast rates, xwOBA and barrel rate. Tracking began July 14, 2023, so 2023 is half a season, though its xwOBA, barrel and hard-hit rates come from full-season pages that have no date filter.</li>
+      <li><b>Qualified hitters:</b> 600 competitive swings per full season, scaled by the swings tracked league-wide<span id="swCuts"></span>. Savant doesn't publish its own cut, so this one is stated instead. Switch hitters' numbers combine both sides; Savant's CSV export lists them as right-handed (its page shows S), and the MLB Stats API supplies the real side.</li>
+      <li><b>Drawn, not filmed.</b> Savant describes the last 40 ms of a swing as "a slice of a flat disc". Each drawing puts his season averages on that disc: a 2.8-ft-radius arc, which reproduces how attack angle and direction shift with contact depth in Statcast's per-swing data, tilted to his swing path and meeting the ball at his attack angle and direction.</li>
+      <li><b>Simulator:</b> best-case exit velocity is 1.23 × bat speed + 0.23 × pitch speed at the plate (about 92% of release speed). Statcast doesn't publish that equation: it is Nathan's collision formula (<i>Am. J. Phys.</i> 71, 2003) with the efficiency that reproduces all three worked examples in Statcast's squared-up glossary entry, within 0.1 mph. Squared up (80% of that ceiling) and blasts (squared-up % + bat speed ≥ 164) follow the Statcast glossary. Flush launch angle is the head-on form of the same formula, which leaves the ball near the attack angle (Kensrud, Nathan and Smith, <i>Am. J. Phys.</i> 85, 2017). Plane match uses the timing check in Nathan's "Optimizing the Swing, Part Deux" (2015), worked on the drawn arc. Pitch presets are typical values from a 2025–26 sample of Statcast pitches. The empirical rows are a linear fit of season outcomes on six swing traits (the four drawn ones, bat speed, attack angle, tilt and direction, plus swing length and the ideal attack angle rate), scored only on hitters and seasons it never saw; its ranges held 8 in 10 of those results. There is no xwOBA estimate: swing traits explain only about a quarter of it.</li></ul></article>
   </div>
 </section>
 
 <footer class="shell">
-  <div class="foot"><span>Never Lucky · Statcast-scored roto · data: Baseball Savant pitch files and MLB Stats API season lines, 2017–2021 regular seasons · not affiliated with MLB</span><span class="sig">🟤🟡 let the signals emerge, and know which ones are actually there</span></div>
+  <div class="foot"><span>Never Lucky · Statcast-scored roto · data: Baseball Savant pitch files and MLB Stats API season lines, 2017–2021 regular seasons; Swing Lab: Savant bat tracking, 2023–2026 · not affiliated with MLB</span><span class="sig">🟤🟡 let the signals emerge, and know which ones are actually there</span></div>
 </footer>
 </main>
 
@@ -762,6 +887,7 @@ function fmt(v, f) {
   }
 }
 const n0 = v => Math.round(v).toLocaleString("en-US");
+const ord = n => n + (n % 100 >= 11 && n % 100 <= 13 ? "th" : ({1: "st", 2: "nd", 3: "rd"}[n % 10] || "th"));
 
 /* diverging ramp: pink (0) -> neutral violet-grey (0.5) -> teal (1) */
 const C_P = [255, 61, 158], C_M = [91, 85, 128], C_T = [25, 240, 210];
@@ -1135,7 +1261,7 @@ function renderHall() {
       ${rows.map((h, i) => `<button type="button" class="hall-row" data-side="${side}" data-id="${h.id}">
         <span class="rk">${i + 1}</span><span class="nm">${esc(h.name)}</span>
         ${TAGS.map(t => { const o = h.rows.find(r => r.year === t); if (!o) return `<span class="cell none" title="${t}: not qualified">·</span>`;
-          const p = o.pct.signal_score; return `<span class="cell" style="background:${pctCol(p)}" title="${t}: Statcast value ${fmt(o.sig, "z")}, ${p}th percentile">${Math.round(p)}</span>`; }).join("")}
+          const p = o.pct.signal_score; return `<span class="cell" style="background:${pctCol(p)}" title="${t}: Statcast value ${fmt(o.sig, "z")}, ${ord(Math.round(p))} percentile">${Math.round(p)}</span>`; }).join("")}
         <span class="avg">${fmt(h.avg, "z")}</span></button>`).join("")}</div>`;
   }).join("");
   $$("#hall .hall-row").forEach(b => b.addEventListener("click", () => {
@@ -1595,7 +1721,7 @@ function openProfile(o, mode) { // mode: undefined = fresh open, "nav" = another
     const p = pctOf(o, k), gp = prev ? pctOf(prev, k) : null;
     return `<div class="pbar"><span class="pl ty"${tAttr(k)}>${label}</span><span class="ptrack">
       ${p != null ? `<span class="fill" style="width:${p}%;background:linear-gradient(90deg,rgba(255,61,158,.35),${pctCol(p, .75)})"></span>` : ""}
-      ${gp != null ? `<span class="ghost" style="left:${gp}%" title="${prev.year}: ${Math.round(gp)}th percentile"></span>` : ""}
+      ${gp != null ? `<span class="ghost" style="left:${gp}%" title="${prev.year}: ${ord(Math.round(gp))} percentile"></span>` : ""}
       ${p != null ? `<span class="knob" style="left:${p}%;background:${pctCol(p)};box-shadow:0 0 14px ${pctCol(p, .6)}">${Math.round(p)}</span>` : ""}
     </span><span class="pv">${fmt(val(o, k), f)}</span></div>`;
   }).join("");
@@ -1667,6 +1793,355 @@ document.addEventListener("keydown", e => {
   else if (!dr.contains(document.activeElement)) { e.preventDefault(); f[0].focus(); }
 });
 
+/* ---------------- swing lab (bat tracking, mid-2023 on) ---------------- */
+const BT = D.bat || null;
+const SWX = {tag: null, side: "", q: "", sort: {key: "bat_speed", dir: -1}, sel: null, view: "aa"};
+/* Model constants, each from a source the Method section cites:
+   radius_ft  effective radius of the sweet spot's arc near contact (fits Statcast's per-inch timing slopes)
+   window_ms  Savant measures swing tilt over the last 40 ms before contact
+   ideal_*    Statcast's ideal attack angle band
+   ev_*       Statcast's max possible exit velocity: 1.23 x bat speed + 0.23 x pitch speed at the plate
+   blast_sum  a blast is squared-up % + bat speed >= 164; sq_line: squared up is 80% of the max */
+const PHYS = {radius_ft: 2.8, window_ms: 40, ideal_lo: 5, ideal_hi: 20, ev_bat: 1.23, ev_pitch: 0.23, blast_sum: 164, sq_line: 0.8};
+const SWCOLS = {
+  name: {label: "Hitter", text: true}, side: {label: "Bats", text: true},
+  bat_speed: {label: "Bat speed", fmt: v => v.toFixed(1), unit: " mph", t: "volt"},
+  aa: {label: "Attack angle", fmt: v => v.toFixed(1) + "°", t: "teal"},
+  ideal: {label: "Ideal AA%", fmt: v => (v * 100).toFixed(0) + "%", t: "teal"},
+  tilt: {label: "Path tilt", fmt: v => v.toFixed(1) + "°"},
+  dir: {label: "Direction", fmt: v => dirText(v)},
+  length: {label: "Swing length", fmt: v => v.toFixed(1) + " ft"},
+  squared: {label: "Squared-up/swing", fmt: v => (v * 100).toFixed(1) + "%", t: "teal"},
+  blast: {label: "Blasts/swing", fmt: v => (v * 100).toFixed(1) + "%", t: "volt"},
+  xwoba: {label: "xwOBA", fmt: v => v.toFixed(3).replace(/^0/, ""), t: "teal"},
+};
+const SW_ORDER = ["name", "side", "bat_speed", "aa", "ideal", "tilt", "dir", "length", "squared", "blast", "xwoba"];
+function dirText(v) { return v == null ? "—" : Math.abs(v) < 0.5 ? "straight" : `${Math.abs(v).toFixed(1)}° ${v < 0 ? "pull" : "oppo"}`; }
+const BTR = {};
+if (BT) for (const t of BT.tags) BTR[t] = BT.seasons[t].map(a => { const o = {year: t}; BT.cols.forEach((c, i) => { o[c] = a[i]; }); o.key = fold(o.name); return o; });
+const BT_ALL = BT ? BT.tags.flatMap(t => BTR[t]) : [];
+const btPctCache = {};
+function btPct(t, key, v) { // mid-rank percentile within the season
+  if (v == null) return null;
+  const arr = btPctCache[t + key] ||= BTR[t].map(o => o[key]).filter(x => x != null).sort((a, b) => a - b);
+  let lo = 0, hi = arr.length; while (lo < hi) { const m = (lo + hi) >> 1; if (arr[m] < v) lo = m + 1; else hi = m; }
+  let lo2 = lo, hi2 = arr.length; while (lo2 < hi2) { const m = (lo2 + hi2) >> 1; if (arr[m] <= v) lo2 = m + 1; else hi2 = m; }
+  return (lo + lo2) / 2 / arr.length * 100;
+}
+const btMed = k => { const a = BT_ALL.map(o => o[k]).filter(x => x != null).sort((x, y) => x - y); return a[Math.floor(a.length / 2)]; };
+
+/* Savant's "slice of a flat disc": over its last PHYS.window_ms the sweet spot rides a circle in a plane
+   tilted `tilt` from the ground, and contact sits where that path climbs at the attack angle while heading
+   along the attack direction. Field axes in inches, contact at the origin: x toward first base, y toward
+   the pitcher, z up. p is the plane's flat direction toward the batter. */
+function swingPath(o) {
+  const d2r = Math.PI / 180, R = PHYS.radius_ft * 12, tau = Math.max(1, o.tilt) * d2r, lim = Math.max(0.5, o.tilt - 0.5);
+  const gc = Math.asin(Math.sin(Math.max(-lim, Math.min(lim, o.aa)) * d2r) / Math.sin(tau)); // arc angle past the low point
+  const sg = o.side === "L" ? 1 : -1, ad = (o.dir || 0) * d2r;                                // a righty pulls toward -x
+  const psi = -ad - Math.atan(Math.tan(gc) * Math.cos(tau));
+  const h = [sg * Math.sin(psi), Math.cos(psi), 0], p = [sg * Math.cos(psi), -Math.sin(psi), 0];
+  const s = [Math.cos(tau) * p[0], Math.cos(tau) * p[1], Math.sin(tau)];
+  const sweep = o.bat_speed * 17.6 * PHYS.window_ms / 1000 / R, pts = []; // radians of arc (1 mph = 17.6 in/s)
+  for (let i = 0; i <= 40; i++) {
+    const g = gc - sweep * (1 - i / 40), u = Math.sin(g) - Math.sin(gc), w = Math.cos(gc) - Math.cos(g);
+    pts.push([0, 1, 2].map(j => R * (u * h[j] + w * s[j])));
+  }
+  return {pts, h, p, head: [-sg * Math.sin(ad), Math.cos(ad)]}; // head: horizontal travel at contact
+}
+
+const SVW = 320, SVH = 210;
+const ptsAttr = xy => xy.map(([x, y]) => `${x.toFixed(1)},${y.toFixed(1)}`).join(" ");
+function swDefs(id, xy) { // a gradient along the drawn path (faint at its start, bright at contact) and an arrowhead
+  const a = xy[0], b = xy[xy.length - 1];
+  return `<defs><linearGradient id="${id}g" gradientUnits="userSpaceOnUse" x1="${a[0].toFixed(1)}" y1="${a[1].toFixed(1)}" x2="${b[0].toFixed(1)}" y2="${b[1].toFixed(1)}"><stop offset="0" stop-color="#ff3d9e" stop-opacity=".2"/><stop offset="1" stop-color="#19f0d2"/></linearGradient>`
+    + `<marker id="${id}a" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#19f0d2"/></marker></defs>`;
+}
+const SW_SWATCH = { // legend swatches, 18 px wide, centred on y = 0
+  path: () => `<line x1="0" x2="18" y1="0" y2="0" stroke="#19f0d2" stroke-width="4" stroke-linecap="round"/>`,
+  arrow: id => `<line x1="0" x2="13" y1="0" y2="0" stroke="#19f0d2" stroke-width="2" marker-end="url(#${id}a)"/>`,
+  pitch: () => `<line x1="0" x2="18" y1="0" y2="0" stroke="#f4f269" stroke-width="1.5" stroke-dasharray="5 3"/>`,
+  band: () => `<rect x="0" y="-4" width="18" height="8" fill="rgba(25,240,210,.12)" stroke="rgba(25,240,210,.45)" stroke-dasharray="2 2"/>`,
+  ghost: () => `<line x1="0" x2="18" y1="0" y2="0" stroke="#c2bbe6" stroke-width="2" stroke-dasharray="4 3"/>`,
+  plane: () => `<line x1="0" x2="18" y1="0" y2="0" stroke="#9b7bff" stroke-width="1.5" stroke-dasharray="6 3"/>`,
+};
+const swLegend = (rows, x0, y0) => rows.map(([sw, t], i) => `<g transform="translate(${x0},${y0 + i * 14})">${sw}<text class="ax-l" x="24" y="3.5">${t}</text></g>`).join("");
+const ghostLine = xy => `<polyline points="${ptsAttr(xy)}" fill="none" stroke="#c2bbe6" stroke-width="2" stroke-dasharray="4 4" opacity=".6"/>`;
+
+// Side view: the vertical plane of the barrel's travel at contact, pitcher to the right.
+function sideViewSVG(o, opts = {}) {
+  const W = SVW, H = SVH, cx = 178, cy = 136, k = 2.6, d2r = Math.PI / 180, id = "sv" + (opts.id || "");
+  const proj = s => q => [cx + (q[0] * s.head[0] + q[1] * s.head[1]) * k, cy - q[2] * k];
+  const sp = swingPath(o), xy = sp.pts.map(proj(sp));
+  const d = opts.descent ?? 4.7, t = Math.tan(d * d2r), aR = o.aa * d2r, r = 100, lo = PHYS.ideal_lo * d2r, hi = PHYS.ideal_hi * d2r;
+  let g = `<line x1="10" x2="${W - 10}" y1="${cy}" y2="${cy}" stroke="#272148" stroke-dasharray="2 4"/>`;
+  g += `<path d="M${cx},${cy} L${(cx + r * Math.cos(lo)).toFixed(1)},${(cy - r * Math.sin(lo)).toFixed(1)} A${r},${r} 0 0 0 ${(cx + r * Math.cos(hi)).toFixed(1)},${(cy - r * Math.sin(hi)).toFixed(1)} Z" fill="rgba(25,240,210,.08)" stroke="rgba(25,240,210,.32)" stroke-dasharray="3 3"/>`;
+  // The pitch's own path through the contact point: it falls toward the catcher, so it rises toward the mound.
+  g += `<line x1="10" y1="${(cy + (cx - 10) * t).toFixed(1)}" x2="${W - 10}" y2="${(cy - (W - 10 - cx) * t).toFixed(1)}" stroke="#f4f269" stroke-width="1.5" stroke-dasharray="5 4" opacity=".75"/>`;
+  if (opts.ghost) { const gs = swingPath(opts.ghost); g += ghostLine(gs.pts.map(proj(gs))); }
+  g += `<polyline points="${ptsAttr(xy)}" fill="none" stroke="url(#${id}g)" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>`;
+  g += `<line x1="${cx}" y1="${cy}" x2="${(cx + 80 * Math.cos(aR)).toFixed(1)}" y2="${(cy - 80 * Math.sin(aR)).toFixed(1)}" stroke="#19f0d2" stroke-width="2" marker-end="url(#${id}a)"/>`;
+  g += `<circle cx="${cx}" cy="${cy}" r="5.5" fill="#f1edff" stroke="#0b0918" stroke-width="2"/>`;
+  const rows = [[SW_SWATCH.path(), `last ${PHYS.window_ms} ms of the swing`], [SW_SWATCH.arrow(id), `attack angle ${o.aa.toFixed(1)}°`],
+    [SW_SWATCH.pitch(), `${opts.pitchLabel || "four-seamer"} ${d.toFixed(1)}° down`], [SW_SWATCH.band(), `ideal ${PHYS.ideal_lo}–${PHYS.ideal_hi}°`]];
+  if (opts.ghost) rows.push([SW_SWATCH.ghost(), "dashed: loaded swing"]);
+  g += swLegend(rows, W - 168, 14);
+  g += `<text class="ax-l" x="10" y="${H - 8}">← catcher</text><text class="ax-l" x="${W - 10}" y="${H - 8}" text-anchor="end">pitcher →</text>`;
+  return `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Side view: the barrel's last ${PHYS.window_ms} milliseconds, meeting the ball at a ${o.aa.toFixed(1)} degree attack angle">${swDefs(id, xy)}${g}</svg>`;
+}
+
+// Overhead: pitcher up, catcher down, so first base is to the right.
+function topViewSVG(o, opts = {}) {
+  const W = SVW, H = SVH, px = W / 2, py = 112, k = 1.8, lefty = o.side === "L", sg = lefty ? 1 : -1, id = "tv" + (opts.id || "");
+  const cY = py - (o.int_plate ?? 0) * k, proj = q => [px + q[0] * k, cY - q[1] * k];
+  const sp = swingPath(o), xy = sp.pts.map(proj), [fx, fy] = sp.head, L = Math.min(56, cY - 44), lean = fx < -0.02 ? -1 : fx > 0.02 ? 1 : 0;
+  const plate = [[-8.5, 0], [8.5, 0], [8.5, 8.5], [0, 17], [-8.5, 8.5]].map(([x, y]) => `${px + x * k},${py + y * k}`).join(" ");
+  let g = `<polygon points="${plate}" fill="rgba(241,237,255,.08)" stroke="#5f5989"/>`;
+  g += `<line x1="${px}" y1="${cY.toFixed(1)}" x2="${px}" y2="24" stroke="#272148" stroke-dasharray="3 4"/>`;
+  g += `<text class="ax-l" x="${lean > 0 ? px - 5 : px + 5}" y="16" text-anchor="${lean > 0 ? "end" : "start"}">center field</text>`;
+  g += `<text class="ax-l" x="10" y="16">${lefty ? "OPPO" : "PULL"} side</text><text class="ax-l" x="${W - 10}" y="16" text-anchor="end">${lefty ? "PULL" : "OPPO"} side</text>`;
+  if (o.bx != null && o.by != null) { // his center of mass: inches off the plate's inside edge, inches behind its front
+    const bx = px + sg * (8.5 + o.bx) * k, by = py + o.by * k;
+    g += `<circle cx="${bx.toFixed(1)}" cy="${by.toFixed(1)}" r="8" fill="rgba(155,123,255,.22)" stroke="#9b7bff"/><text class="ax-l" x="${(bx + sg * 13).toFixed(1)}" y="${(by + 3.5).toFixed(1)}" text-anchor="${lefty ? "start" : "end"}">batter</text>`;
+  }
+  if (opts.ghost) g += ghostLine(swingPath(opts.ghost).pts.map(proj));
+  g += `<polyline points="${ptsAttr(xy)}" fill="none" stroke="url(#${id}g)" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/>`;
+  g += `<line x1="${px}" y1="${cY.toFixed(1)}" x2="${(px + fx * L).toFixed(1)}" y2="${(cY - fy * L).toFixed(1)}" stroke="#19f0d2" stroke-width="2.2" marker-end="url(#${id}a)"/>`;
+  g += `<circle cx="${px}" cy="${cY.toFixed(1)}" r="5" fill="#f1edff" stroke="#0b0918" stroke-width="2"/>`;
+  g += `<text class="ax-v" x="${(px + fx * (L + 8) + lean * 4).toFixed(1)}" y="${(cY - fy * (L + 8)).toFixed(1)}" text-anchor="${lean < 0 ? "end" : lean > 0 ? "start" : "middle"}">${dirText(o.dir)}</text>`;
+  const ip = o.int_plate;
+  if (ip != null) g += `<text class="ax-l" x="${px}" y="${H - 8}" text-anchor="middle">${ip >= 0 ? `contact ${ip.toFixed(1)}″ in front of the plate` : `contact ${(-ip).toFixed(1)}″ behind the plate's front edge`}</text>`;
+  return `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Overhead view: attack direction ${dirText(o.dir)}">${swDefs(id, xy)}${g}</svg>`;
+}
+
+// Edge-on, from behind the plate along the plane's flat axis: the whole path collapses onto one line at the tilt.
+function tiltViewSVG(o, opts = {}) {
+  const W = SVW, H = SVH, lefty = o.side === "L", sd = lefty ? 1 : -1, id = "pv" + (opts.id || "");
+  const tau = Math.max(1, o.tilt) * Math.PI / 180, ux = sd * Math.cos(tau), uy = -Math.sin(tau); // up the plane, toward the batter
+  const flat = s => s.pts.map(q => [q[0] * s.p[0] + q[1] * s.p[1], q[2]]); // [toward the batter, up], inches
+  const sp = swingPath(o), ab = flat(sp), cx = W / 2, cy = 120;
+  const k = Math.min(3.4, 92 / Math.max(10, ...ab.map(([a, z]) => Math.hypot(a, z))));
+  const proj = ([a, z]) => [cx + sd * a * k, cy - z * k], xy = ab.map(proj);
+  const up = Math.min(150, (cy - 30) / Math.sin(tau)), dn = Math.min(150, (H - 30 - cy) / Math.sin(tau)), ar = 34;
+  let g = `<line x1="10" x2="${W - 10}" y1="${cy}" y2="${cy}" stroke="#272148" stroke-dasharray="2 4"/>`;
+  g += `<line x1="${(cx - ux * dn).toFixed(1)}" y1="${(cy - uy * dn).toFixed(1)}" x2="${(cx + ux * up).toFixed(1)}" y2="${(cy + uy * up).toFixed(1)}" stroke="#9b7bff" stroke-width="1.5" stroke-dasharray="6 4" opacity=".75"/>`;
+  g += `<path d="M${cx + sd * ar},${cy} A${ar},${ar} 0 0 ${lefty ? 0 : 1} ${(cx + ux * ar).toFixed(1)},${(cy + uy * ar).toFixed(1)}" fill="none" stroke="#9b7bff" stroke-width="1.5"/>`;
+  g += `<text class="ax-v" x="${(cx + sd * (ar + 8) * Math.cos(tau / 2)).toFixed(1)}" y="${(cy - (ar + 8) * Math.sin(tau / 2) + 4).toFixed(1)}" text-anchor="${lefty ? "start" : "end"}">${o.tilt.toFixed(1)}°</text>`;
+  if (opts.ghost) g += ghostLine(flat(swingPath(opts.ghost)).map(proj));
+  g += `<polyline points="${ptsAttr(xy)}" fill="none" stroke="url(#${id}g)" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>`;
+  g += `<circle cx="${cx}" cy="${cy}" r="5" fill="#f1edff" stroke="#0b0918" stroke-width="2"/>`;
+  // The flat axis h turns away from the catcher's line as the attack angle nears the tilt, so name the view from it.
+  const off = Math.acos(Math.max(-1, Math.min(1, sp.h[1]))) * 180 / Math.PI;
+  const side = Math.abs(sp.p[0]) >= Math.abs(sp.p[1]) ? (sp.p[0] * sd > 0 ? "batter" : "away from batter") : sp.p[1] > 0 ? "pitcher" : "catcher";
+  g += `<text class="ax-l" x="${lefty ? W - 10 : 10}" y="16" text-anchor="${lefty ? "end" : "start"}">${lefty ? `${side} →` : `← ${side}`}</text>`;
+  const rows = [[SW_SWATCH.plane(), `swing plane ${o.tilt.toFixed(1)}°`], [SW_SWATCH.path(), `last ${PHYS.window_ms} ms, edge-on`]];
+  if (opts.ghost) rows.push([SW_SWATCH.ghost(), "dashed: loaded swing"]);
+  g += swLegend(rows, lefty ? 12 : W - 156, 14);
+  const from = off < 45 ? `from behind the plate, ${Math.round(off)}° off center` : off <= 135 ? `from the ${sp.h[0] > 0 ? "third" : "first"}-base side` : "from the mound side";
+  g += `<text class="ax-l" x="${cx}" y="${H - 8}" text-anchor="middle">edge-on, ${from}</text>`;
+  return `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Edge-on view: a swing plane tilted ${o.tilt.toFixed(1)} degrees">${swDefs(id, xy)}${g}</svg>`;
+}
+
+// The three views Savant's swing visual cycles through.
+const SW_VIEWS = {
+  aa: {tab: "Attack angle", title: "Side view", draw: sideViewSVG, def: lg => `Attack angle: the vertical angle of the sweet spot's travel at contact. League average ${lg.aa.toFixed(1)}°.`},
+  dir: {tab: "Direction", title: "Overhead", draw: topViewSVG, def: lg => `Attack direction: the horizontal angle of that travel, measured from the line to center field. League average ${dirText(lg.dir)}.`},
+  tilt: {tab: "Tilt", title: "Edge-on", draw: tiltViewSVG, def: lg => `Swing path tilt: how steep the swing's plane is over its last ${PHYS.window_ms} ms. League average ${lg.tilt.toFixed(1)}°.`},
+};
+const SW_VIEW_OF = {aa: "aa", ideal: "aa", dir: "dir", tilt: "tilt"};
+
+function renderSwingSeasons() { // built once; switching only flips aria-pressed, so keyboard focus stays put
+  $("#swSeason").innerHTML = BT.tags.map(t => `<button type="button" data-t="${t}" aria-pressed="${t === SWX.tag}"${BT.partial[t] ? ` title="${esc(BT.partial[t])}"` : ""}>${t}${BT.partial[t] ? "*" : ""}</button>`).join("");
+}
+function setSwingSeason(t) {
+  SWX.tag = t;
+  $$("#swSeason button").forEach(b => b.setAttribute("aria-pressed", b.dataset.t === t));
+  $("#swPartial").textContent = BT.partial[t] ? `${t}*: ${BT.partial[t]}` : "";
+  $("#swPartial").hidden = !BT.partial[t];
+  renderSwingTable();
+}
+const swVisible = o => (!SWX.side || o.side === SWX.side) && (!SWX.q || o.key.includes(SWX.q));
+const fastestBat = rows => rows.reduce((a, b) => (b.bat_speed > a.bat_speed ? b : a)); // Savant's default sort
+function renderSwingTable() {
+  const rows = BTR[SWX.tag].filter(swVisible);
+  const {key, dir} = SWX.sort, lg = BT.league[SWX.tag];
+  rows.sort((a, b) => { const x = a[key], y = b[key]; if (x == null) return 1; if (y == null) return -1; return typeof x === "string" ? dir * x.localeCompare(y) : dir * (x - y); });
+  $("#swCount").textContent = `${rows.length} hitters · ${SWX.tag}${BT.partial[SWX.tag] ? " (partial season)" : ""} · ${n0(BT.min_swings[SWX.tag])}+ competitive swings`;
+  const lgRow = lg ? `<tr class="lg-row"><td class="name">MLB average</td><td class="l">—</td>${SW_ORDER.slice(2).map(c => `<td>${lg[c] != null ? SWCOLS[c].fmt(lg[c]) : "—"}</td>`).join("")}</tr>` : "";
+  $("#swTable").innerHTML = `<thead><tr>${SW_ORDER.map(c => `<th class="${c === "name" ? "name" : ""} ${SWCOLS[c].text ? "l" : ""}"${SWCOLS[c].t ? ` data-t="${SWCOLS[c].t}"` : ""} ${key === c ? `aria-sort="${dir > 0 ? "ascending" : "descending"}"` : ""} scope="col"><button type="button" class="sw-sort" data-k="${c}">${SWCOLS[c].label}</button></th>`).join("")}</tr></thead>
+  <tbody>${lgRow}${rows.map(o => `<tr data-id="${o.id}" class="${SWX.sel && SWX.sel.id === o.id && SWX.sel.year === o.year ? "sel" : ""}">${SW_ORDER.map(c => {
+    if (c === "name") return `<td class="name"><button type="button" class="sw-pick">${esc(o.name)}</button></td>`;
+    if (c === "side") return `<td class="l">${o.side}</td>`;
+    const v = o[c]; if (v == null) return `<td>—</td>`;
+    const p = ["bat_speed", "ideal", "squared", "blast", "xwoba"].includes(c) ? btPct(SWX.tag, c, v) : null;
+    return `<td class="${p != null ? "pcell" : ""}" ${p != null ? `style="--pc:${pctCol(p)}"` : ""}>${SWCOLS[c].fmt(v)}</td>`;
+  }).join("")}</tr>`).join("")}</tbody>`;
+}
+function selectSwing(o, {reveal = false} = {}) {
+  if (!o) return;
+  if (!swVisible(o)) { // a comp or a season switch can pick a hitter the filters hide: clear them
+    SWX.side = ""; SWX.q = ""; $("#swSearch").value = "";
+    $$("#swSide button").forEach(x => x.setAttribute("aria-pressed", x.dataset.s === ""));
+    renderSwingTable();
+  }
+  const prev = SWX.sel;
+  SWX.sel = o;
+  $$("#swTable tbody tr[data-id]").forEach(tr => tr.classList.toggle("sel", tr.dataset.id === String(o.id)));
+  if (prev && (prev.id !== o.id || prev.year !== o.year)) $("#swLive").textContent = `${o.name}, ${o.year}`;
+  if (reveal) { // scroll the table box, not the page, to his row
+    const tr = $(`#swTable tr[data-id="${o.id}"]`), w = $(".sw-wrap");
+    if (tr) w.scrollTop += tr.getBoundingClientRect().top - w.getBoundingClientRect().top - w.clientHeight / 2;
+  }
+  const v = SW_VIEWS[SWX.view], lg = BT.league[o.year];
+  const stat = (label, x, f, key) => { const p = key ? btPct(o.year, key, x) : null; return `<div class="sw-stat"><div class="l">${label}</div><div class="v">${x == null ? "—" : f(x)}</div><div class="p">${p == null ? "&nbsp;" : `${ord(Math.min(99, Math.max(1, Math.round(p))))} pct, ${o.year}`}</div></div>`; };
+  $("#swCard").innerHTML = `<div class="who"><div><h3>${esc(o.name)}</h3><div class="meta">${o.year}${BT.partial[o.year] ? " (partial)" : ""} · ${o.side === "L" ? "bats left" : o.side === "S" ? "switch hitter" : "bats right"} · ${n0(o.swings)} competitive swings</div></div>
+      <button type="button" class="btn" id="swToSim">Put in the simulator</button></div>
+    <div class="seg sw-tabs" id="swView" role="group" aria-label="Swing view">${Object.entries(SW_VIEWS).map(([kk, x]) => `<button type="button" data-v="${kk}" aria-pressed="${kk === SWX.view}">${x.tab}</button>`).join("")}</div>
+    <div class="sw-view"><h4>${v.title}</h4>${v.draw(o, {id: "c"})}</div>
+    <p class="sw-def">${lg ? v.def(lg) : ""}</p>
+    <div class="sw-stats">
+      ${stat("Bat speed", o.bat_speed, x => `${x.toFixed(1)}<small> mph</small>`, "bat_speed")}${stat("Attack angle", o.aa, x => x.toFixed(1) + "°")}${stat("Ideal AA rate", o.ideal, x => (x * 100).toFixed(0) + "%", "ideal")}${stat("Path tilt", o.tilt, x => x.toFixed(1) + "°")}
+      ${stat("Swing length", o.length, x => `${x.toFixed(1)}<small> ft</small>`)}${stat("Squared up / swing", o.squared, x => (x * 100).toFixed(1) + "%", "squared")}${stat("Blasts / swing", o.blast, x => (x * 100).toFixed(1) + "%", "blast")}${stat("xwOBA", o.xwoba, x => x.toFixed(3).replace(/^0/, ""), "xwoba")}
+    </div>
+    <p class="sw-note">Drawn from his season averages on Savant's flat-disc picture of a swing: the sweet spot's last ${PHYS.window_ms} ms on an arc of ${PHYS.radius_ft}-ft radius in a plane tilted ${o.tilt.toFixed(1)}°, meeting the ball rising at ${o.aa.toFixed(1)}° and heading ${dirText(o.dir)}.${o.side === "S" ? " His numbers combine both sides of the plate, drawn here from the right side." : ""}${o.ideal != null ? ` Statcast counts ${PHYS.ideal_lo}–${PHYS.ideal_hi}° as the ideal attack angle; ${Math.round(o.ideal * 100)}% of his swings landed there.` : ""}</p>`;
+  $("#swView").addEventListener("click", e => { const b = e.target.closest("button"); if (!b) return; SWX.view = b.dataset.v; selectSwing(o); $(`#swView button[data-v="${SWX.view}"]`).focus(); });
+  $("#swToSim").addEventListener("click", () => { simLoad(o); $("#sim").scrollIntoView({behavior: REDUCED ? "auto" : "smooth", block: "start"}); });
+}
+
+/* ---- the simulator ---- */
+// Typical release speed (mph), descent into the zone (°) and plate/release speed ratio, from a 2025-26 Statcast sample.
+const PITCHES = {
+  FF: ["Four-seamer", 94.7, 4.7, 0.915], SI: ["Sinker", 93.8, 5.7, 0.916], FC: ["Cutter", 89.6, 6.0, 0.924],
+  SL: ["Slider", 86.3, 7.5, 0.925], ST: ["Sweeper", 83.1, 7.6, 0.919], CH: ["Changeup", 86.0, 7.3, 0.920],
+  FS: ["Splitter", 85.8, 7.7, 0.921], CU: ["Curveball", 80.1, 9.6, 0.923], KC: ["Knuckle curve", 83.4, 9.4, 0.923],
+};
+const SIM = {o: null, ghost: null};
+const SIM_CTL = [
+  ["bat_speed", "Bat speed", 55, 85, 0.1, v => v.toFixed(1) + " mph", "measured at the sweet spot"],
+  ["aa", "Attack angle", -15, 30, 0.1, v => v.toFixed(1) + "°", "the barrel's climb at contact"],
+  ["tilt", "Swing path tilt", 15, 50, 0.1, v => v.toFixed(1) + "°", "how steep the swing's plane is"],
+  ["dir", "Attack direction", -30, 25, 0.1, dirText, "negative pulls, positive goes the other way"],
+  ["length", "Swing length", 5.5, 9, 0.05, v => v.toFixed(2) + " ft", "barrel travel to contact; feeds the fit and the comps"],
+  ["ideal", "Ideal attack angle rate", 0.2, 0.8, 0.005, v => Math.round(v * 100) + "%", "share of swings at 5–20°; feeds the fit and the comps"],
+  ["pitch_mph", "Pitch speed", 70, 102, 0.1, v => v.toFixed(1) + " mph", "out of the hand; about 8% slower at the plate"],
+  ["descent", "Pitch descent", 3, 12, 0.1, v => v.toFixed(1) + "° down", "its angle into the zone (VAA)"],
+];
+const btQ = (k, q) => { const a = BT_ALL.map(o => o[k]).filter(x => x != null).sort((x, y) => x - y); return a[Math.min(a.length - 1, Math.floor(q * a.length))]; };
+const BT_HITTERS = new Set(BT_ALL.map(r => r.id)).size;
+function simDefaults() {
+  const tag = BT.tags[BT.tags.length - 1], lg = BT.league[tag], r1 = v => Math.round(v * 10) / 10;
+  return {bat_speed: r1(lg.bat_speed), aa: r1(lg.aa), tilt: r1(lg.tilt), dir: r1(lg.dir), length: r1(btMed("length")), ideal: Math.round(lg.ideal * 200) / 200, side: "R",
+    pitch: "FF", pitch_mph: PITCHES.FF[1], descent: PITCHES.FF[2], int_plate: btMed("int_plate"), bx: btMed("bx"), by: btMed("by"), src: null, name: `League average, ${tag}`};
+}
+function renderSimCtls() {
+  const typ = (k, f) => BT.model.features.includes(k) ? `<span class="hint">9 in 10 hitters: ${f(btQ(k, 0.05))} to ${f(btQ(k, 0.95))}</span>` : "";
+  $("#simCtls").innerHTML = SIM_CTL.map(([k, label, lo, hi, step, f, hint]) => `<div class="sim-ctl"><label for="sim_${k}">${label}</label><output id="simo_${k}" for="sim_${k}">${f(SIM.o[k])}</output>
+      <input type="range" id="sim_${k}" min="${lo}" max="${hi}" step="${step}" value="${SIM.o[k]}"><span class="hint">${hint}</span>${typ(k, f)}${k === "tilt" ? `<span class="sim-clamp" id="simClamp" hidden>A flat swing plane can't climb steeper than its own tilt, and no tracked hitter-season does, so the attack angle stops there.</span>` : ""}</div>`).join("")
+    + `<div class="sim-ctl"><label for="sim_pitch">Pitch type</label><select id="sim_pitch">${Object.entries(PITCHES).map(([c, [n]]) => `<option value="${c}"${SIM.o.pitch === c ? " selected" : ""}>${n}</option>`).join("")}</select><span class="hint">sets a typical speed and descent</span></div>`
+    + `<div class="sim-ctl"><label for="sim_side">Bats</label><select id="sim_side"><option value="R"${SIM.o.side === "R" ? " selected" : ""}>Right</option><option value="L"${SIM.o.side === "L" ? " selected" : ""}>Left</option></select></div>`;
+  SIM_CTL.forEach(([k, , , , , f]) => $("#sim_" + k).addEventListener("input", e => { SIM.o[k] = +e.target.value; $("#simo_" + k).textContent = f(SIM.o[k]); if (k === "aa" || k === "tilt") clampAA(); renderSim(); }));
+  $("#sim_pitch").addEventListener("change", e => { const p = PITCHES[e.target.value]; Object.assign(SIM.o, {pitch: e.target.value, pitch_mph: p[1], descent: p[2]}); syncCtl("pitch_mph"); syncCtl("descent"); renderSim(); });
+  $("#sim_side").addEventListener("change", e => { SIM.o.side = e.target.value; renderSim(); });
+}
+function syncCtl(k) { const c = SIM_CTL.find(x => x[0] === k); $("#sim_" + k).value = SIM.o[k]; $("#simo_" + k).textContent = c[5](SIM.o[k]); }
+function clampAA() { // |attack angle| can't exceed the plane's tilt
+  const lim = SIM.o.tilt - 0.5, aa = Math.max(-lim, Math.min(lim, SIM.o.aa)), hit = aa !== SIM.o.aa;
+  if (hit) { SIM.o.aa = Math.round(aa * 10) / 10; syncCtl("aa"); }
+  $("#simClamp").hidden = !hit;
+}
+function simLoad(o) {
+  const keep = SIM.o ? {pitch: SIM.o.pitch, pitch_mph: SIM.o.pitch_mph, descent: SIM.o.descent} : {};
+  SIM.o = Object.assign(simDefaults(), keep, {bat_speed: o.bat_speed, aa: o.aa, tilt: o.tilt, dir: o.dir, length: o.length ?? btMed("length"), ideal: o.ideal ?? btMed("ideal"),
+    side: o.side === "L" ? "L" : "R", int_plate: o.int_plate, bx: o.bx, by: o.by, src: o.id, name: `${o.name} ${o.year}${o.side === "S" ? " (switch, drawn right-handed)" : ""}`});
+  SIM.ghost = Object.assign({}, SIM.o); renderSimCtls(); renderSim();
+}
+function simReset() { SIM.o = simDefaults(); SIM.ghost = null; renderSimCtls(); renderSim(); }
+const swZ = r => BT.model.features.map((f, i) => ((r[f] ?? BT.model.mean[i]) - BT.model.mean[i]) / BT.model.sd[i]);
+function swNearest(o) { // other hitters' seasons by distance in standardized trait space (the loaded hitter left out)
+  const q = swZ(o);
+  return BT_ALL.filter(r => r.id !== o.src && BT.model.features.every(f => r[f] != null))
+    .map(r => ({r, d: Math.hypot(...swZ(r).map((v, i) => v - q[i]))})).sort((a, b) => a.d - b.d);
+}
+function comps(near, n = 7) { // the n closest different hitters, each at his closest season
+  const seen = new Set(), out = [];
+  for (const c of near) { if (seen.has(c.r.id)) continue; seen.add(c.r.id); out.push(c); if (out.length === n) break; }
+  return out;
+}
+function predict(o, key) {
+  const m = BT.model.outcomes[key];
+  return Math.max(m.clip[0], Math.min(m.clip[1], swZ(o).reduce((y, v, i) => y + m.coef[i] * v, m.intercept)));
+}
+function renderSim() {
+  const o = SIM.o, d2r = Math.PI / 180, pt = PITCHES[o.pitch] || PITCHES.FF;
+  const ghost = SIM.ghost && SIM.ghost.side === o.side && !sameSwing(SIM.ghost, o) ? SIM.ghost : null;
+  $("#simName").textContent = o.name;
+  $("#simViz").innerHTML = Object.values(SW_VIEWS).map(v => `<div class="sw-view"><h4>${v.tab} · ${v.title}</h4>${v.draw(o, {id: "s", descent: o.descent, pitchLabel: pt[0].toLowerCase(), ghost})}</div>`).join("");
+  const plate = o.pitch_mph * pt[3], ev = PHYS.ev_bat * o.bat_speed + PHYS.ev_pitch * plate, need = PHYS.blast_sum - o.bat_speed;
+  const q = PHYS.ev_pitch, aR = o.aa * d2r, dR = o.descent * d2r;
+  // Head-on and flush, the ball leaves along (1+q)·bat velocity − q·pitch velocity (Nathan's collision formula).
+  const la = Math.atan2((1 + q) * o.bat_speed * Math.sin(aR) + q * plate * Math.sin(dR), (1 + q) * o.bat_speed * Math.cos(aR) + q * plate * Math.cos(dR)) / d2r;
+  // Nathan's timing check ("Optimizing the Swing, Part Deux"): meet the ball 4 in deeper than planned and see how far this
+  // swing's own arc passes from the ball's path there (a straight line if the arc never reaches back that far).
+  const arc = swingPath(o).pts, j = arc.findIndex(q => q[1] >= -4);
+  const zb = j > 0 ? arc[j - 1][2] + (arc[j][2] - arc[j - 1][2]) * (-4 - arc[j - 1][1]) / (arc[j][1] - arc[j - 1][1]) : -4 * Math.tan(aR);
+  const miss = zb + 4 * Math.tan(dR), gap = o.aa - o.descent, g1 = Math.round(gap * 10) / 10; // miss > 0: the barrel passes above
+  const out = (l, v, s, tag) => `<div class="sim-out"><div class="l">${l}</div><div class="v">${v}</div><div class="s">${s}</div><span class="tagline ${tag}">${{phys: "physics", stat: "Statcast rule", emp: "empirical"}[tag]}</span></div>`;
+  const near = swNearest(o), far = near.length > 4 && near[4].d > BT.model.offmap, pct = v => (v * 100).toFixed(1) + "%";
+  const rows = Object.entries(BT.model.outcomes).map(([key, m]) => {
+    const y = predict(o, key), lo = Math.max(m.clip[0], y + m.band[0]), hi = Math.min(m.clip[1], y + m.band[1]);
+    return `<tr><th scope="row">${m.label}</th><td><b>${pct(y)}</b></td><td>${pct(lo)}–${pct(hi)}</td><td>${m.r2_oos.toFixed(2).replace(/^0/, "")}</td></tr>`;
+  }).join("");
+  const emp = `<div class="sim-out wide"><div class="l">Hitters with this average swing, 2023–26</div>
+    <div class="fit-wrap"><table class="fit"><thead><tr><th scope="col">Outcome</th><th scope="col">Estimate</th><th scope="col">8 in 10 land in</th><th scope="col">R²</th></tr></thead><tbody>${rows}</tbody></table></div>
+    <div class="s">${far ? "<b>Few real hitters swing like this, so treat these as extrapolations.</b> " : ""}A linear fit on ${n0(BT.model.n)} hitter-seasons. Tested on hitters and seasons it never saw, 8 in 10 landed inside the range, and R² is the share of the spread it explained for them. xwOBA isn't estimated: swing traits explain only about a quarter of it, so the comparisons below show real ones.</div><span class="tagline emp">empirical</span></div>`;
+  $("#simOuts").innerHTML =
+    out("Best-case exit velocity", ev.toFixed(1) + " mph", `A perfectly squared-up ball: 1.23 × bat speed + 0.23 × the pitch at the plate (${plate.toFixed(1)} mph). Statcast doesn't publish the equation; this one reproduces its glossary examples. Squared up starts at 80%: ${(PHYS.sq_line * ev).toFixed(1)} mph.`, "phys")
+    + out("Blast threshold", need > 100 ? "Out of reach" : `${need.toFixed(1)}%`, need > 100 ? `A blast is squared-up % + bat speed ≥ ${PHYS.blast_sum}, so no swing under ${PHYS.blast_sum - 100} mph can make one.`
+      : `Squared up needed for a blast (squared-up % + bat speed ≥ ${PHYS.blast_sum}): at ${o.bat_speed.toFixed(1)} mph the ball has to leave at ${(need / 100 * ev).toFixed(1)} mph or more.`, "stat")
+    + out("Flush launch angle", la.toFixed(1) + "°", "Head-on and perfectly flush, the ball leaves near the attack angle. Meeting it a little above or below center moves launch angle far more than the attack angle does.", "phys")
+    + out("Plane match", (g1 > 0 ? "+" : g1 < 0 ? "−" : "") + Math.abs(g1).toFixed(1) + "°", `${Math.abs(g1) < 0.5 ? "The swing's climb matches the pitch's fall." : gap > 0 ? "The swing climbs steeper than the pitch falls." : "The swing climbs less than the pitch falls."} Meet the ball 4 in deeper than planned and this arc passes ${Math.abs(miss).toFixed(2)} in ${miss >= 0 ? "above" : "below"} the ball's path. Matching the plane widens the timing window; it adds no exit velocity.`, "phys")
+    + out("Ideal attack angle", o.aa >= PHYS.ideal_lo && o.aa <= PHYS.ideal_hi ? "In range" : o.aa < PHYS.ideal_lo ? "Below" : "Above", `Statcast's ideal band is ${PHYS.ideal_lo}–${PHYS.ideal_hi}°. It reports a .323 wOBA on swings in it since mid-2023, vs .261 on all others.`, "stat")
+    + emp;
+  const c = comps(near), xw = c.map(x => x.r.xwoba).filter(v => v != null), x3 = v => v.toFixed(3).replace(/^0/, "");
+  $("#simComps").innerHTML = `<h4>Hitters who swing like this · the ${c.length} closest of ${n0(BT_HITTERS)}, 2023–26${xw.length ? ` · their xwOBA ${x3(Math.min(...xw))} to ${x3(Math.max(...xw))}` : ""}</h4><div class="comp-list">${c.map(({r}) => `<button type="button" class="comp" data-y="${r.year}" data-id="${r.id}"><b>${esc(r.name)}</b><span class="d">${r.year}</span><span class="m">${r.bat_speed.toFixed(1)} mph · ${r.aa.toFixed(1)}° · tilt ${r.tilt.toFixed(0)}° · xwOBA ${r.xwoba != null ? x3(r.xwoba) : "—"} · blasts ${r.blast != null ? (r.blast * 100).toFixed(1) + "%" : "—"}</span></button>`).join("")}</div>`;
+  $$("#simComps .comp").forEach(b => b.addEventListener("click", () => {
+    const r = BTR[b.dataset.y].find(x => String(x.id) === b.dataset.id); if (SWX.tag !== b.dataset.y) setSwingSeason(b.dataset.y); selectSwing(r, {reveal: true});
+    $("#swCard").scrollIntoView({behavior: REDUCED ? "auto" : "smooth", block: "nearest"});
+  }));
+}
+const sameSwing = (a, b) => ["bat_speed", "aa", "tilt", "dir"].every(k => Math.abs((a[k] ?? 0) - (b[k] ?? 0)) < 1e-9);
+function initSwing() {
+  if (!BT) { $("#swEmpty").hidden = false; $("#swBody").hidden = true; return; }
+  const last = BT.tags[BT.tags.length - 1];
+  $("#swEra").textContent = `${BT.tags[0]}–${last}`;
+  $("#swCuts").textContent = ": " + BT.tags.map(t => `${n0(BT.min_swings[t])} in ${t}`).join(", ").replace(/, ([^,]*)$/, " and $1");
+  SWX.tag = last; renderSwingSeasons(); setSwingSeason(last);
+  selectSwing(fastestBat(BTR[last]));
+  simReset();
+  $("#swSeason").addEventListener("click", e => {
+    const b = e.target.closest("button"); if (!b || b.dataset.t === SWX.tag) return;
+    setSwingSeason(b.dataset.t);
+    const pool = BTR[SWX.tag], keep = SWX.sel && pool.find(o => o.id === SWX.sel.id), seen = pool.filter(swVisible);
+    selectSwing(keep && swVisible(keep) ? keep : fastestBat(seen.length ? seen : pool), {reveal: true});
+  });
+  $("#swSide").addEventListener("click", e => { const b = e.target.closest("button"); if (!b) return; SWX.side = b.dataset.s; $$("#swSide button").forEach(x => x.setAttribute("aria-pressed", x === b)); renderSwingTable(); });
+  $("#swSearch").addEventListener("input", e => { SWX.q = fold(e.target.value.trim()); renderSwingTable(); });
+  $("#swTable").addEventListener("click", e => {
+    const s = e.target.closest(".sw-sort");
+    if (s) {
+      const k = s.dataset.k, v = SW_VIEW_OF[k];
+      SWX.sort = {key: k, dir: SWX.sort.key === k ? -SWX.sort.dir : (SWCOLS[k].text ? 1 : -1)};
+      renderSwingTable();
+      if (v && v !== SWX.view) { SWX.view = v; if (SWX.sel) selectSwing(SWX.sel); } // like Savant's visual, sorting by a swing angle shows its view
+      $(`#swTable .sw-sort[data-k="${k}"]`).focus({preventScroll: true});
+      return;
+    }
+    const tr = e.target.closest("tr[data-id]");
+    if (tr) selectSwing(BTR[SWX.tag].find(o => String(o.id) === tr.dataset.id));
+  });
+  $("#simLoad").addEventListener("click", () => { if (SWX.sel) simLoad(SWX.sel); });
+  $("#simReset").addEventListener("click", simReset);
+}
+
 /* ---------------- boot ---------------- */
 renderYearSeg(); renderRibbon(); renderHall();
 sizeField(); F.dots = fieldData(S.fieldSide); setFieldTargets(false); renderCallouts(false); updateReadout(); drawField();
@@ -1674,6 +2149,7 @@ renderBall(); renderBump(); renderMix(); renderPulse(); renderThesis();
 // Motion budget: everything ambient stops while the tab is hidden.
 document.addEventListener("visibilitychange", () => document.documentElement.classList.toggle("paused", document.hidden));
 renderSeasonSel(); setSeason(S.tag);
+initSwing();
 let rz = 0;
 new ResizeObserver(() => { clearTimeout(rz); rz = setTimeout(() => { if (FB.clientWidth !== F.w) { sizeField(); drawField(); placeBubbles(); } }, 80); }).observe(FB);
 if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { drawField(); placeBubbles(); });

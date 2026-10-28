@@ -23,6 +23,8 @@ data/raw_sample/*
 !data/raw_sample/.gitkeep
 data/fantasy_outcomes/*
 !data/fantasy_outcomes/.gitkeep
+data/bat_tracking/*
+!data/bat_tracking/.gitkeep
 
 # Generated outputs
 outputs/

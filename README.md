@@ -18,7 +18,10 @@ The project ships two things:
 - **A five-season site** (`site/`): a single self-contained HTML page with an
   infographic splash (the signal field, season ribbon, league trends, a
   five-year "signal hall"), a test of the thesis, and standings, leaderboards
-  and a scouting table with per-player percentile profiles.
+  and a scouting table with per-player percentile profiles. It ends with a
+  **Swing Lab**: a bat-tracking leaderboard modeled on Baseball Savant's swing
+  path / attack angle page (2023–2026), each hitter's average swing drawn three
+  ways, and a what-if swing simulator.
 
 ## What the five seasons say
 
@@ -55,11 +58,15 @@ first (about ten requests to the public MLB Stats API):
 
 ```bash
 python scripts/enrich_precomputed.py --tags 2017 2018 2019 2020 2021 --fetch
+python scripts/fetch_bat_tracking.py   # optional, the Swing Lab's data -> data/bat_tracking/
 python site/build_payload.py     # scores all five seasons -> site/payload.json
 python site/build_site.py        # -> site/never_lucky_five_seasons.html
 ```
 
-Or `make enrich` then `make site`.
+Or `make enrich`, `make bat`, then `make site`. Without `data/bat_tracking/`
+the page still builds, and the Swing Lab says how to get its data. The fetch
+script downloads about 20 Savant leaderboard CSVs; you can also save them by
+hand (see `DATA_NOTICE.md`), and it skips any file already in the folder.
 
 ### Re-deriving the Statcast aggregates (optional, about 1.6 GB)
 
@@ -110,7 +117,8 @@ src/statcast_roto/
   scoring.py           roto aggregation and standings
   value.py             Statcast vs traditional value per player
   dashboard.py         the older Chart.js dashboard (scripts/build_dashboard.py)
-scripts/               build_precomputed, enrich_precomputed, build_dashboard
+  bat_tracking.py      Savant bat-tracking leaderboards -> one table per season (Swing Lab)
+scripts/               fetch_bat_tracking, fetch_raw_statcast, build_precomputed, enrich_precomputed, build_dashboard
 site/                  the five-season page: build_payload, build_site, league_agg, template
 tests/                 pytest suite
 ```
@@ -133,6 +141,16 @@ is one new loader, with scoring, value and the site unchanged.
   by 60/162 (player-pool floors, small-sample flags, category minimums).
 - **Rosters** are auto-drafted per season for a 10-team league; team names
   carry over, rosters don't.
+- **Swing Lab:** Savant's bat-tracking leaderboards (regular season, from
+  July 14, 2023), qualified at 600 competitive swings per full season, scaled
+  by the swings tracked league-wide and rounded to whole swings: 265 in 2023,
+  578 in 2024, 600 in 2025 and 601 in 2026. The swings are drawn from season
+  averages on Savant's own "flat disc" picture of a swing. In the simulator,
+  the squared-up and blast rules are Statcast's, and the exit-velocity
+  ceiling is an equation that reproduces Statcast's glossary examples; its
+  empirical rows are a linear fit on six swing traits, scored only on hitters
+  and seasons it never saw. It doesn't estimate xwOBA: swing traits explain
+  only about a quarter of it.
 
 See `DATA_NOTICE.md` for what data is and isn't in this repository.
 
